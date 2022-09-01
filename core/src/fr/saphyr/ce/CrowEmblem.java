@@ -3,6 +3,7 @@ package fr.saphyr.ce;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -11,13 +12,17 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.TimeUtils;
+import fr.saphyr.ce.core.ConsoleLogger;
+import fr.saphyr.ce.core.Logger;
 
 import java.util.Iterator;
 
 public final class CrowEmblem extends ApplicationAdapter {
+
+	private static final Logger logger = Logger.create(ConsoleLogger.class);
+
 	private SpriteBatch batch;
 	private Texture img;
-
 	private Array<Rectangle> raindrops;
 	private long lastDropTime;
 
@@ -33,6 +38,7 @@ public final class CrowEmblem extends ApplicationAdapter {
 		raindrops.add(raindrop);
 		lastDropTime = TimeUtils.nanoTime();
 	}
+
 
 	@Override
 	public void create () {
