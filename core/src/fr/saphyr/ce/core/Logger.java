@@ -3,35 +3,33 @@ package fr.saphyr.ce.core;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
-public abstract class Logger {
+import static fr.saphyr.ce.core.Logger.ANSI.*;
 
-    public abstract void info(String message);
+public final class Logger {
 
-    public abstract void warning(String message);
+    private static final Logger LOGGER = Logger.create();
 
-    public abstract void warning(String message, Exception exception);
+    public static void info(Object message) { LOGGER.log(WHITE, message); }
 
-    public abstract void debug(String message);
+    public static void warning(Object message) { LOGGER.log(YELLOW, message); }
 
-    public abstract void error(String message);
+    public static void warning(Object message, Exception exception) { LOGGER.log(GREEN, message, exception); }
 
-    public abstract void error(String message, Exception exception);
+    public static void debug(Object message) { LOGGER.log(GREEN, message); }
 
-    public static <T extends Logger> T create(Class<T> tClass) {
-        try {
-            return tClass.newInstance();
-        } catch (InstantiationException | IllegalAccessException e) {
-            throw new RuntimeException(e);
-        }
+    public static void error(Object message) { LOGGER.log(RED, message); }
+
+    public void error(Object message, Exception exception) { LOGGER.log(RED, message, exception); }
+
+    private static Logger create() { return new Logger(); }
+
+    private void log(String color, Object message) {
+        System.out.println(color + currentTime() + " " + message.toString() + ANSI.RESET);
     }
 
-    protected void log(String color, String message) {
-        System.out.println(color + currentTime() + " " + message + ANSI.RESET);
-    }
-
-    protected void log(String color, String message, Exception exception) {
+    private void log(String color, Object message, Exception exception) {
         System.out.println(color + currentTime() + " " +
-                message + " :\n" + exception.getMessage() + ANSI.RESET);
+                message.toString() + " :\n" + exception.getMessage() + ANSI.RESET);
     }
 
     private String currentTime() {
@@ -39,7 +37,6 @@ public abstract class Logger {
         LocalDateTime now = LocalDateTime.now();
         return "["+dtf.format(now)+"]";
     }
-
 
     public final static class ANSI {
         public static final String RESET = "\u001B[0m";
@@ -50,7 +47,8 @@ public abstract class Logger {
         public static final String BLUE = "\u001B[34m";
         public static final String PURPLE = "\u001B[35m";
         public static final String CYAN = "\u001B[36m";
-        public static final String WHITE = "\u001B[37m";
+        public static final String WHITE = "\u001B[97m";
+        public static final String GRAY_WHITE = "\u001B[37m";
         public static final String BLACK_BACKGROUND = "\u001B[40m";
         public static final String RED_BACKGROUND = "\u001B[41m";
         public static final String GREEN_BACKGROUND = "\u001B[42m";
@@ -60,5 +58,6 @@ public abstract class Logger {
         public static final String CYAN_BACKGROUND = "\u001B[46m";
         public static final String WHITE_BACKGROUND = "\u001B[47m";
     }
+
 
 }

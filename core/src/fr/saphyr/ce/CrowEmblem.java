@@ -6,81 +6,121 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.math.MathUtils;
-import com.badlogic.gdx.math.Rectangle;
-import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.utils.ScreenUtils;
-import com.badlogic.gdx.utils.TimeUtils;
-import fr.saphyr.ce.core.ConsoleLogger;
 import fr.saphyr.ce.core.Logger;
-
-import java.util.Iterator;
 
 public final class CrowEmblem extends ApplicationAdapter {
 
-	private static final Logger logger = Logger.create(ConsoleLogger.class);
-
 	private SpriteBatch batch;
-	private Texture img;
-	private Array<Rectangle> raindrops;
-	private long lastDropTime;
-
+	private Texture slime;
+	private TextureRegion[][] slimeFrames;
+	private Animation<TextureRegion> slimeAnimation;
 	private boolean slimeSelected;
-	private OrthographicCamera camera;
+	private float slimeStateTime;
 
-	private void spawnRaindrop() {
-		Rectangle raindrop = new Rectangle();
-		raindrop.x = MathUtils.random(0, 800-64);
-		raindrop.y = 480;
-		raindrop.width = 64;
-		raindrop.height = 64;
-		raindrops.add(raindrop);
-		lastDropTime = TimeUtils.nanoTime();
-	}
+	private OrthographicCamera camera;
+	private float rotationSpeed;
 
 
 	@Override
 	public void create () {
 		batch = new SpriteBatch();
-		img = new Texture("slime_spritesheet.png");
-		camera = new OrthographicCamera();
-		camera.setToOrtho(false, 780, 520);
+
+		// Slime
+		final int SLIME_COL = 3;
+		final int SLIME_ROW = 1;
+		slimeStateTime = 0;
 		slimeSelected = false;
-		raindrops = new Array<>();
-		spawnRaindrop();
+		slime = new Texture("slime_spritesheet.png");
+		slimeFrames = TextureRegion.split(slime, slime.getWidth() / SLIME_COL, slime.getHeight() / SLIME_ROW);
+		var frames = new TextureRegion[SLIME_COL * SLIME_ROW];
+		int index = 0;
+		for (int i = 0; i < SLIME_ROW; i++) {
+			for (int j = 0; j < SLIME_COL; j++) {
+				frames[index++] = slimeFrames[i][j];
+			}
+		}
+		slimeAnimation = new Animation<>(100 / 1000f, frames);
+
+		// Camera
+		float w = Gdx.graphics.getWidth();
+		float h = Gdx.graphics.getHeight();
+		camera = new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+		camera.position.set(camera.viewportWidth / 2f, camera.viewportHeight / 2f, 0);
+		camera.update();
+
+		Logger.debug(Gdx.graphics.getWidth() + " " + Gdx.graphics.getHeight());
 	}
 
 	@Override
 	public void render () {
-		ScreenUtils.clear(0, 0, 0, 1);
-		camera.update();
+		ScreenUtils.clear(Color.CLEAR,true);
 		batch.begin();
-		batch.draw(img, 0, 0);
-		for(Rectangle raindrop: raindrops) {
-			batch.draw(img, raindrop.x, raindrop.y);
-		}
+		camera.update();
+		batch.setProjectionMatrix(camera.combined);
+
+		// Slime
+		slimeStateTime += Gdx.graphics.getDeltaTime();
+		TextureRegion slimeCurrentFrame = slimeAnimation.getKeyFrame(slimeStateTime, true);
+		batch.draw(slimeCurrentFrame, 0, 0, 0, 0, 32, 32, 2, 2, 0);
+
 		batch.end();
 		update(Gdx.graphics.getDeltaTime());
 	}
 
-	public void update(float dt) {
-		if(TimeUtils.nanoTime() - lastDropTime > 1000000000) spawnRaindrop();
+	@Override
+	public void resize(final int width, final int height) {
+		camera.viewportWidth = Gdx.graphics.getWidth();
+		camera.viewportHeight = Gdx.graphics.getHeight();
+		camera.update();
+	}
 
-		for (Iterator<Rectangle> i = raindrops.iterator(); i.hasNext(); ) {
-			Rectangle raindrop = i.next();
-			raindrop.y -= 200 * dt;
-			if(raindrop.y + 64 < 0) i.remove();
+	private void handleInput(final float dt) {
+
+		Logger.debug(camera.zoom);
+		float zoomVelocity = .025f;
+		float minZoom = .5f;
+		float maxZoom = 2f;
+
+/*		if (Gdx.input.isKeyPressed(Input.Keys.A)) {
+			if (camera.zoom < maxZoom) camera.zoom += zoomVelocity;
+		}
+		if (Gdx.input.isKeyPressed(Input.Keys.Q)) {
+			if (camera.zoom > minZoom) camera.zoom -= zoomVelocity;
+		}*/
+		if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
+			camera.translate(-3, 0, 0);
+		}
+		if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
+			camera.translate(3, 0, 0);
+		}
+		if (Gdx.input.isKeyPressed(Input.Keys.DOWN)) {
+			camera.translate(0, -3, 0);
+		}
+		if (Gdx.input.isKeyPressed(Input.Keys.UP)) {
+			camera.translate(0, 3, 0);
 		}
 
+/*		camera.zoom = MathUtils.clamp(camera.zoom, 0.1f, 100 / camera.viewportWidth);
+		float effectiveViewportWidth = camera.viewportWidth * camera.zoom;
+		float effectiveViewportHeight = camera.viewportHeight * camera.zoom;
+		camera.position.x = MathUtils.clamp(camera.position.x, effectiveViewportWidth,100- effectiveViewportWidth);
+		camera.position.y = MathUtils.clamp(camera.position.y, effectiveViewportHeight, 100 - effectiveViewportHeight);*/
+	}
+
+	public void update(final float dt) {
+		handleInput(dt);
 		if (slimeSelected && Gdx.input.isKeyJustPressed(Input.Keys.SPACE)) {
 			slimeSelected = false;
-			System.out.println("Slime deselect");
+			Logger.info("Slime deselect");
 		}
 
 		else if (!slimeSelected && Gdx.input.isKeyJustPressed(Input.Keys.SPACE)) {
 			slimeSelected = true;
-			System.out.println("Slime select");
+			Logger.info("Slime select");
 		}
 
 	}
@@ -88,6 +128,6 @@ public final class CrowEmblem extends ApplicationAdapter {
 	@Override
 	public void dispose () {
 		batch.dispose();
-		img.dispose();
+		slime.dispose();
 	}
 }

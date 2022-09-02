@@ -10,6 +10,7 @@ public class DesktopLauncher {
 		config.setForegroundFPS(60);
 		config.setWindowIcon("icons/icon.png");
 		config.setTitle("Crow Emblem");
+		config.setMaximized(true);
 		new Lwjgl3Application(new CrowEmblem(), config);
 	}
 }
