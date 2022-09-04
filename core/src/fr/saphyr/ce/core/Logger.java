@@ -19,7 +19,7 @@ public final class Logger {
 
     public static void error(Object message) { LOGGER.log(RED, message); }
 
-    public void error(Object message, Exception exception) { LOGGER.log(RED, message, exception); }
+    public static void error(Object message, Exception exception) { LOGGER.log(RED, message, exception); }
 
     private static Logger create() { return new Logger(); }
 
