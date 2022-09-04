@@ -23,7 +23,7 @@ public final class CrowEmblem extends ApplicationAdapter {
 
 		world.addEntities(new Slime(
 				Textures.get("slime/slime_spritesheet.png"), world,
-				new Vector3(2, 2, 0), new int[]{ 2, 3, 8, 10}));
+				new Vector3(2, 2, 0), new int[]{ 2, 3, 8, 10, 11}));
 
 		renderer = Renderer.orthogonal(world);
 	}

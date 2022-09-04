@@ -5,6 +5,6 @@ import fr.saphyr.ce.Renderer;
 
 public interface Drawable {
 
-    void draw(Batch batch);
+    void draw(Renderer renderer);
     
 }

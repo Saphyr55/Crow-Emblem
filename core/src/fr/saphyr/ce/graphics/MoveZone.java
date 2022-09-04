@@ -5,6 +5,7 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.maps.tiled.TiledMapTile;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
+import fr.saphyr.ce.Renderer;
 import fr.saphyr.ce.worlds.World;
 
 import java.util.Optional;
@@ -20,24 +21,23 @@ public class MoveZone extends Array<Array<Optional<MoveZone.Zone>>> implements D
     }
 
     @Override
-    public void draw(Batch batch) {
+    public void draw(Renderer renderer) {
         iterator().forEachRemaining(optionals -> optionals.iterator().forEachRemaining(
             optional -> optional.ifPresent(zone -> {
                 zone.texture = Textures.get("red_move_zone.png");
                 zone.isExplorable = true;
-                replaceZone(zone);
-                batch.draw(zone.texture, zone.pos.x, zone.pos.y, 1, 1);
+                explorableZone(zone);
+                renderer.draw(zone.texture, zone.pos.x, zone.pos.y, 1, 1);
             })
         ));
     }
 
-    private void replaceZone(Zone zone) {
+    private void explorableZone(Zone zone) {
         for(var tileNotExplorable : tilesNotExplorable) {
             if (world.getMap().getTileFrom(zone.pos) != null) {
                 if (tileNotExplorable.getId() == world.getMap().getTileFrom(zone.pos).getId()) {
                     zone.texture = Textures.get("blue_move_zone.png");
                     zone.isExplorable = false;
-                    break;
                 }
             }
         }
