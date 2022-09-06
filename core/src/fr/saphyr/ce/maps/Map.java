@@ -9,6 +9,7 @@ import com.badlogic.gdx.utils.Disposable;
 public class Map implements Disposable {
 
     private TiledMap handle;
+
     private final int unitScale;
 
     public Map(TiledMap handle, int unitScale) {
@@ -28,14 +29,18 @@ public class Map implements Disposable {
         this.handle = handle;
     }
 
-    public TiledMapTile getTileFrom(Vector2 pos) {
+    public TiledMapTile getTileFrom(int x, int y) {
         for(int i = 0; i < getHandle().getLayers().size(); i++) {
             int lastId = getHandle().getLayers().size() - i - 1;
             TiledMapTileLayer tileLayer = (TiledMapTileLayer) getHandle().getLayers().get(lastId);
-            TiledMapTileLayer.Cell cell = tileLayer.getCell((int) pos.x, (int) pos.y);
+            TiledMapTileLayer.Cell cell = tileLayer.getCell((int) x, (int) y);
             if (cell != null) return cell.getTile();
         }
         return null;
+    }
+
+    public TiledMapTile getTileFrom(Vector2 pos) {
+        return getTileFrom((int)pos.x, (int) pos.y);
     }
 
     @Override

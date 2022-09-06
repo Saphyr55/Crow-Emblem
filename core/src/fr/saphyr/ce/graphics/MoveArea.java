@@ -1,21 +1,21 @@
 package fr.saphyr.ce.graphics;
 
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.maps.tiled.TiledMapTile;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import fr.saphyr.ce.Renderer;
+import fr.saphyr.ce.core.Resources;
 import fr.saphyr.ce.worlds.World;
 
 import java.util.Optional;
 
-public class MoveZone extends Array<Array<Optional<MoveZone.Zone>>> implements Drawable {
+public class MoveArea extends Array<Array<Optional<MoveArea.Area>>> implements Drawable {
 
     private final World world;
     private final Array<TiledMapTile> tilesNotExplorable;
 
-    public MoveZone(World world, Array<TiledMapTile> tilesNotExplorable) {
+    public MoveArea(World world, Array<TiledMapTile> tilesNotExplorable) {
         this.world = world;
         this.tilesNotExplorable = tilesNotExplorable;
     }
@@ -23,21 +23,21 @@ public class MoveZone extends Array<Array<Optional<MoveZone.Zone>>> implements D
     @Override
     public void draw(Renderer renderer) {
         iterator().forEachRemaining(optionals -> optionals.iterator().forEachRemaining(
-            optional -> optional.ifPresent(zone -> {
-                zone.texture = Textures.get("red_move_zone.png");
-                zone.isExplorable = true;
-                explorableZone(zone);
-                renderer.draw(zone.texture, zone.pos.x, zone.pos.y, 1, 1);
+            optional -> optional.ifPresent(area -> {
+                area.texture = Resources.get("textures/red_move_zone.png", Texture.class);
+                area.isExplorable = true;
+                explorableZone(area);
+                renderer.draw(area.texture, area.pos.x, area.pos.y, 1, 1);
             })
         ));
     }
 
-    private void explorableZone(Zone zone) {
+    private void explorableZone(MoveArea.Area area) {
         for(var tileNotExplorable : tilesNotExplorable) {
-            if (world.getMap().getTileFrom(zone.pos) != null) {
-                if (tileNotExplorable.getId() == world.getMap().getTileFrom(zone.pos).getId()) {
-                    zone.texture = Textures.get("blue_move_zone.png");
-                    zone.isExplorable = false;
+            if (world.getMap().getTileFrom(area.pos) != null) {
+                if (tileNotExplorable.getId() == world.getMap().getTileFrom(area.pos).getId()) {
+                    area.texture = Resources.get("textures/blue_move_zone.png", Texture.class);
+                    area.isExplorable = false;
                 }
             }
         }
@@ -51,13 +51,13 @@ public class MoveZone extends Array<Array<Optional<MoveZone.Zone>>> implements D
         return tilesNotExplorable;
     }
 
-    public static class Zone
+    public static class Area
     {
         private Vector2 pos;
         private Texture texture;
         private boolean isExplorable;
 
-        public Zone(Vector2 pos) {
+        public Area(Vector2 pos) {
             this.pos = pos;
         }
 

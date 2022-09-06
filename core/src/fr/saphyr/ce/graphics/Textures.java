@@ -2,15 +2,18 @@ package fr.saphyr.ce.graphics;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.utils.ArrayMap;
+import fr.saphyr.ce.core.Logger;
+import fr.saphyr.ce.core.Resources;
 
 public final class Textures {
 
-    private static final ArrayMap<String, Texture> textures = new ArrayMap<>();
-
-    public static Texture get(String fileName) {
-        if (!textures.containsKey(fileName))
-            textures.put(fileName, new Texture(fileName));
-        return textures.get(fileName);
+    public static Texture get(String id) {
+        try {
+            return Resources.get(id, Texture.class);
+        }catch (Exception e) {
+            Logger.error("Impossible to found the resource " + id);
+            throw new RuntimeException(e);
+        }
     }
 
 }

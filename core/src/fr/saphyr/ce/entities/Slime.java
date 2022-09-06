@@ -1,17 +1,13 @@
 package fr.saphyr.ce.entities;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector3;
 import fr.saphyr.ce.Renderer;
-import fr.saphyr.ce.core.Logger;
-import fr.saphyr.ce.graphics.MoveZones;
+import fr.saphyr.ce.graphics.MoveAreas;
 import fr.saphyr.ce.worlds.World;
-
-import java.util.function.Consumer;
 
 public class Slime extends Entity {
 
@@ -24,14 +20,14 @@ public class Slime extends Entity {
         super(texture);
         this.world = world;
         this.pos = worldPos;
-         setTilesNotExplorableById(idNotExplorable);
+        setTilesNotExplorableById(idNotExplorable);
         slimeStateTime = 0;
         slimeSelected = false;
 
         TextureRegion[][] slimeFrames = TextureRegion.split(
                 texture, texture.getWidth() / 3, texture.getHeight() / 3);
 
-        moveZone = MoveZones.parse(MoveZones.DEFAULT_MOVE_ZONE, this);
+        moveArea = MoveAreas.parse(MoveAreas.DEFAULT_MOVE_ZONE, this);
         animationIdle = new Animation<>(500 / 1000f, slimeFrames[0]);
         animationDeath = new Animation<>(80 / 1000f, slimeFrames[1]);
     }
@@ -41,7 +37,7 @@ public class Slime extends Entity {
         TextureRegion slimeCurrentFrame = animationIdle.getKeyFrame(slimeStateTime, true);
         renderer.draw(slimeCurrentFrame, pos.x, pos.y, 1, 1);
         if (slimeSelected)
-            moveZone.draw(renderer);
+            moveArea.draw(renderer);
     }
 
     @Override

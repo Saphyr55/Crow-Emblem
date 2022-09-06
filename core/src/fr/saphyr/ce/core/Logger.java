@@ -19,7 +19,14 @@ public final class Logger {
 
     public static void error(Object message) { LOGGER.log(RED, message); }
 
-    public static void error(Object message, Exception exception) { LOGGER.log(RED, message, exception); }
+    public static void error(Object message, Exception exception) {
+        LOGGER.log(RED, message);
+        try {
+            throw exception;
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
 
     private static Logger create() { return new Logger(); }
 

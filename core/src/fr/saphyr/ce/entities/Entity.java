@@ -7,8 +7,7 @@ import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Array;
 import fr.saphyr.ce.CEObject;
 import fr.saphyr.ce.Renderer;
-import fr.saphyr.ce.core.Logger;
-import fr.saphyr.ce.graphics.MoveZone;
+import fr.saphyr.ce.graphics.MoveArea;
 import fr.saphyr.ce.worlds.World;
 
 import java.util.Arrays;
@@ -17,7 +16,7 @@ import java.util.function.Consumer;
 public abstract class Entity implements CEObject {
 
     protected Texture texture;
-    protected MoveZone moveZone;
+    protected MoveArea moveArea;
     protected Array<TiledMapTile> tilesNotExplorable;
     protected Vector3 pos;
     protected World world;
@@ -72,12 +71,12 @@ public abstract class Entity implements CEObject {
         this.texture = texture;
     }
 
-    public MoveZone getMoveZone() {
-        return moveZone;
+    public MoveArea getMoveZone() {
+        return moveArea;
     }
 
-    public void setMoveZone(MoveZone moveZone) {
-        this.moveZone = moveZone;
+    public void setMoveZone(MoveArea moveArea) {
+        this.moveArea = moveArea;
     }
 
     public Array<TiledMapTile> getTilesNotExplorable() {
