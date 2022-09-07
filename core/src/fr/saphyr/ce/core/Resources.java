@@ -11,6 +11,7 @@ import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGeneratorLoader;
 import com.badlogic.gdx.graphics.g2d.freetype.FreetypeFontLoader;
 import com.badlogic.gdx.utils.Array;
 import fr.saphyr.ce.graphics.Textures;
+import fr.saphyr.ce.graphics.fonts.Fonts;
 import fr.saphyr.ce.maps.Maps;
 
 import java.util.ArrayList;
@@ -30,14 +31,8 @@ public final class Resources {
         handle.setLoader(FreeTypeFontGenerator.class, new FreeTypeFontGeneratorLoader(resolver));
         handle.setLoader(BitmapFont.class, ".ttf", new FreetypeFontLoader(resolver));
 
-        FreetypeFontLoader.FreeTypeFontLoaderParameter mySmallFont = new FreetypeFontLoader.FreeTypeFontLoaderParameter();
-        mySmallFont.fontFileName = "fonts/CinzelDecorative-Black.ttf";
-        mySmallFont.fontParameters.size = 10;
-
         Textures.load("textures");
-        //load("fonts", BitmapFont.class);
-        handle.load("fonts/CinzelDecorative-Black.ttf", BitmapFont.class, mySmallFont);
-        load("sounds", Sound.class);
+        Fonts.load("fonts");
         Maps.load("maps");
         while (!handle.update()) { }
         handle.finishLoading();

@@ -14,6 +14,7 @@ import fr.saphyr.ce.core.Renderer;
 import fr.saphyr.ce.core.Resources;
 import fr.saphyr.ce.entities.Slime;
 import fr.saphyr.ce.graphics.Textures;
+import fr.saphyr.ce.graphics.fonts.Fonts;
 import fr.saphyr.ce.maps.Maps;
 import fr.saphyr.ce.worlds.World;
 
@@ -39,7 +40,7 @@ public final class CrowEmblem extends ApplicationAdapter {
 		stage = new Stage();
 
 		table = new Table();
-		var style = new Label.LabelStyle(new BitmapFont(), Color.WHITE);
+		var style = new Label.LabelStyle(Fonts.get("fonts/CinzelDecorative-Black.ttf"), Color.WHITE);
 		table.add(new Label("Crow Emblem", style));
 		table.setDebug(true);
 
