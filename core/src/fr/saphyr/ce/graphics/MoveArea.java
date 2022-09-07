@@ -4,7 +4,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.maps.tiled.TiledMapTile;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
-import fr.saphyr.ce.Renderer;
+import fr.saphyr.ce.core.Renderer;
 import fr.saphyr.ce.core.Resources;
 import fr.saphyr.ce.worlds.World;
 
@@ -24,15 +24,15 @@ public class MoveArea extends Array<Array<Optional<MoveArea.Area>>> implements D
     public void draw(Renderer renderer) {
         iterator().forEachRemaining(optionals -> optionals.iterator().forEachRemaining(
             optional -> optional.ifPresent(area -> {
-                area.texture = Resources.get("textures/red_move_zone.png", Texture.class);
+                area.texture = Textures.get("textures/red_move_zone.png");
                 area.isExplorable = true;
-                explorableZone(area);
+                explorableArea(area);
                 renderer.draw(area.texture, area.pos.x, area.pos.y, 1, 1);
             })
         ));
     }
 
-    private void explorableZone(MoveArea.Area area) {
+    private void explorableArea(MoveArea.Area area) {
         for(var tileNotExplorable : tilesNotExplorable) {
             if (world.getMap().getTileFrom(area.pos) != null) {
                 if (tileNotExplorable.getId() == world.getMap().getTileFrom(area.pos).getId()) {

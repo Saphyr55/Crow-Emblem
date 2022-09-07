@@ -1,4 +1,4 @@
-package fr.saphyr.ce;
+package fr.saphyr.ce.core;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.maps.MapRenderer;

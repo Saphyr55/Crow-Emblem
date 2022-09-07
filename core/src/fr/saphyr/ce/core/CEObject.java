@@ -1,6 +1,6 @@
-package fr.saphyr.ce;
+package fr.saphyr.ce.core;
 
-import com.badlogic.gdx.graphics.g2d.Batch;
+import fr.saphyr.ce.core.Renderer;
 
 public interface CEObject {
 

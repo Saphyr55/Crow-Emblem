@@ -2,10 +2,10 @@ package fr.saphyr.ce.maps;
 
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.utils.ArrayMap;
-import fr.saphyr.ce.CEFiles;
+import fr.saphyr.ce.core.CEFiles;
 import fr.saphyr.ce.core.Logger;
 
-public class Maps {
+public final class Maps {
 
     public static final int UNIT_SCALE = 32;
 
@@ -21,6 +21,7 @@ public class Maps {
             Logger.info("Loader : " + filename);
         }
     }
+
 
     public static Map get(String filename) {
         try {

@@ -4,8 +4,8 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
-import fr.saphyr.ce.CEObject;
-import fr.saphyr.ce.Renderer;
+import fr.saphyr.ce.core.CEObject;
+import fr.saphyr.ce.core.Renderer;
 import fr.saphyr.ce.core.Camera;
 import fr.saphyr.ce.core.Logger;
 import fr.saphyr.ce.entities.Entity;
@@ -17,17 +17,21 @@ public class World implements Disposable, CEObject {
 
     private Camera camera;
     private Map map;
+    private Vector3 initPos;
 
     private final Array<Entity> entities;
 
-    public World(Map map) {
+    public World(Map map, Vector3 initPos) {
+        this.initPos = initPos;
         this.camera = new Camera(
                 map.getHandle().getProperties().get("width", Integer.class),
                 map.getHandle().getProperties().get("height", Integer.class),
                 20, 10);
+        this.camera.initPos(initPos);
         this.map = map;
         this.entities = new Array<>();
         this.mousePosInWorld = new Vector3();
+        this.camera.position.set(initPos);
     }
 
     @Override
