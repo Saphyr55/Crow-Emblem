@@ -9,12 +9,7 @@ import fr.saphyr.ce.maps.Maps;
 
 public final class Resources {
 
-
-
-    private static final AssetManager handle = new AssetManager();
-    static {
-
-    }
+    public static final AssetManager manager = new AssetManager();
 
     public static void load() {
         Textures.load("textures");
@@ -23,18 +18,18 @@ public final class Resources {
     }
 
     public static <T> T get(String name, Class<T> tClass) {
-        return handle.get(name, tClass);
+        return manager.get(name, tClass);
     }
 
     public static <T> Array<T> getAll(Class<T> tClass) {
         Array<T> list = new Array<>();
-        return handle.getAll(tClass, list);
+        return manager.getAll(tClass, list);
     }
 
     public static <T> void load(String moduleFolder, Class<T> tClass, AssetLoaderParameters<T> parameter) {
         CEFiles.foundInternal(moduleFolder).forEach(s -> {
-            if (!handle.contains(moduleFolder, tClass)) {
-                handle.load(s, tClass, parameter);
+            if (!manager.contains(moduleFolder, tClass)) {
+                manager.load(s, tClass, parameter);
                 Logger.info("Loader : " + s);
             }
         });
@@ -45,12 +40,12 @@ public final class Resources {
     }
 
 
-    public static AssetManager getHandle() {
-        return handle;
+    public static AssetManager getManager() {
+        return manager;
     }
 
     public static void dispose() {
-        handle.dispose();
+        manager.dispose();
     }
 
 }

@@ -5,31 +5,31 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
+import fr.saphyr.ce.core.CEObject;
 import fr.saphyr.ce.core.Renderer;
 import fr.saphyr.ce.core.Updatable;
 import fr.saphyr.ce.graphics.Drawable;
 
-public abstract class Scene implements Drawable, Disposable, Updatable {
+public abstract class Scene implements CEObject, Disposable {
 
-    protected Stage stage;
-    protected Table root;
+    protected boolean isActive = false;
+    protected boolean isInit = false;
 
     public Scene() {
-        stage = new Stage(new ScreenViewport());
-        root = new Table();
+
     }
 
-    public abstract void init();
+    public void init() { isInit = true; }
 
-    @Override
-    public void draw(Renderer renderer) {
-        stage.act(Gdx.graphics.getDeltaTime());
-        stage.draw();
+    public boolean isActive() {
+        return isActive;
     }
 
-    @Override
-    public void dispose() {
-        stage.dispose();
+    public void setActive(boolean active) {
+        isActive = active;
     }
 
+    public boolean isInit() {
+        return isInit;
+    }
 }

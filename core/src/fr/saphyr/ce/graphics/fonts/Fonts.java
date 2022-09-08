@@ -15,13 +15,13 @@ public class Fonts {
 
     public static void load(String module) {
         FileHandleResolver resolver = new InternalFileHandleResolver();
-        Resources.getHandle().setLoader(FreeTypeFontGenerator.class, new FreeTypeFontGeneratorLoader(resolver));
-        Resources.getHandle().setLoader(BitmapFont.class, ".ttf", new FreetypeFontLoader(resolver));
+        Resources.getManager().setLoader(FreeTypeFontGenerator.class, new FreeTypeFontGeneratorLoader(resolver));
+        Resources.getManager().setLoader(BitmapFont.class, ".ttf", new FreetypeFontLoader(resolver));
         CEFiles.foundInternal(module).forEach(s -> {
             FreetypeFontLoader.FreeTypeFontLoaderParameter font = new FreetypeFontLoader.FreeTypeFontLoaderParameter();
             font.fontFileName = s;
             font.fontParameters.size = 50;
-            Resources.getHandle().load(s, BitmapFont.class, font);
+            Resources.getManager().load(s, BitmapFont.class, font);
             Logger.info("Loader : " + s);
         });
     }
