@@ -2,6 +2,7 @@ package fr.saphyr.ce.core;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.ai.GdxAI;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
@@ -11,7 +12,7 @@ import java.util.function.Consumer;
 
 public class Camera extends OrthographicCamera {
 
-    private float translateVelocity = 0.25f;
+    private float translateVelocity = 20f;
     private final Vector3 border;
     private final Vector3 zeroPosMap;
     private final Vector3 initPos;
@@ -39,16 +40,34 @@ public class Camera extends OrthographicCamera {
     }
 
     public void update(final float dt) {
-        move();
+        move(dt);
         updateEdge();
         update(true);
     }
 
-    private void move() {
-        whenKeyPressed(Input.Keys.A, () -> translate(-translateVelocity, 0, 0));
-        whenKeyPressed(Input.Keys.D, () -> translate(translateVelocity, 0, 0));
-        whenKeyPressed(Input.Keys.S, () -> translate(0, -translateVelocity, 0));
-        whenKeyPressed(Input.Keys.W, () -> translate(0, translateVelocity, 0));
+    private void move(final float dt) {
+        whenButtonPressed(Input.Buttons.MIDDLE, () -> moveCamera(dt));
+    }
+
+    private void moveCamera(final float dt) {
+        final float velocity = translateVelocity * dt;
+        if (Gdx.input.getDeltaX() < 0) {
+            translate(velocity, 0, 0);
+        }
+        if (Gdx.input.getDeltaX() > 0) {
+            translate(-velocity, 0, 0);
+        }
+        if (Gdx.input.getDeltaY() < 0) {
+            translate(0, -velocity, 0);
+        }
+        if (Gdx.input.getDeltaY() > 0) {
+            translate(0, velocity, 0);
+        }
+    }
+
+    private void whenButtonPressed(int buttons, Runnable runnable) {
+        Consumer<Boolean> c = b -> { if (b) runnable.run(); };
+        c.accept(Gdx.input.isButtonPressed(buttons));
     }
 
     private void whenKeyPressed(int key, Runnable runnable) {

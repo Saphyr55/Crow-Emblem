@@ -3,18 +3,12 @@ package fr.saphyr.ce;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.ScreenUtils;
 import fr.saphyr.ce.core.Renderer;
 import fr.saphyr.ce.core.Resources;
-import fr.saphyr.ce.entities.Slime;
-import fr.saphyr.ce.graphics.Textures;
-import fr.saphyr.ce.maps.Maps;
 import fr.saphyr.ce.scenes.GameScene;
 import fr.saphyr.ce.scenes.LoadingScene;
 import fr.saphyr.ce.scenes.SceneManager;
-import fr.saphyr.ce.scenes.Scenes;
-import fr.saphyr.ce.worlds.World;
 
 public final class CrowEmblem extends ApplicationAdapter {
 

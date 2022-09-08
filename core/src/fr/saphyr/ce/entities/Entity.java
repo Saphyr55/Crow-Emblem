@@ -1,16 +1,21 @@
 package fr.saphyr.ce.entities;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.maps.tiled.TiledMapTile;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Array;
 import fr.saphyr.ce.core.CEObject;
+import fr.saphyr.ce.core.Logger;
 import fr.saphyr.ce.core.Renderer;
 import fr.saphyr.ce.graphics.MoveArea;
+import fr.saphyr.ce.graphics.MoveAreas;
 import fr.saphyr.ce.worlds.World;
 
 import java.util.Arrays;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Consumer;
 
 public abstract class Entity implements CEObject {
@@ -35,10 +40,23 @@ public abstract class Entity implements CEObject {
         if (tile != null) tilesNotExplorable.add(tile);
     }
 
-    protected boolean isClickOnCurrentFrame(int key) {
+    protected boolean isClickOnFrame(int key, float posX, float posY) {
         return Gdx.input.isButtonJustPressed(key) &&
-                (int) world.getMousePos().x == getPos().x &&
-                (int) world.getMousePos().y == getPos().y;
+                (int) world.getMousePos().x == posX &&
+                (int) world.getMousePos().y == posY;
+    }
+
+    protected boolean isClickOnCurrentFrame(int key) {
+        return isClickOnFrame(key, getPos().x, getPos().y);
+    }
+
+    protected Vector2 getPosClickFromMoveArea() {
+        AtomicReference<Vector2> posClicked = new AtomicReference<>(null);
+        moveArea.forEach(optionals -> optionals.forEach(optional -> optional.ifPresent(area -> {
+            if (isClickOnFrame(Input.Buttons.LEFT, area.getPos().x, area.getPos().y) && area.isExplorable())
+                posClicked.set(area.getPos());
+        })));
+        return posClicked.get();
     }
 
     protected void selectOnClick(int key, boolean accept, Runnable ifRunnable, Runnable elseRunnable) {
@@ -49,6 +67,10 @@ public abstract class Entity implements CEObject {
             }
         };
         consumer.accept(accept);
+    }
+
+    protected void setMoveArea(int[][] moveAreaId) {
+        moveArea = MoveAreas.parse(moveAreaId, this);
     }
 
     public abstract void render(Renderer renderer);

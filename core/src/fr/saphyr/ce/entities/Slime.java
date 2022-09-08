@@ -4,8 +4,10 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import fr.saphyr.ce.core.Renderer;
+import fr.saphyr.ce.graphics.MoveArea;
 import fr.saphyr.ce.graphics.MoveAreas;
 import fr.saphyr.ce.worlds.World;
 
@@ -27,7 +29,7 @@ public class Slime extends Entity {
         TextureRegion[][] slimeFrames = TextureRegion.split(
                 texture, texture.getWidth() / 3, texture.getHeight() / 3);
 
-        moveArea = MoveAreas.parse(MoveAreas.DEFAULT_MOVE_ZONE, this);
+        setMoveArea(MoveAreas.BIG_MOVE_ZONE);
         animationIdle = new Animation<>(500 / 1000f, slimeFrames[0]);
         animationDeath = new Animation<>(80 / 1000f, slimeFrames[1]);
     }
@@ -36,12 +38,22 @@ public class Slime extends Entity {
     public void render(Renderer renderer) {
         TextureRegion slimeCurrentFrame = animationIdle.getKeyFrame(slimeStateTime, true);
         renderer.draw(slimeCurrentFrame, pos.x, pos.y, 1, 1);
-        if (slimeSelected)
+        if (slimeSelected) {
             moveArea.draw(renderer);
+            moveArea.setOpen(true);
+        }
+        else
+            moveArea.setOpen(false);
     }
 
     @Override
     public void update(final float dt) {
+        Vector2 newPos = getPosClickFromMoveArea();
+        if (newPos != null && moveArea.isOpen()) {
+            setPos(new Vector3(newPos, 0));
+            setMoveArea(MoveAreas.BIG_MOVE_ZONE);
+        }
+
         slimeStateTime += dt;
         selectOnClick(Input.Buttons.LEFT, slimeSelected,
                 () -> slimeSelected = false,

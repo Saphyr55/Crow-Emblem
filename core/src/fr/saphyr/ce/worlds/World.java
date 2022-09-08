@@ -13,11 +13,11 @@ import fr.saphyr.ce.maps.Map;
 
 public class World implements Disposable, CEObject {
 
-    private Vector3 mousePosInWorld;
+    private final Vector3 mousePosInWorld;
 
     private Camera camera;
     private Map map;
-    private Vector3 initPos;
+    private final Vector3 initPos;
 
     private final Array<Entity> entities;
 
@@ -87,5 +87,16 @@ public class World implements Disposable, CEObject {
         map.dispose();
     }
 
+    public final Vector3 getMousePosInWorld() {
+        return mousePosInWorld;
+    }
+
+    public final Vector3 getInitPos() {
+        return initPos;
+    }
+
+    public final Array<Entity> getEntities() {
+        return entities;
+    }
 
 }
