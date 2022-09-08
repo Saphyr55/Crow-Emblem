@@ -23,9 +23,17 @@ public class LoadingScene extends Scene {
 
     private ProgressBar progressBar;
     private float progressLogic;
+    protected Stage stage;
+    protected Table root;
+
+    public LoadingScene() {
+        stage = new Stage(new ScreenViewport());
+        root = new Table();
+    }
 
     @Override
     public void init() {
+        super.init();
         Table loadingTable = new Table();
         final var label = new Label("Crow Emblem", new Label.LabelStyle(Fonts.createTTF("fonts/CinzelDecorative-Black.ttf", 50), Color.WHITE));
         final var textureBar = new TextureRegionDrawable(new TextureRegion(new Texture("textures/ui/progress_bar.png")));
@@ -43,8 +51,35 @@ public class LoadingScene extends Scene {
     }
 
     @Override
+    public void render(Renderer renderer) {
+        if (!Resources.manager.update()) {
+            stage.act(Gdx.graphics.getDeltaTime());
+            stage.draw();
+        }
+    }
+
+    @Override
     public void update(float dt) {
-        progressLogic += dt;
-        progressBar.setValue(progressLogic);
+    }
+
+    @Override
+    public void dispose() {
+        stage.dispose();
+    }
+
+    public Stage getStage() {
+        return stage;
+    }
+
+    public void setStage(Stage stage) {
+        this.stage = stage;
+    }
+
+    public Table getRoot() {
+        return root;
+    }
+
+    public void setRoot(Table root) {
+        this.root = root;
     }
 }

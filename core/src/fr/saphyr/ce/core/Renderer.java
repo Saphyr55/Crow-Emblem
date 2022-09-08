@@ -20,6 +20,11 @@ public class Renderer extends SpriteBatch {
                 world.getMap().getHandle(), 1f / world.getMap().getUnitScale()));
     }
 
+    public void ortho(World world) {
+        setMapRenderer(new OrthogonalTiledMapRenderer(
+                world.getMap().getHandle(), 1f / world.getMap().getUnitScale()));
+    }
+
     public MapRenderer getMapRenderer() {
         return mapRenderer;
     }
