@@ -10,6 +10,10 @@ public final class Textures {
         Resources.load(moduleName, Texture.class);
     }
 
+    public static Texture getNotLoaded(String name) {
+        return new Texture(name);
+    }
+
     public static Texture get(String id) {
         try {
             return Resources.get(id, Texture.class);

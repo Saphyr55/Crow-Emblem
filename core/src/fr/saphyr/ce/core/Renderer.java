@@ -9,6 +9,8 @@ public class Renderer extends SpriteBatch {
 
     private MapRenderer mapRenderer;
 
+    public Renderer() { }
+
     public Renderer(MapRenderer mapRenderer) {
         this.mapRenderer = mapRenderer;
     }

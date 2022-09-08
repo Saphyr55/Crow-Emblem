@@ -2,20 +2,10 @@ package fr.saphyr.ce.core;
 
 import com.badlogic.gdx.assets.AssetLoaderParameters;
 import com.badlogic.gdx.assets.AssetManager;
-import com.badlogic.gdx.assets.loaders.FileHandleResolver;
-import com.badlogic.gdx.assets.loaders.resolvers.InternalFileHandleResolver;
-import com.badlogic.gdx.audio.Sound;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
-import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGeneratorLoader;
-import com.badlogic.gdx.graphics.g2d.freetype.FreetypeFontLoader;
 import com.badlogic.gdx.utils.Array;
 import fr.saphyr.ce.graphics.Textures;
 import fr.saphyr.ce.graphics.fonts.Fonts;
 import fr.saphyr.ce.maps.Maps;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public final class Resources {
 
@@ -27,15 +17,9 @@ public final class Resources {
     }
 
     public static void load() {
-        FileHandleResolver resolver = new InternalFileHandleResolver();
-        handle.setLoader(FreeTypeFontGenerator.class, new FreeTypeFontGeneratorLoader(resolver));
-        handle.setLoader(BitmapFont.class, ".ttf", new FreetypeFontLoader(resolver));
-
         Textures.load("textures");
         Fonts.load("fonts");
         Maps.load("maps");
-        while (!handle.update()) { }
-        handle.finishLoading();
     }
 
     public static <T> T get(String name, Class<T> tClass) {
@@ -49,8 +33,10 @@ public final class Resources {
 
     public static <T> void load(String moduleFolder, Class<T> tClass, AssetLoaderParameters<T> parameter) {
         CEFiles.foundInternal(moduleFolder).forEach(s -> {
-            handle.load(s, tClass, parameter);
-            Logger.info("Loader : " + s);
+            if (!handle.contains(moduleFolder, tClass)) {
+                handle.load(s, tClass, parameter);
+                Logger.info("Loader : " + s);
+            }
         });
     }
 
