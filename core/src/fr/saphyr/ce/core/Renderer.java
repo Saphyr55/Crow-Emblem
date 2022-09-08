@@ -1,4 +1,4 @@
-package fr.saphyr.ce;
+package fr.saphyr.ce.core;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.maps.MapRenderer;
@@ -8,6 +8,8 @@ import fr.saphyr.ce.worlds.World;
 public class Renderer extends SpriteBatch {
 
     private MapRenderer mapRenderer;
+
+    public Renderer() { }
 
     public Renderer(MapRenderer mapRenderer) {
         this.mapRenderer = mapRenderer;

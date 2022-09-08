@@ -5,8 +5,8 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.maps.tiled.TiledMapTile;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Array;
-import fr.saphyr.ce.CEObject;
-import fr.saphyr.ce.Renderer;
+import fr.saphyr.ce.core.CEObject;
+import fr.saphyr.ce.core.Renderer;
 import fr.saphyr.ce.graphics.MoveArea;
 import fr.saphyr.ce.worlds.World;
 

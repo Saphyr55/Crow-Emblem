@@ -5,7 +5,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector3;
-import fr.saphyr.ce.Renderer;
+import fr.saphyr.ce.core.Renderer;
 import fr.saphyr.ce.graphics.MoveAreas;
 import fr.saphyr.ce.worlds.World;
 

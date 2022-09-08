@@ -1,4 +1,4 @@
-package fr.saphyr.ce;
+package fr.saphyr.ce.core;
 
 import com.badlogic.gdx.Gdx;
 import fr.saphyr.ce.core.Logger;
@@ -14,7 +14,7 @@ import java.util.stream.Stream;
 public class CEFiles {
 
     public static List<String> foundInternal(String moduleFolder) {
-        return found(Gdx.files.internal(moduleFolder).name());
+        return found(Gdx.files.internal(moduleFolder).path());
     }
 
     public static List<String> found(String filename) {
