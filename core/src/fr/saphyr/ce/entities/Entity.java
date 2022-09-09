@@ -3,30 +3,50 @@ package fr.saphyr.ce.entities;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.maps.tiled.TiledMapTile;
+import com.badlogic.gdx.math.Matrix3;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Array;
 import fr.saphyr.ce.CEObject;
+import fr.saphyr.ce.core.Logger;
 import fr.saphyr.ce.core.Renderer;
 import fr.saphyr.ce.graphics.MoveArea;
 import fr.saphyr.ce.graphics.MoveAreas;
+import fr.saphyr.ce.graphics.Textures;
 import fr.saphyr.ce.worlds.World;
 
 import java.util.Arrays;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Consumer;
 
-public abstract class Entity implements CEObject {
+public abstract class Entity implements CEObject, Movable {
 
     protected Texture texture;
     protected MoveArea moveArea;
     protected Array<TiledMapTile> tilesNotExplorable;
     protected Vector3 pos;
-    protected World world;
+    protected final World world;
+    protected float stateTime;
 
-    public Entity(Texture texture) {
-        this.texture = texture;
+    protected static Entity entitySelected;
+    protected static boolean hasEntitySelected = false;
+    protected boolean isSelected;
+    protected MoveArea.Area areaClicked;
+    protected boolean isMoved;
+
+    public Entity(World world, Vector3 pos, int[]tileNotExplorable) {
+        this.world = world;
+        this.pos = pos;
+        this.stateTime = 0f;
         this.tilesNotExplorable = new Array<>();
+        this.isSelected = false;
+        this.isMoved = false;
+        setTilesNotExplorableById(tileNotExplorable);
+    }
+
+    protected TextureRegion[][] splitTexture(int col, int row) {
+        return TextureRegion.split(texture, texture.getWidth() / col, texture.getHeight() / row);
     }
 
     public void setTilesNotExplorableById(int[] tilesSolidId) {
@@ -34,14 +54,14 @@ public abstract class Entity implements CEObject {
     }
 
     private void addTileById(int id) {
-        var tile = world.getMap().getHandle().getTileSets().getTile(id);
+        TiledMapTile tile = world.getMap().getHandle().getTileSets().getTile(id);
         if (tile != null) tilesNotExplorable.add(tile);
     }
 
     protected boolean isClickOnFrame(int key, float posX, float posY) {
         return Gdx.input.isButtonJustPressed(key) &&
-                (int) world.getMousePos().x == posX &&
-                (int) world.getMousePos().y == posY;
+                (int) world.getMousePos().x == (int) posX &&
+                (int) world.getMousePos().y == (int) posY;
     }
 
     protected boolean isClickOnCurrentFrame(int key) {
@@ -51,8 +71,7 @@ public abstract class Entity implements CEObject {
     protected MoveArea.Area getAreaClickFromMoveArea() {
         AtomicReference<MoveArea.Area> posClicked = new AtomicReference<>(null);
         moveArea.forEach(optionals -> optionals.forEach(optional -> optional.ifPresent(area -> {
-            if (isClickOnFrame(Input.Buttons.LEFT, area.getPos().x, area.getPos().y))
-                posClicked.set(area);
+            if (isClickOnFrame(Input.Buttons.LEFT, area.getPos().x, area.getPos().y)) posClicked.set(area);
         })));
         return posClicked.get();
     }
@@ -71,9 +90,59 @@ public abstract class Entity implements CEObject {
         moveArea = MoveAreas.parse(moveAreaId, this);
     }
 
-    public abstract void render(Renderer renderer);
+    @Override
+    public void render(Renderer renderer) {
+        if (isSelected) {
+            moveArea.draw(renderer);
+            moveArea.setOpen(true);
+        }
+        else
+            moveArea.setOpen(false);
+    };
 
-    public abstract void update(final float dt);
+    @Override
+    public void update(final float dt) {
+        stateTime += dt;
+        selectOnClick(Input.Buttons.LEFT, isSelected, () -> {
+            isSelected = false;
+            },
+                () -> isSelected = true);
+    }
+
+    protected void translate(float velocityX, float velocityY) {
+        pos.add(velocityX, velocityY, 0);
+    }
+
+    @Override
+    public void move(float velocity) {
+        if (areaClicked.getPos().x < pos.x) {
+            translate(-velocity, 0);
+            whenMoveLeft();
+        }
+        if (areaClicked.getPos().x > pos.x){
+            translate(velocity, 0);
+            whenMoveRight();
+        }
+        if (areaClicked.getPos().y < pos.y) {
+            translate(0, -velocity);
+            whenMoveBottom();
+        }
+        if (areaClicked.getPos().y > pos.y){
+            translate(0, velocity);
+            whenMoveUp();
+        }
+        stopMove();
+    }
+
+    private void stopMove() {
+        if (Math.round(areaClicked.getPos().x) == Math.round(pos.x) &&
+                Math.round(areaClicked.getPos().y) == Math.round(pos.y)) {
+            pos.set(new Vector3(areaClicked.getPos(), 0));
+            setMoveArea(MoveAreas.DEFAULT_MOVE_ZONE_9);
+            isMoved = false;
+            areaClicked = null;
+        }
+    }
 
     public Texture getTexture() {
         return texture;
@@ -81,14 +150,6 @@ public abstract class Entity implements CEObject {
 
     public World getWorld() {
         return world;
-    }
-
-    public void setWorld(World world) {
-        this.world = world;
-    }
-
-    public void setTexture(Texture texture) {
-        this.texture = texture;
     }
 
     public MoveArea getMoveZone() {
@@ -111,7 +172,28 @@ public abstract class Entity implements CEObject {
         this.pos = pos;
     }
 
+    public MoveArea getMoveArea() {
+        return moveArea;
+    }
 
+    public void setMoveArea(MoveArea moveArea) {
+        this.moveArea = moveArea;
+    }
 
+    public static Entity getEntitySelected() {
+        return entitySelected;
+    }
+
+    public static void setEntitySelected(Entity entitySelected) {
+        Entity.entitySelected = entitySelected;
+    }
+
+    public static boolean isHasEntitySelected() {
+        return hasEntitySelected;
+    }
+
+    public static void setHasEntitySelected(boolean hasEntitySelected) {
+        Entity.hasEntitySelected = hasEntitySelected;
+    }
 
 }

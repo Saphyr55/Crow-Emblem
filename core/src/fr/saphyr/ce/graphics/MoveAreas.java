@@ -42,8 +42,9 @@ public final class MoveAreas {
                     MoveArea.Area area = new MoveArea.Area(
                             new Vector2(
                                     entity.getPos().x - i + ((int) (moveAreaInt.length / 2f)),
-                                    entity.getPos().y - j + ((int) (moveAreaInt[i].length / 2f))));
-                    area.setEntityAccessible(entity);
+                                    entity.getPos().y - j + ((int) (moveAreaInt[i].length / 2f))),
+                            moveArea);
+                    area.setAreaEntityAccessible(entity);
                     if (moveAreaInt[i][j] == 1)
                         moveArea.get(i).add(Optional.of(area));
                     else {
@@ -51,9 +52,9 @@ public final class MoveAreas {
                     }
                 }
             }
-            moveArea.maskTileNotExplorable();
+            moveArea.mask(moveArea::maskAreaIfNotExplorable);
             moveArea.maskTileNotAccessible(moveArea.getAreaWithEntity());
-
+            moveArea.mask(moveArea::maskSoloTile);
             return moveArea;
         });
     }

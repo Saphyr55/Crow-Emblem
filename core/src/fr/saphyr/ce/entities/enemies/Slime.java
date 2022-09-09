@@ -6,29 +6,28 @@ import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
+import fr.saphyr.ce.core.Logger;
 import fr.saphyr.ce.core.Renderer;
+import fr.saphyr.ce.entities.Enemy;
 import fr.saphyr.ce.entities.Entity;
 import fr.saphyr.ce.graphics.MoveArea;
 import fr.saphyr.ce.graphics.MoveAreas;
+import fr.saphyr.ce.graphics.Textures;
 import fr.saphyr.ce.worlds.World;
 
-public class Slime extends Entity {
+public class Slime extends Enemy {
 
     private final Animation<TextureRegion> animationIdle;
     private final Animation<TextureRegion> animationDeath;
     private boolean slimeSelected;
     private float slimeStateTime;
 
-    public Slime(Texture texture, World world, Vector3 worldPos, int[] idNotExplorable) {
-        super(texture);
-        this.world = world;
-        this.pos = worldPos;
-        setTilesNotExplorableById(idNotExplorable);
+    public Slime(World world, Vector3 worldPos, int[] idNotExplorable) {
+        super(world, worldPos, idNotExplorable);
+        texture = Textures.get("textures/slime/slime_spritesheet.png");
         slimeStateTime = 0;
         slimeSelected = false;
-
-        TextureRegion[][] slimeFrames = TextureRegion.split(
-                texture, texture.getWidth() / 3, texture.getHeight() / 3);
+        TextureRegion[][] slimeFrames = splitTexture(3, 3);
 
         setMoveArea(MoveAreas.DEFAULT_MOVE_ZONE_9);
         animationIdle = new Animation<>(500 / 1000f, slimeFrames[0]);
@@ -37,49 +36,34 @@ public class Slime extends Entity {
 
     @Override
     public void render(Renderer renderer) {
+        super.render(renderer);
         TextureRegion slimeCurrentFrame = animationIdle.getKeyFrame(slimeStateTime, true);
         renderer.draw(slimeCurrentFrame, pos.x, pos.y, 1, 1);
-        if (slimeSelected) {
-            moveArea.draw(renderer);
-            moveArea.setOpen(true);
-        }
-        else
-            moveArea.setOpen(false);
     }
 
     @Override
     public void update(final float dt) {
-        MoveArea.Area areaClick = getAreaClickFromMoveArea();
-        if (areaClick != null && areaClick.isAccessible() && areaClick.isExplorable() && moveArea.isOpen()) {
-            setPos(new Vector3(areaClick.getPos(), 0));
-            setMoveArea(MoveAreas.DEFAULT_MOVE_ZONE_9);
-        }
-
-        slimeStateTime += dt;
-        selectOnClick(Input.Buttons.LEFT, slimeSelected,
-                () -> slimeSelected = false,
-                () -> slimeSelected = true
-        );
+        super.update(dt);
     }
 
-    public boolean isSlimeSelected() {
-        return slimeSelected;
+    @Override
+    public void whenMoveRight() {
+
     }
 
-    public void setSlimeSelected(boolean slimeSelected) {
-        this.slimeSelected = slimeSelected;
+    @Override
+    public void whenMoveUp() {
+
     }
 
-    public Vector3 getPos() {
-        return pos;
+    @Override
+    public void whenMoveBottom() {
+
     }
 
-    public void setPos(Vector3 pos) {
-        this.pos = pos;
-    }
+    @Override
+    public void whenMoveLeft() {
 
-    public void dispose() {
-        texture.dispose();
     }
 
 }
