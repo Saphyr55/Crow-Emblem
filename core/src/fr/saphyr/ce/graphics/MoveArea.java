@@ -6,50 +6,68 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import fr.saphyr.ce.core.Logger;
 import fr.saphyr.ce.core.Renderer;
-import fr.saphyr.ce.worlds.World;
+import fr.saphyr.ce.entities.Entity;
 
-import java.util.Arrays;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicReference;
 
 public class MoveArea extends Array<Array<Optional<MoveArea.Area>>> implements Drawable {
 
-    private final World world;
+    private final Entity entity;
     private final Array<TiledMapTile> tilesNotExplorable;
-
     private boolean isOpen;
+    private final Array<Area> areasMaskNotAccessible;
 
-    public MoveArea(World world, Array<TiledMapTile> tilesNotExplorable) {
-        this.world = world;
-        this.tilesNotExplorable = tilesNotExplorable;
+    public MoveArea(Entity entity) {
+        this.entity = entity;
+        this.tilesNotExplorable = entity.getTilesNotExplorable();
         this.isOpen = false;
-    }
-
-    public MoveArea(MoveArea moveArea) {
-        this.world = moveArea.world;
-        this.tilesNotExplorable = moveArea.tilesNotExplorable;
-        this.isOpen = false;
+        this.areasMaskNotAccessible = new Array<>();
     }
 
     @Override
     public void draw(Renderer renderer) {
+
         iterator().forEachRemaining(optionals -> optionals.iterator().forEachRemaining(
             optional -> optional.ifPresent(area -> {
-                changeAreaIfNotExplorable(area);
-                renderer.draw(area.texture, area.pos.x, area.pos.y, 1, 1);
+                if (area.isAccessible || !area.isExplorable)
+                    renderer.draw(area.texture, area.pos.x, area.pos.y, 1, 1);
             })
         ));
     }
 
-    private void changeAreaIfNotExplorable(MoveArea.Area area) {
-        if (area.isContact(this)) {
-            area.texture = Area.notExplorableAreaTexture;
-            area.isExplorable = false;
-            return;
+    public Area getAreaWithEntity() {
+        final var areaWithEntity = new AtomicReference<Area>();
+        forEach(optionals -> optionals.forEach(optional -> optional.ifPresent(area -> {
+            if (area.getPos().equals(new Vector2(entity.getPos().x, entity.getPos().y)))
+                areaWithEntity.set(area);
+        })));
+        return areaWithEntity.get();
+    }
+
+    public void maskTileNotExplorable() {
+        forEach(optionals -> optionals.forEach(optional ->
+                optional.ifPresent(this::changeAreaIfNotExplorable)));
+    }
+
+    public void maskTileNotAccessible(Area areaWithEntity) {
+        final var areas = areaWithEntity.getAroundArea(this);
+        areasMaskNotAccessible.add(areaWithEntity);
+        for (int i = 0; i < areas.size; i++) {
+            final var area = areas.get(i);
+            if (area.isExplorable && !areasMaskNotAccessible.contains(area, true)) {
+                area.setAccessible(true);
+                maskTileNotAccessible(area);
+            }
         }
+    }
+
+    private void changeAreaIfNotExplorable(MoveArea.Area area) {
+        final var map = entity.getWorld().getMap();
         for(var tileNotExplorable : tilesNotExplorable) {
-            if (world.getMap().getTileFrom(area.pos) != null) {
-                if (tileNotExplorable.getId() == world.getMap().getTileFrom(area.pos).getId()) {
+            if (map.getTileFrom(area.pos) != null) {
+                if (tileNotExplorable.getId() == map.getTileFrom(area.pos).getId()) {
                     area.texture = Area.notExplorableAreaTexture;
                     area.isExplorable = false;
                 }
@@ -57,8 +75,8 @@ public class MoveArea extends Array<Array<Optional<MoveArea.Area>>> implements D
         }
     }
 
-    public World getWorld() {
-        return world;
+    public Entity getEntity() {
+        return entity;
     }
 
     public Array<TiledMapTile> getTilesNotExplorable() {
@@ -78,6 +96,7 @@ public class MoveArea extends Array<Array<Optional<MoveArea.Area>>> implements D
         private Vector2 pos;
         private Texture texture;
         private boolean isExplorable;
+        private boolean isAccessible;
         public static final Texture explorableAreaTexture = Textures.get("textures/blue_move_zone.png");
         public static final Texture notExplorableAreaTexture = Textures.get("textures/red_move_zone.png");
 
@@ -85,11 +104,18 @@ public class MoveArea extends Array<Array<Optional<MoveArea.Area>>> implements D
             this.texture = explorableAreaTexture;
             this.isExplorable = true;
             this.pos = pos;
+            this.isAccessible = false;
         }
 
-        public boolean isContact(MoveArea moveArea) {
-            final Array<Area> areas = new Array<>();
-            final Array<Vector2> checkPos = new Array<>();
+        public void setEntityAccessible(final Entity entity) {
+            if (getPos().equals(new Vector2(entity.getPos().x, entity.getPos().y))) {
+                setAccessible(true);
+            }
+        }
+
+        public Array<Area> getAroundArea(MoveArea moveArea) {
+            final var areas = new Array<Area>();
+            final var checkPos = new Array<Vector2>();
             final var bottomPos = new Vector2(pos.x, pos.y - 1);
             final var upPos = new Vector2(pos.x, pos.y + 1);
             final var leftPos = new Vector2(pos.x - 1, pos.y);
@@ -103,9 +129,7 @@ public class MoveArea extends Array<Array<Optional<MoveArea.Area>>> implements D
                     }));
                 }
             }
-            final AtomicInteger index = new AtomicInteger();
-            areas.forEach(area -> { if (area.isExplorable) index.getAndIncrement();});
-            return index.get() < 1;
+            return areas;
         }
 
         public Vector2 getPos() {
@@ -135,6 +159,19 @@ public class MoveArea extends Array<Array<Optional<MoveArea.Area>>> implements D
         public void setExplorable(boolean explorable) {
             isExplorable = explorable;
         }
-    }
 
+
+        public boolean isAccessible() {
+            return isAccessible;
+        }
+
+        public void setAccessible(boolean accessible) {
+            isAccessible = accessible;
+        }
+
+        @Override
+        public String toString() {
+            return "IsAccessible="+isAccessible+ " IsExplorable="+isExplorable +" Pos="+pos;
+        }
+    }
 }

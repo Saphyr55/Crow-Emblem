@@ -1,4 +1,4 @@
-package fr.saphyr.ce.graphics.fonts;
+package fr.saphyr.ce.graphics;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.loaders.FileHandleResolver;
@@ -7,7 +7,7 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGeneratorLoader;
 import com.badlogic.gdx.graphics.g2d.freetype.FreetypeFontLoader;
-import fr.saphyr.ce.core.CEFiles;
+import fr.saphyr.ce.CEFiles;
 import fr.saphyr.ce.core.Logger;
 import fr.saphyr.ce.core.Resources;
 

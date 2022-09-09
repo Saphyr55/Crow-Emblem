@@ -4,7 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
-import fr.saphyr.ce.core.CEObject;
+import fr.saphyr.ce.CEObject;
 import fr.saphyr.ce.core.Renderer;
 import fr.saphyr.ce.core.Camera;
 import fr.saphyr.ce.core.Logger;
@@ -14,11 +14,9 @@ import fr.saphyr.ce.maps.Map;
 public class World implements Disposable, CEObject {
 
     private final Vector3 mousePosInWorld;
-
     private Camera camera;
     private Map map;
     private final Vector3 initPos;
-
     private final Array<Entity> entities;
 
     public World(Map map, Vector3 initPos) {

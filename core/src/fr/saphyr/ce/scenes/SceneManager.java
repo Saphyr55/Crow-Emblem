@@ -1,14 +1,9 @@
 package fr.saphyr.ce.scenes;
 
-import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ArrayMap;
-import com.badlogic.gdx.utils.Predicate;
 import fr.saphyr.ce.core.Renderer;
 
-import java.util.Arrays;
-import java.util.function.Supplier;
-
-public class SceneManager {
+public final class SceneManager {
 
     private Scene currentScene;
     private Renderer renderer;

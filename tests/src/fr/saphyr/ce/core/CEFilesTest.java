@@ -1,10 +1,8 @@
 package fr.saphyr.ce.core;
 
-import com.badlogic.gdx.Gdx;
+import fr.saphyr.ce.CEFiles;
 import fr.saphyr.ce.CETest;
 import org.junit.jupiter.api.Test;
-
-import java.nio.file.Paths;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 

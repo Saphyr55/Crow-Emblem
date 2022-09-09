@@ -4,11 +4,9 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.maps.tiled.TiledMapTile;
-import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Array;
-import fr.saphyr.ce.core.CEObject;
-import fr.saphyr.ce.core.Logger;
+import fr.saphyr.ce.CEObject;
 import fr.saphyr.ce.core.Renderer;
 import fr.saphyr.ce.graphics.MoveArea;
 import fr.saphyr.ce.graphics.MoveAreas;
@@ -50,11 +48,11 @@ public abstract class Entity implements CEObject {
         return isClickOnFrame(key, getPos().x, getPos().y);
     }
 
-    protected Vector2 getPosClickFromMoveArea() {
-        AtomicReference<Vector2> posClicked = new AtomicReference<>(null);
+    protected MoveArea.Area getAreaClickFromMoveArea() {
+        AtomicReference<MoveArea.Area> posClicked = new AtomicReference<>(null);
         moveArea.forEach(optionals -> optionals.forEach(optional -> optional.ifPresent(area -> {
-            if (isClickOnFrame(Input.Buttons.LEFT, area.getPos().x, area.getPos().y) && area.isExplorable())
-                posClicked.set(area.getPos());
+            if (isClickOnFrame(Input.Buttons.LEFT, area.getPos().x, area.getPos().y))
+                posClicked.set(area);
         })));
         return posClicked.get();
     }

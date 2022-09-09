@@ -2,7 +2,7 @@ package fr.saphyr.ce.maps;
 
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.utils.ArrayMap;
-import fr.saphyr.ce.core.CEFiles;
+import fr.saphyr.ce.CEFiles;
 import fr.saphyr.ce.core.Logger;
 
 public final class Maps {

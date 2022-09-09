@@ -1,12 +1,9 @@
 package fr.saphyr.ce.scenes;
 
-import com.badlogic.gdx.Game;
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Vector3;
-import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ArrayMap;
 import fr.saphyr.ce.core.Renderer;
-import fr.saphyr.ce.entities.Slime;
+import fr.saphyr.ce.entities.enemies.Slime;
 import fr.saphyr.ce.graphics.Textures;
 import fr.saphyr.ce.maps.Maps;
 import fr.saphyr.ce.worlds.World;

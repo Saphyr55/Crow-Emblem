@@ -1,4 +1,4 @@
-package fr.saphyr.ce.entities;
+package fr.saphyr.ce.entities.enemies;
 
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Texture;
@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import fr.saphyr.ce.core.Renderer;
+import fr.saphyr.ce.entities.Entity;
 import fr.saphyr.ce.graphics.MoveArea;
 import fr.saphyr.ce.graphics.MoveAreas;
 import fr.saphyr.ce.worlds.World;
@@ -29,7 +30,7 @@ public class Slime extends Entity {
         TextureRegion[][] slimeFrames = TextureRegion.split(
                 texture, texture.getWidth() / 3, texture.getHeight() / 3);
 
-        setMoveArea(MoveAreas.BIG_MOVE_ZONE);
+        setMoveArea(MoveAreas.DEFAULT_MOVE_ZONE_9);
         animationIdle = new Animation<>(500 / 1000f, slimeFrames[0]);
         animationDeath = new Animation<>(80 / 1000f, slimeFrames[1]);
     }
@@ -48,10 +49,10 @@ public class Slime extends Entity {
 
     @Override
     public void update(final float dt) {
-        Vector2 newPos = getPosClickFromMoveArea();
-        if (newPos != null && moveArea.isOpen()) {
-            setPos(new Vector3(newPos, 0));
-            setMoveArea(MoveAreas.BIG_MOVE_ZONE);
+        MoveArea.Area areaClick = getAreaClickFromMoveArea();
+        if (areaClick != null && areaClick.isAccessible() && areaClick.isExplorable() && moveArea.isOpen()) {
+            setPos(new Vector3(areaClick.getPos(), 0));
+            setMoveArea(MoveAreas.DEFAULT_MOVE_ZONE_9);
         }
 
         slimeStateTime += dt;

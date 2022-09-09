@@ -9,7 +9,7 @@ import java.util.function.Supplier;
 
 public final class MoveAreas {
 
-    public static final int[][] BIG_MOVE_ZONE = {
+    public static final int[][] DEFAULT_MOVE_ZONE_9 = {
             { 0, 0, 0, 0, 1, 0, 0, 0, 0 },
             { 0, 0, 0, 1, 1, 1, 0, 0, 0 },
             { 0, 0, 1, 1, 1, 1, 1, 0, 0 },
@@ -19,10 +19,9 @@ public final class MoveAreas {
             { 0, 0, 1, 1, 1, 1, 1, 0, 0 },
             { 0, 0, 0, 1, 1, 1, 0, 0, 0 },
             { 0, 0, 0, 0, 1, 0, 0, 0, 0 },
-
     };
 
-    public static final int[][] DEFAULT_MOVE_ZONE = {
+    public static final int[][] DEFAULT_MOVE_ZONE_7 = {
             { 0, 0, 0, 1, 0, 0, 0 },
             { 0, 0, 1, 1, 1, 0, 0 },
             { 0, 1, 1, 1, 1, 1, 0 },
@@ -36,24 +35,26 @@ public final class MoveAreas {
 
     public static MoveArea parse(int[][] moveAreaInt, Entity entity) {
         return personalize(() -> {
-            var moveZone = new MoveArea(entity.getWorld(), entity.getTilesNotExplorable());
-
+            var moveArea = new MoveArea(entity);
             for (int i = 0; i < moveAreaInt.length; i++) {
-                moveZone.add(new Array<>(moveAreaInt.length));
-
+                moveArea.add(new Array<>(moveAreaInt.length));
                 for (int j = 0; j < moveAreaInt[i].length; j++) {
                     MoveArea.Area area = new MoveArea.Area(
-                            new Vector2(entity.getPos().x - i + ((int) (moveAreaInt.length / 2f)),
+                            new Vector2(
+                                    entity.getPos().x - i + ((int) (moveAreaInt.length / 2f)),
                                     entity.getPos().y - j + ((int) (moveAreaInt[i].length / 2f))));
-
-                    if (moveAreaInt[i][j] == 0)
-                        moveZone.get(i).add(Optional.empty());
-                    else if (moveAreaInt[i][j] == 1) {
-                        moveZone.get(i).add(Optional.of(area));
+                    area.setEntityAccessible(entity);
+                    if (moveAreaInt[i][j] == 1)
+                        moveArea.get(i).add(Optional.of(area));
+                    else {
+                        moveArea.get(i).add(Optional.empty());
                     }
                 }
             }
-            return moveZone;
+            moveArea.maskTileNotExplorable();
+            moveArea.maskTileNotAccessible(moveArea.getAreaWithEntity());
+
+            return moveArea;
         });
     }
 

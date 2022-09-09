@@ -3,8 +3,9 @@ package fr.saphyr.ce.core;
 import com.badlogic.gdx.assets.AssetLoaderParameters;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.utils.Array;
+import fr.saphyr.ce.CEFiles;
 import fr.saphyr.ce.graphics.Textures;
-import fr.saphyr.ce.graphics.fonts.Fonts;
+import fr.saphyr.ce.graphics.Fonts;
 import fr.saphyr.ce.maps.Maps;
 
 public final class Resources {
