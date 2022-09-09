@@ -3,6 +3,7 @@ package fr.saphyr.ce;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.physics.box2d.Transform;
 import com.badlogic.gdx.utils.ScreenUtils;
 import fr.saphyr.ce.core.Renderer;
 import fr.saphyr.ce.core.Resources;
@@ -36,6 +37,7 @@ public final class CrowEmblem extends ApplicationAdapter {
 		sceneManager.init();
 		sceneManager.render(renderer);
 		sceneManager.update(dt);
+		Transform transform = new Transform();
 	}
 
 	@Override

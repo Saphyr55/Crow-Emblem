@@ -2,10 +2,10 @@ package fr.saphyr.ce.entities.players;
 
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.math.Vector2;
 import fr.saphyr.ce.core.Renderer;
 import fr.saphyr.ce.entities.Player;
-import fr.saphyr.ce.graphics.MoveAreas;
+import fr.saphyr.ce.area.MoveAreas;
 import fr.saphyr.ce.graphics.Textures;
 import fr.saphyr.ce.worlds.World;
 
@@ -21,7 +21,7 @@ public class LordPlayer extends Player {
     private TextureRegion currentFrame;
 
 
-    public LordPlayer(World world, Vector3 pos, int[]tileNotExplorable) {
+    public LordPlayer(World world, Vector2 pos, int[]tileNotExplorable) {
         super(world, pos, tileNotExplorable);
         final float frameDurationMove = 100 / 1000f;
         texture = Textures.get("textures/entities/blade_lord/Blade Lord (F) Brave Lyn Bow {StreetHero}-walk.png");

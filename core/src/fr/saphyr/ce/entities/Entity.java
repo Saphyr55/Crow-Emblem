@@ -5,15 +5,13 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.maps.tiled.TiledMapTile;
-import com.badlogic.gdx.math.Matrix3;
-import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import fr.saphyr.ce.CEObject;
-import fr.saphyr.ce.core.Logger;
+import fr.saphyr.ce.area.Area;
 import fr.saphyr.ce.core.Renderer;
-import fr.saphyr.ce.graphics.MoveArea;
-import fr.saphyr.ce.graphics.MoveAreas;
-import fr.saphyr.ce.graphics.Textures;
+import fr.saphyr.ce.area.MoveArea;
+import fr.saphyr.ce.area.MoveAreas;
 import fr.saphyr.ce.worlds.World;
 
 import java.util.Arrays;
@@ -25,17 +23,17 @@ public abstract class Entity implements CEObject, Movable {
     protected Texture texture;
     protected MoveArea moveArea;
     protected Array<TiledMapTile> tilesNotExplorable;
-    protected Vector3 pos;
+    protected Vector2 pos;
     protected final World world;
     protected float stateTime;
 
     protected static Entity entitySelected;
     protected static boolean hasEntitySelected = false;
     protected boolean isSelected;
-    protected MoveArea.Area areaClicked;
+    protected Area areaClicked;
     protected boolean isMoved;
 
-    public Entity(World world, Vector3 pos, int[]tileNotExplorable) {
+    public Entity(World world, Vector2 pos, int[]tileNotExplorable) {
         this.world = world;
         this.pos = pos;
         this.stateTime = 0f;
@@ -68,8 +66,8 @@ public abstract class Entity implements CEObject, Movable {
         return isClickOnFrame(key, getPos().x, getPos().y);
     }
 
-    protected MoveArea.Area getAreaClickFromMoveArea() {
-        AtomicReference<MoveArea.Area> posClicked = new AtomicReference<>(null);
+    protected Area getAreaClickFromMoveArea() {
+        AtomicReference<Area> posClicked = new AtomicReference<>(null);
         moveArea.forEach(optionals -> optionals.forEach(optional -> optional.ifPresent(area -> {
             if (isClickOnFrame(Input.Buttons.LEFT, area.getPos().x, area.getPos().y)) posClicked.set(area);
         })));
@@ -110,7 +108,7 @@ public abstract class Entity implements CEObject, Movable {
     }
 
     protected void translate(float velocityX, float velocityY) {
-        pos.add(velocityX, velocityY, 0);
+        pos.add(velocityX, velocityY);
     }
 
     @Override
@@ -137,7 +135,7 @@ public abstract class Entity implements CEObject, Movable {
     private void stopMove() {
         if (Math.round(areaClicked.getPos().x) == Math.round(pos.x) &&
                 Math.round(areaClicked.getPos().y) == Math.round(pos.y)) {
-            pos.set(new Vector3(areaClicked.getPos(), 0));
+            pos.set(new Vector2(areaClicked.getPos()));
             setMoveArea(MoveAreas.DEFAULT_MOVE_ZONE_9);
             isMoved = false;
             areaClicked = null;
@@ -164,11 +162,11 @@ public abstract class Entity implements CEObject, Movable {
         return tilesNotExplorable;
     }
 
-    public Vector3 getPos() {
+    public Vector2 getPos() {
         return pos;
     }
 
-    public void setPos(Vector3 pos) {
+    public void setPos(Vector2 pos) {
         this.pos = pos;
     }
 
