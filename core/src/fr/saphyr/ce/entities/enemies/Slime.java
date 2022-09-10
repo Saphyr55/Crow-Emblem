@@ -36,24 +36,12 @@ public class Slime extends Enemy {
         super.update(dt);
     }
 
-    @Override
-    public void whenMoveRight() {
 
-    }
 
-    @Override
-    public void whenMoveUp() {
 
-    }
 
-    @Override
-    public void whenMoveBottom() {
 
-    }
 
-    @Override
-    public void whenMoveLeft() {
 
-    }
 
 }

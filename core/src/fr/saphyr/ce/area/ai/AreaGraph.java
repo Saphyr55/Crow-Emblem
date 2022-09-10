@@ -8,14 +8,15 @@ import com.badlogic.gdx.ai.pfa.indexed.IndexedGraph;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ObjectMap;
 import fr.saphyr.ce.area.Area;
+import fr.saphyr.ce.core.Logger;
 
 public class AreaGraph implements IndexedGraph<Area> {
 
-    private AreaHeuristic areaHeuristic;
-    private Array<Area> areas;
-    private Array<PathArea> pathAreas;
-    private ObjectMap<Area, Array<Connection<Area>>> pathsMap;
-    private int lastNodeIndex = 0;
+    private final AreaHeuristic areaHeuristic;
+    private final Array<Area> areas;
+    private final Array<PathArea> pathAreas;
+    private final ObjectMap<Area, Array<Connection<Area>>> pathsMap;
+    private static int lastNodeIndex = 0;
 
     public AreaGraph() {
         this.areaHeuristic = new AreaHeuristic();
@@ -24,9 +25,10 @@ public class AreaGraph implements IndexedGraph<Area> {
         this.pathsMap = new ObjectMap<>();
     }
 
-    public GraphPath<Area> findPath(Area start, Area end){
+    public GraphPath<Area> findPath(Area start, Area end) {
         GraphPath<Area> areaPath = new DefaultGraphPath<>();
-        new IndexedAStarPathFinder<>(this).searchNodePath(start, end, areaHeuristic, areaPath);
+        new IndexedAStarPathFinder<>(this)
+                .searchNodePath(start, end, areaHeuristic, areaPath);
         return areaPath;
     }
 
@@ -58,9 +60,8 @@ public class AreaGraph implements IndexedGraph<Area> {
 
     @Override
     public Array<Connection<Area>> getConnections(Area fromNode) {
-        if(pathsMap.containsKey(fromNode)) {
+        if(pathsMap.containsKey(fromNode))
             return pathsMap.get(fromNode);
-        }
-        return new Array<>(0);
+        return new Array<>();
     }
 }

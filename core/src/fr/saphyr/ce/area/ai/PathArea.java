@@ -1,18 +1,18 @@
 package fr.saphyr.ce.area.ai;
 
 import com.badlogic.gdx.ai.pfa.Connection;
-import com.badlogic.gdx.math.Vector2;
 import fr.saphyr.ce.area.Area;
 
 public class PathArea implements Connection<Area> {
 
-    private Area start, end;
-    private float cost;
+    private final Area start;
+    private final Area end;
+    private final float cost;
 
     public PathArea(Area start, Area end) {
         this.start = start;
         this.end = end;
-        this.cost = start.getPos().dst(end.getPos());
+        this.cost = end.getRelativePos().dst(start.getRelativePos());
     }
 
     @Override

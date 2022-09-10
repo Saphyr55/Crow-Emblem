@@ -2,10 +2,12 @@ package fr.saphyr.ce.area.ai;
 
 import com.badlogic.gdx.ai.pfa.Heuristic;
 import fr.saphyr.ce.area.Area;
+import fr.saphyr.ce.core.Logger;
 
 public class AreaHeuristic implements Heuristic<Area> {
+
     @Override
     public float estimate(Area node, Area endNode) {
-        return node.getPos().dst(endNode.getPos());
+        return endNode.getRelativePos().dst(node.getRelativePos());
     }
 }

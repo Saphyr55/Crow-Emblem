@@ -1,7 +1,7 @@
 package fr.saphyr.ce.entities;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.ai.pfa.GraphPath;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.maps.tiled.TiledMapTile;
@@ -9,16 +9,18 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import fr.saphyr.ce.CEObject;
 import fr.saphyr.ce.area.Area;
+import fr.saphyr.ce.core.Direction;
+import fr.saphyr.ce.core.Logger;
 import fr.saphyr.ce.core.Renderer;
 import fr.saphyr.ce.area.MoveArea;
 import fr.saphyr.ce.area.MoveAreas;
+import fr.saphyr.ce.utils.CEMath;
 import fr.saphyr.ce.worlds.World;
 
 import java.util.Arrays;
 import java.util.concurrent.atomic.AtomicReference;
-import java.util.function.Consumer;
 
-public abstract class Entity implements CEObject, Movable {
+public abstract class Entity implements CEObject, Selectable {
 
     protected Texture texture;
     protected MoveArea moveArea;
@@ -26,12 +28,14 @@ public abstract class Entity implements CEObject, Movable {
     protected Vector2 pos;
     protected final World world;
     protected float stateTime;
-
-    protected static Entity entitySelected;
-    protected static boolean hasEntitySelected = false;
     protected boolean isSelected;
+    protected int index = 0;
     protected Area areaClicked;
-    protected boolean isMoved;
+    protected boolean isMoved = false;
+    protected Area futureArea = null;
+    protected GraphPath<Area> graphPathArea;
+    protected Direction direction;
+    private final float epsilon = 0.09f;
 
     public Entity(World world, Vector2 pos, int[]tileNotExplorable) {
         this.world = world;
@@ -39,7 +43,6 @@ public abstract class Entity implements CEObject, Movable {
         this.stateTime = 0f;
         this.tilesNotExplorable = new Array<>();
         this.isSelected = false;
-        this.isMoved = false;
         setTilesNotExplorableById(tileNotExplorable);
     }
 
@@ -56,36 +59,96 @@ public abstract class Entity implements CEObject, Movable {
         if (tile != null) tilesNotExplorable.add(tile);
     }
 
-    protected boolean isClickOnFrame(int key, float posX, float posY) {
-        return Gdx.input.isButtonJustPressed(key) &&
-                (int) world.getMousePos().x == (int) posX &&
-                (int) world.getMousePos().y == (int) posY;
-    }
-
-    protected boolean isClickOnCurrentFrame(int key) {
-        return isClickOnFrame(key, getPos().x, getPos().y);
-    }
-
-    protected Area getAreaClickFromMoveArea() {
+    @Override
+    public Area getAreaSelect() {
         AtomicReference<Area> posClicked = new AtomicReference<>(null);
-        moveArea.forEach(optionals -> optionals.forEach(optional -> optional.ifPresent(area -> {
-            if (isClickOnFrame(Input.Buttons.LEFT, area.getPos().x, area.getPos().y)) posClicked.set(area);
-        })));
+        if (moveArea.isOpen() && !isMoved) {
+            moveArea.forEach(optionals -> optionals.forEach(optional -> optional.ifPresent(area -> {
+                if (isClickOnFrame(Input.Buttons.LEFT, moveArea.getEntity().getWorld(), area.getPos()))
+                    posClicked.set(area);
+            })));
+        }
         return posClicked.get();
     }
 
-    protected void selectOnClick(int key, boolean accept, Runnable ifRunnable, Runnable elseRunnable) {
-        Consumer<Boolean> consumer = aBoolean -> {
-            if (isClickOnCurrentFrame(key)) {
-                if (aBoolean) ifRunnable.run();
-                else elseRunnable.run();
-            }
-        };
-        consumer.accept(accept);
+    public void setMoveArea(int[][] moveAreaId) {
+        moveArea = MoveAreas.parse(moveAreaId, this);
     }
 
-    protected void setMoveArea(int[][] moveAreaId) {
-        moveArea = MoveAreas.parse(moveAreaId, this);
+    private boolean almostEqualFutureAreaWith(Vector2 pos) {
+        return  CEMath.almostEqual(futureArea.getPos().x, pos.x, epsilon) &&
+                CEMath.almostEqual(futureArea.getPos().y, pos.y, epsilon);
+    }
+
+    private boolean almostEqualAreaClickedWith(Vector2 pos) {
+        return  CEMath.almostEqual(areaClicked.getPos().x, pos.x, epsilon) &&
+                CEMath.almostEqual(areaClicked.getPos().y, pos.y, epsilon);
+    }
+
+    private void stop() {
+        if (isMoved) {
+            getPos().set(areaClicked.getPos());
+            areaClicked = null;
+            futureArea = null;
+            isMoved = false;
+            setMoveArea(MoveAreas.DEFAULT_MOVE_ZONE_9);
+        }
+    }
+
+    private void translate(float velocityX, float velocityY) {
+        getPos().add(velocityX, velocityY);
+    }
+
+    private void moveUp(float velocity) {
+        if (futureArea.getPos().y > getPos().y) {
+            direction = Direction.UP;
+            translate(0, velocity);
+        }
+    }
+
+    private void moveLeft(float velocity) {
+        if (futureArea.getPos().x < getPos().x) {
+            direction = Direction.LEFT;
+            translate(-velocity, 0);
+        }
+    }
+
+    private void moveBottom(float velocity) {
+        if (futureArea.getPos().y < getPos().y) {
+            direction = Direction.BOTTOM;
+            translate(0, -velocity);
+        }
+    }
+
+    private void moveRight(float velocity) {
+        if (futureArea.getPos().x > getPos().x) {
+            direction = Direction.RIGHT;
+            translate(velocity, 0);
+        }
+    }
+
+    public void move(float velocity) {
+        if (!isMoved) {
+            isMoved = true;
+            index = 0;
+            graphPathArea = getMoveArea().getAreaGraph()
+                    .findPath(getMoveArea().getAreaWithEntity(), areaClicked);
+            if (graphPathArea.getCount() > 1) futureArea = graphPathArea.get(++index);
+        }
+        if (futureArea != null) {
+            moveUp(velocity);
+            moveBottom(velocity);
+            moveLeft(velocity);
+            moveRight(velocity);
+            if (almostEqualAreaClickedWith(pos)) stop();
+            else if (almostEqualFutureAreaWith(pos)) {
+                pos.set(futureArea.getPos());
+                ++index;
+                if (index < graphPathArea.getCount())
+                    futureArea = graphPathArea.get(index);
+            }
+        }
+        else stop();
     }
 
     @Override
@@ -101,45 +164,10 @@ public abstract class Entity implements CEObject, Movable {
     @Override
     public void update(final float dt) {
         stateTime += dt;
-        selectOnClick(Input.Buttons.LEFT, isSelected, () -> {
-            isSelected = false;
-            },
-                () -> isSelected = true);
-    }
-
-    protected void translate(float velocityX, float velocityY) {
-        pos.add(velocityX, velocityY);
-    }
-
-    @Override
-    public void move(float velocity) {
-        if (areaClicked.getPos().x < pos.x) {
-            translate(-velocity, 0);
-            whenMoveLeft();
-        }
-        if (areaClicked.getPos().x > pos.x){
-            translate(velocity, 0);
-            whenMoveRight();
-        }
-        if (areaClicked.getPos().y < pos.y) {
-            translate(0, -velocity);
-            whenMoveBottom();
-        }
-        if (areaClicked.getPos().y > pos.y){
-            translate(0, velocity);
-            whenMoveUp();
-        }
-        stopMove();
-    }
-
-    private void stopMove() {
-        if (Math.round(areaClicked.getPos().x) == Math.round(pos.x) &&
-                Math.round(areaClicked.getPos().y) == Math.round(pos.y)) {
-            pos.set(new Vector2(areaClicked.getPos()));
-            setMoveArea(MoveAreas.DEFAULT_MOVE_ZONE_9);
-            isMoved = false;
-            areaClicked = null;
-        }
+        selectOnClick(Input.Buttons.LEFT, world, pos, isSelected,
+                () -> isSelected = false,
+                () -> isSelected = true
+        );
     }
 
     public Texture getTexture() {
@@ -182,16 +210,9 @@ public abstract class Entity implements CEObject, Movable {
         return entitySelected;
     }
 
-    public static void setEntitySelected(Entity entitySelected) {
-        Entity.entitySelected = entitySelected;
-    }
-
     public static boolean isHasEntitySelected() {
         return hasEntitySelected;
     }
 
-    public static void setHasEntitySelected(boolean hasEntitySelected) {
-        Entity.hasEntitySelected = hasEntitySelected;
-    }
 
 }

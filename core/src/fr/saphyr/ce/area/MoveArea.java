@@ -20,6 +20,7 @@ public class MoveArea extends Array<Array<Optional<Area>>> implements Drawable {
     private boolean isOpen;
     private final Array<Area> areasMaskNotAccessible;
     private final AreaGraph areaGraph;
+    private Area areaWithEntity;
 
     public MoveArea(Entity entity) {
         this.entity = entity;
@@ -30,19 +31,13 @@ public class MoveArea extends Array<Array<Optional<Area>>> implements Drawable {
     }
 
     public void connect() {
+        forEach(optionals -> optionals.forEach(optional -> optional.ifPresent(areaGraph::addArea)));
         forEach(optionals -> optionals.forEach(optional -> optional.ifPresent(area -> {
-            if (area.isMovable())
-                areaGraph.addArea(area);
-        })));
-        AtomicReference<Area> oldArea = new AtomicReference<>();
-        forEach(optionals -> optionals.forEach(optional -> optional.ifPresent(area -> {
-            if (area.isMovable()) {
-                if (oldArea.get() != null)
-                    oldArea.set(area);
-                else{
-                    oldArea.set(area);
-                    areaGraph.connectAreas(oldArea.get(), area);
-                }
+            if (area.isAccessible() && area.isExplorable()) {
+                area.getAroundArea().forEach(optional1 -> optional1.ifPresent(area1 -> {
+                    if (area1.isAccessible() && area1.isExplorable())
+                        areaGraph.connectAreas(area, area1);
+                }));
             }
         })));
     }
@@ -51,7 +46,7 @@ public class MoveArea extends Array<Array<Optional<Area>>> implements Drawable {
     public void draw(Renderer renderer) {
         iterator().forEachRemaining(optionals -> optionals.iterator().forEachRemaining(
             optional -> optional.ifPresent(area -> {
-                if (area.isMovable())
+                if (area.getTexture() != null && (area.isAccessible() || !area.isExplorable()))
                     renderer.draw(area.getTexture(), area.getPos().x, area.getPos().y, 1, 1);
             })
         ));
@@ -74,12 +69,14 @@ public class MoveArea extends Array<Array<Optional<Area>>> implements Drawable {
     }
 
     public Area getAreaWithEntity() {
-        final var areaWithEntity = new AtomicReference<Area>();
+        return areaWithEntity;
+    }
+
+    public void updateAreaEntity() {
         forEach(optionals -> optionals.forEach(optional -> optional.ifPresent(area -> {
             if (area.getPos().equals(new Vector2(entity.getPos().x, entity.getPos().y)))
-                areaWithEntity.set(area);
+                areaWithEntity = area;
         })));
-        return areaWithEntity.get();
     }
 
     public void mask(Consumer<Area> consumer) {
@@ -142,5 +139,14 @@ public class MoveArea extends Array<Array<Optional<Area>>> implements Drawable {
 
     public AreaGraph getAreaGraph() {
         return areaGraph;
+    }
+
+    public void personalize() {
+        // order of mask is important
+        updateAreaEntity();
+        mask(this::maskAreaIfNotExplorable);
+        maskTileNotAccessible(getAreaWithEntity());
+        mask(this::maskSoloTile);
+        connect();
     }
 }

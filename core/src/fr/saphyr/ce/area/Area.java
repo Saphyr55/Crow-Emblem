@@ -15,18 +15,20 @@ public class Area {
     private int index;
     private final MoveArea moveArea;
     private Vector2 pos;
+    private Vector2 relativePos;
     private Texture texture;
     private boolean isExplorable;
     private boolean isAccessible;
     public static final Texture explorableAreaTexture = Textures.get("textures/blue_move_zone.png");
     public static final Texture notExplorableAreaTexture = Textures.get("textures/red_move_zone.png");
 
-    public Area(Vector2 pos, MoveArea moveArea) {
+    public Area(Vector2 pos, Vector2 relativePos, MoveArea moveArea) {
         this.texture = explorableAreaTexture;
         this.isExplorable = true;
         this.pos = pos;
         this.isAccessible = false;
         this.moveArea = moveArea;
+        this.relativePos = relativePos;
     }
 
     public void setAreaEntityAccessible(final Entity entity) {
@@ -35,7 +37,7 @@ public class Area {
         }
     }
 
-    public Optional<Area> getArea(Direction direction) {
+    public Optional<Area> getAreaOnDirection(Direction direction) {
         return switch (direction) {
             case UP -> getAreaFromVector(new Vector2(pos.x, pos.y + 1));
             case RIGHT -> getAreaFromVector(new Vector2(pos.x + 1, pos.y));
@@ -64,10 +66,10 @@ public class Area {
     public Array<Optional<Area>> getAroundArea() {
         final Array<Optional<Area>> areas = new Array<>();
         areas.add(
-                getArea(Direction.UP),
-                getArea(Direction.BOTTOM),
-                getArea(Direction.LEFT),
-                getArea(Direction.RIGHT)
+                getAreaOnDirection(Direction.UP),
+                getAreaOnDirection(Direction.BOTTOM),
+                getAreaOnDirection(Direction.LEFT),
+                getAreaOnDirection(Direction.RIGHT)
         );
         return areas;
     }
@@ -108,11 +110,6 @@ public class Area {
         isAccessible = accessible;
     }
 
-    // TODO: At change !!!
-    public boolean isMovable() {
-        return getTexture() != null && (isAccessible() || !isExplorable());
-    }
-
     public int getIndex() {
         return index;
     }
@@ -123,6 +120,14 @@ public class Area {
 
     public MoveArea getMoveArea() {
         return moveArea;
+    }
+
+    public Vector2 getRelativePos() {
+        return relativePos;
+    }
+
+    public void setRelativePos(Vector2 relativePos) {
+        this.relativePos = relativePos;
     }
 
     @Override

@@ -3,6 +3,7 @@ package fr.saphyr.ce.entities.players;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
+import fr.saphyr.ce.core.Direction;
 import fr.saphyr.ce.core.Renderer;
 import fr.saphyr.ce.entities.Player;
 import fr.saphyr.ce.area.MoveAreas;
@@ -39,46 +40,39 @@ public class LordPlayer extends Player {
     @Override
     public void render(Renderer renderer) {
         super.render(renderer);
-        if (isMoved) currentFrame = currentAnimation.getKeyFrame(stateTime, true);
         renderer.draw(currentFrame, pos.x - 0.15f, pos.y, 1.5f, 1.5f);
     }
 
     @Override
     public void update(float dt) {
         super.update(dt);
-        if (currentAnimation == animationIdleRight && !currentFrame.isFlipX())
-            currentFrame.flip(true, false);
-        else if (currentAnimation == animationIdleLeft && currentFrame.isFlipX())
-            currentFrame.flip(true, false);
 
         if (currentAnimation == animationIdleRight && !isMoved)
             currentFrame = frames[1][0];
         if (currentAnimation == animationIdleLeft && !isMoved)
             currentFrame = frames[1][0];
-    }
 
-    @Override
-    public void whenMoveBottom() {
-        if (currentAnimation != animationIdleBottom)
+        if (isMoved)
+            currentFrame = currentAnimation.getKeyFrame(stateTime, true);
+        if (currentAnimation == animationIdleRight && !isMoved)
+            currentFrame = frames[1][0];
+        else if (currentAnimation == animationIdleLeft && !isMoved)
+            currentFrame = frames[1][0];
+
+        if (currentAnimation == animationIdleRight && !currentFrame.isFlipX())
+            currentFrame.flip(true, false);
+        else if (currentAnimation == animationIdleLeft && currentFrame.isFlipX())
+            currentFrame.flip(true, false);
+
+        if (direction == Direction.BOTTOM)
             currentAnimation = animationIdleBottom;
-    }
-
-    @Override
-    public void whenMoveLeft() {
-        if (currentAnimation != animationIdleLeft)
-            currentAnimation = animationIdleLeft;
-    }
-
-    @Override
-    public void whenMoveUp() {
-        if (currentAnimation != animationIdleUp)
+        if (direction == Direction.UP)
             currentAnimation = animationIdleUp;
-    }
-
-    @Override
-    public void whenMoveRight() {
-        if (currentAnimation != animationIdleRight)
+        if (direction == Direction.LEFT)
+            currentAnimation = animationIdleLeft;
+        if (direction == Direction.RIGHT)
             currentAnimation = animationIdleRight;
+
     }
 
 }
