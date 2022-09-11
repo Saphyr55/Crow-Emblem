@@ -22,6 +22,9 @@ import java.util.concurrent.atomic.AtomicReference;
 
 public abstract class Entity implements CEObject, Selectable {
 
+    public static Entity entitySelected = null;
+    public static boolean hasEntitySelected = false;
+
     protected Texture texture;
     protected MoveArea moveArea;
     protected Array<TiledMapTile> tilesNotExplorable;
@@ -37,13 +40,13 @@ public abstract class Entity implements CEObject, Selectable {
     protected Direction direction;
     private final float epsilon = 0.09f;
 
-    public Entity(World world, Vector2 pos, int[]tileNotExplorable) {
+    public Entity(World world, Vector2 pos, int[] tileNotExplorable) {
         this.world = world;
-        this.pos = pos;
+        this.pos = new Vector2(pos);
         this.stateTime = 0f;
         this.tilesNotExplorable = new Array<>();
-        this.isSelected = false;
         setTilesNotExplorableById(tileNotExplorable);
+        this.isSelected = false;
     }
 
     protected TextureRegion[][] splitTexture(int col, int row) {
@@ -153,21 +156,26 @@ public abstract class Entity implements CEObject, Selectable {
 
     @Override
     public void render(Renderer renderer) {
-        if (isSelected) {
+        moveArea.setOpen(isSelected);
+        if (moveArea.isOpen()){
             moveArea.draw(renderer);
-            moveArea.setOpen(true);
         }
-        else
-            moveArea.setOpen(false);
     };
 
     @Override
     public void update(final float dt) {
         stateTime += dt;
-        selectOnClick(Input.Buttons.LEFT, world, pos, isSelected,
-                () -> isSelected = false,
-                () -> isSelected = true
-        );
+        selectOnClick(Input.Buttons.LEFT, world, pos, hasEntitySelected, () -> {
+            entitySelected.isSelected = false;
+            hasEntitySelected = false;
+            entitySelected = this;
+        }, () -> {
+            if (entitySelected != null)
+                entitySelected.isSelected = false;
+            hasEntitySelected = true;
+            entitySelected = this;
+            entitySelected.isSelected = true;
+        });
     }
 
     public Texture getTexture() {

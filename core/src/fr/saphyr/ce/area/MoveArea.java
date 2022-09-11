@@ -4,6 +4,7 @@ import com.badlogic.gdx.maps.tiled.TiledMapTile;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import fr.saphyr.ce.area.ai.AreaGraph;
+import fr.saphyr.ce.core.Logger;
 import fr.saphyr.ce.core.Renderer;
 import fr.saphyr.ce.entities.Entity;
 import fr.saphyr.ce.graphics.Drawable;
@@ -101,7 +102,7 @@ public class MoveArea extends Array<Array<Optional<Area>>> implements Drawable {
         var areas = area.getAroundArea();
         final var index = new AtomicInteger(0);
         areas.forEach(optional -> optional.ifPresent(areaAround -> {
-            if (!areaAround.isAccessible() && areaAround.isExplorable())
+            if (!areaAround.isAccessible() && !areaAround.isExplorable())
                 index.getAndIncrement();
         }));
         if (index.get() == areas.size) {

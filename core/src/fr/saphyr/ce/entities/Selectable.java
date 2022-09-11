@@ -9,9 +9,6 @@ import java.util.function.Consumer;
 
 public interface Selectable {
 
-    Entity entitySelected = null;
-    boolean hasEntitySelected = false;
-
     default void selectOnClick(int key, World world, Vector2 pos, boolean accept, Runnable ifRunnable, Runnable elseRunnable) {
         Consumer<Boolean> consumer = aBoolean -> {
             if (isClickOnFrame(key, world, pos)) {

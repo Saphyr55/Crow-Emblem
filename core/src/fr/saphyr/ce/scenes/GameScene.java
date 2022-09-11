@@ -24,10 +24,11 @@ public class GameScene extends Scene {
     @Override
     public void init() {
         super.init();
-        var tilesNotExplorable = new int[]{ 2, 3, 8, 10, 11};
+        int[] tilesNotExplorable = { 2, 3, 8, 10, 11};
         var world = new World(Maps.get("maps/map1.tmx"), new Vector3(10, 10, 3));
         world.addEntities(new Slime(world, new Vector2(2, 2), tilesNotExplorable));
         world.addEntities(new LordPlayer(world, new Vector2(2, 5), tilesNotExplorable));
+        world.addEntities(new LordPlayer(world, new Vector2(5, 5), tilesNotExplorable));
         worlds.put("world1", world);
 
         currentWorld = worlds.get("world1");

@@ -10,9 +10,9 @@ import fr.saphyr.ce.area.MoveAreas;
 import fr.saphyr.ce.graphics.Textures;
 import fr.saphyr.ce.worlds.World;
 
-public class LordPlayer extends Player {
+public final class LordPlayer extends Player {
 
-    protected Animation<TextureRegion> currentAnimation;
+    private Animation<TextureRegion> currentAnimation;
     private final Animation<TextureRegion> animationIdleLeft;
     private final Animation<TextureRegion> animationIdleUp;
     private final Animation<TextureRegion> animationIdleBottom;
@@ -47,13 +47,24 @@ public class LordPlayer extends Player {
     public void update(float dt) {
         super.update(dt);
 
+        if (direction == Direction.BOTTOM)
+            currentAnimation = animationIdleBottom;
+        if (direction == Direction.UP)
+            currentAnimation = animationIdleUp;
+        if (direction == Direction.LEFT)
+            currentAnimation = animationIdleLeft;
+        if (direction == Direction.RIGHT)
+            currentAnimation = animationIdleRight;
+
         if (currentAnimation == animationIdleRight && !isMoved)
             currentFrame = frames[1][0];
+
         if (currentAnimation == animationIdleLeft && !isMoved)
             currentFrame = frames[1][0];
 
         if (isMoved)
             currentFrame = currentAnimation.getKeyFrame(stateTime, true);
+
         if (currentAnimation == animationIdleRight && !isMoved)
             currentFrame = frames[1][0];
         else if (currentAnimation == animationIdleLeft && !isMoved)
@@ -64,14 +75,7 @@ public class LordPlayer extends Player {
         else if (currentAnimation == animationIdleLeft && currentFrame.isFlipX())
             currentFrame.flip(true, false);
 
-        if (direction == Direction.BOTTOM)
-            currentAnimation = animationIdleBottom;
-        if (direction == Direction.UP)
-            currentAnimation = animationIdleUp;
-        if (direction == Direction.LEFT)
-            currentAnimation = animationIdleLeft;
-        if (direction == Direction.RIGHT)
-            currentAnimation = animationIdleRight;
+
 
     }
 

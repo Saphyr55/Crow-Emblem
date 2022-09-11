@@ -35,9 +35,8 @@ public final class CrowEmblem extends ApplicationAdapter {
 			sceneManager.switchTo("game");
 		}
 		sceneManager.init();
-		sceneManager.render(renderer);
 		sceneManager.update(dt);
-		Transform transform = new Transform();
+		sceneManager.render(renderer);
 	}
 
 	@Override

@@ -40,12 +40,11 @@ public final class MoveAreas {
             for (int i = 0; i < moveAreaInt.length; i++) {
                 moveArea.add(new Array<>(moveAreaInt.length));
                 for (int j = 0; j < moveAreaInt[i].length; j++) {
-                    if (moveAreaInt[i][j] == 1){
+                    if (moveAreaInt[i][j] == 1) {
                         var area = new Area(new Vector2(
                                 entity.getPos().x - i + ((int) (moveAreaInt.length / 2f)),
                                 entity.getPos().y - j + ((int) (moveAreaInt[i].length / 2f))),
-                                    new Vector2(i, j),
-                                moveArea);
+                                new Vector2(i, j), moveArea);
                         area.setAreaEntityAccessible(entity);
                         moveArea.get(i).add(Optional.of(area));
                     }
