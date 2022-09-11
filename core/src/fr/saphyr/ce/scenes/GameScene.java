@@ -9,6 +9,7 @@ import fr.saphyr.ce.entities.players.LordPlayer;
 import fr.saphyr.ce.graphics.Textures;
 import fr.saphyr.ce.maps.Maps;
 import fr.saphyr.ce.worlds.World;
+import fr.saphyr.ce.worlds.WorldPos;
 
 public class GameScene extends Scene {
 
@@ -24,11 +25,11 @@ public class GameScene extends Scene {
     @Override
     public void init() {
         super.init();
-        int[] tilesNotExplorable = { 2, 3, 8, 10, 11};
+        int[] tilesNotExplorable = { 2, 3, 8, 10, 11 };
         var world = new World(Maps.get("maps/map1.tmx"), new Vector3(10, 10, 3));
-        world.addEntities(new Slime(world, new Vector2(2, 2), tilesNotExplorable));
-        world.addEntities(new LordPlayer(world, new Vector2(2, 5), tilesNotExplorable));
-        world.addEntities(new LordPlayer(world, new Vector2(5, 5), tilesNotExplorable));
+        world.addEntities(new Slime(new WorldPos(world, new Vector2(2, 2)), tilesNotExplorable));
+        world.addEntities(new LordPlayer(new WorldPos(world, new Vector2(3, 2)), tilesNotExplorable));
+        world.addEntities(new LordPlayer(new WorldPos(world, new Vector2(4, 2)), tilesNotExplorable));
         worlds.put("world1", world);
 
         currentWorld = worlds.get("world1");

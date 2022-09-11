@@ -1,21 +1,14 @@
 package fr.saphyr.ce.entities;
 
-import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.utils.Queue;
-import fr.saphyr.ce.area.Area;
-import fr.saphyr.ce.core.Logger;
 import fr.saphyr.ce.core.Renderer;
-import fr.saphyr.ce.utils.CEMath;
-import fr.saphyr.ce.worlds.World;
-
-import java.util.Objects;
+import fr.saphyr.ce.worlds.WorldPos;
 
 public abstract class Player extends Entity {
 
     protected float velocityMove;
 
-    public Player(World world, Vector2 pos, int[]tileNotExplorable) {
-        super(world, pos, tileNotExplorable);
+    public Player(WorldPos worldPos, int[]tileNotExplorable) {
+        super(worldPos, tileNotExplorable);
         velocityMove = 4;
     }
 

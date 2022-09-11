@@ -2,6 +2,7 @@ package fr.saphyr.ce.area;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Array;
 import fr.saphyr.ce.core.Direction;
 import fr.saphyr.ce.entities.Entity;
@@ -14,15 +15,15 @@ public class Area {
 
     private int index;
     private final MoveArea moveArea;
-    private Vector2 pos;
-    private Vector2 relativePos;
+    private Vector3 pos;
+    private Vector3 relativePos;
     private Texture texture;
     private boolean isExplorable;
     private boolean isAccessible;
     public static final Texture explorableAreaTexture = Textures.get("textures/blue_move_zone.png");
     public static final Texture notExplorableAreaTexture = Textures.get("textures/red_move_zone.png");
 
-    public Area(Vector2 pos, Vector2 relativePos, MoveArea moveArea) {
+    public Area(Vector3 pos, Vector3 relativePos, MoveArea moveArea) {
         this.texture = explorableAreaTexture;
         this.isExplorable = true;
         this.pos = pos;
@@ -32,25 +33,25 @@ public class Area {
     }
 
     public void setAreaEntityAccessible(final Entity entity) {
-        if (getPos().equals(new Vector2(entity.getPos().x, entity.getPos().y))) {
+        if (getPos().equals(new Vector3(entity.getWorldPos().getPos().x, entity.getWorldPos().getPos().y, 0))) {
             setAccessible(true);
         }
     }
 
     public Optional<Area> getAreaOnDirection(Direction direction) {
         return switch (direction) {
-            case UP -> getAreaFromVector(new Vector2(pos.x, pos.y + 1));
-            case RIGHT -> getAreaFromVector(new Vector2(pos.x + 1, pos.y));
-            case LEFT -> getAreaFromVector(new Vector2(pos.x - 1, pos.y));
-            case BOTTOM -> getAreaFromVector(new Vector2(pos.x, pos.y - 1));
-            case TOP_LEFT -> getAreaFromVector(new Vector2(pos.x - 1, pos.y + 1));
-            case TOP_RIGHT -> getAreaFromVector(new Vector2(pos.x + 1, pos.y + 1));
-            case BOTTOM_LEFT -> getAreaFromVector(new Vector2(pos.x - 1, pos.y - 1));
-            case BOTTOM_RIGHT -> getAreaFromVector(new Vector2(pos.x + 1, pos.y - 1));
+            case UP -> getAreaFromVector(new Vector3(pos.x, pos.y + 1, 0));
+            case RIGHT -> getAreaFromVector(new Vector3(pos.x + 1, pos.y, 0));
+            case LEFT -> getAreaFromVector(new Vector3(pos.x - 1, pos.y, 0));
+            case BOTTOM -> getAreaFromVector(new Vector3(pos.x, pos.y - 1, 0));
+            case TOP_LEFT -> getAreaFromVector(new Vector3(pos.x - 1, pos.y + 1, 0));
+            case TOP_RIGHT -> getAreaFromVector(new Vector3(pos.x + 1, pos.y + 1, 0));
+            case BOTTOM_LEFT -> getAreaFromVector(new Vector3(pos.x - 1, pos.y - 1, 0));
+            case BOTTOM_RIGHT -> getAreaFromVector(new Vector3(pos.x + 1, pos.y - 1, 0));
         };
     }
 
-    private Optional<Area> getAreaFromVector(Vector2 vector) {
+    private Optional<Area> getAreaFromVector(Vector3 vector) {
         final AtomicReference<Optional<Area>> optional = new AtomicReference<>(Optional.empty());
         for (int i = 0; i < moveArea.size; i++) {
             for (int j = 0; j < moveArea.get(i).size; j++) {
@@ -74,16 +75,16 @@ public class Area {
         return areas;
     }
 
-    public Vector2 getPos() {
+    public Vector3 getPos() {
         return pos;
     }
 
-    public void setPos(Vector2 pos) {
+    public void setPos(Vector3 pos) {
         this.pos = pos;
     }
 
     public void setPos(float x, float y) {
-        this.pos = new Vector2(x, y);
+        this.pos = new Vector3(x, y, 0);
     }
 
     public Texture getTexture() {
@@ -122,11 +123,11 @@ public class Area {
         return moveArea;
     }
 
-    public Vector2 getRelativePos() {
+    public Vector3 getRelativePos() {
         return relativePos;
     }
 
-    public void setRelativePos(Vector2 relativePos) {
+    public void setRelativePos(Vector3 relativePos) {
         this.relativePos = relativePos;
     }
 

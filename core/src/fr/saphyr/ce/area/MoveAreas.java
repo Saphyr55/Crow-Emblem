@@ -1,6 +1,7 @@
 package fr.saphyr.ce.area;
 
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Array;
 import fr.saphyr.ce.entities.Entity;
 
@@ -41,10 +42,10 @@ public final class MoveAreas {
                 moveArea.add(new Array<>(moveAreaInt.length));
                 for (int j = 0; j < moveAreaInt[i].length; j++) {
                     if (moveAreaInt[i][j] == 1) {
-                        var area = new Area(new Vector2(
-                                entity.getPos().x - i + ((int) (moveAreaInt.length / 2f)),
-                                entity.getPos().y - j + ((int) (moveAreaInt[i].length / 2f))),
-                                new Vector2(i, j), moveArea);
+                        var area = new Area(new Vector3(
+                                entity.getWorldPos().getPos().x - i + ((int) (moveAreaInt.length / 2f)),
+                                entity.getWorldPos().getPos().y - j + ((int) (moveAreaInt[i].length / 2f)), 0),
+                                new Vector3(i, j, 0), moveArea);
                         area.setAreaEntityAccessible(entity);
                         moveArea.get(i).add(Optional.of(area));
                     }

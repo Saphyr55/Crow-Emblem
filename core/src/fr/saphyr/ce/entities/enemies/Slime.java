@@ -8,14 +8,15 @@ import fr.saphyr.ce.entities.Enemy;
 import fr.saphyr.ce.area.MoveAreas;
 import fr.saphyr.ce.graphics.Textures;
 import fr.saphyr.ce.worlds.World;
+import fr.saphyr.ce.worlds.WorldPos;
 
 public class Slime extends Enemy {
 
     private final Animation<TextureRegion> animationIdle;
     private final Animation<TextureRegion> animationDeath;
 
-    public Slime(World world, Vector2 worldPos, int[] idNotExplorable) {
-        super(world, worldPos, idNotExplorable);
+    public Slime(WorldPos worldPos, int[] idNotExplorable) {
+        super(worldPos, idNotExplorable);
         texture = Textures.get("textures/slime/slime_spritesheet.png");
         TextureRegion[][] slimeFrames = splitTexture(3, 3);
 
@@ -28,7 +29,7 @@ public class Slime extends Enemy {
     public void render(Renderer renderer) {
         super.render(renderer);
         TextureRegion slimeCurrentFrame = animationIdle.getKeyFrame(stateTime, true);
-        renderer.draw(slimeCurrentFrame, pos.x, pos.y, 1, 1);
+        renderer.draw(slimeCurrentFrame, worldPos.getPos().x, worldPos.getPos().y, 1, 1);
     }
 
     @Override

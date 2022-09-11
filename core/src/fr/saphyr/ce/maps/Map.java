@@ -4,6 +4,7 @@ import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapTile;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Disposable;
 
 public class Map implements Disposable {
@@ -38,7 +39,7 @@ public class Map implements Disposable {
         return null;
     }
 
-    public TiledMapTile getTileFrom(Vector2 pos) {
+    public TiledMapTile getTileFrom(Vector3 pos) {
         return getTileFrom((int)pos.x, (int) pos.y);
     }
 

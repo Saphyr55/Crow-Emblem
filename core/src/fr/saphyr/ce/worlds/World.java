@@ -1,6 +1,7 @@
 package fr.saphyr.ce.worlds;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
@@ -13,7 +14,7 @@ import fr.saphyr.ce.maps.Map;
 
 public class World implements Disposable, CEObject {
 
-    private final Vector3 mousePosInWorld;
+    private final WorldPos mouseWorldPos;
     private Camera camera;
     private Map map;
     private final Vector3 initPos;
@@ -28,7 +29,7 @@ public class World implements Disposable, CEObject {
         this.camera.initPos(initPos);
         this.map = map;
         this.entities = new Array<>();
-        this.mousePosInWorld = new Vector3();
+        this.mouseWorldPos = new WorldPos(this, new Vector2());
         this.camera.position.set(initPos);
     }
 
@@ -47,12 +48,8 @@ public class World implements Disposable, CEObject {
     private void setMousePosition(Renderer renderer) {
         renderer.getMapRenderer().setView(getCamera());
         renderer.getMapRenderer().render();
-        mousePosInWorld.set(Gdx.input.getX(), Gdx.input.getY(), 0);
-        camera.unproject(mousePosInWorld);
-    }
-
-    public Vector3 getMousePos() {
-        return mousePosInWorld;
+        mouseWorldPos.setPos(Gdx.input.getX(), Gdx.input.getY());
+        camera.unproject(mouseWorldPos.getPos());
     }
 
     public void addEntities(Entity entity) {
@@ -85,8 +82,8 @@ public class World implements Disposable, CEObject {
         map.dispose();
     }
 
-    public final Vector3 getMousePosInWorld() {
-        return mousePosInWorld;
+    public WorldPos getMouseWorldPos() {
+        return mouseWorldPos;
     }
 
     public final Vector3 getInitPos() {

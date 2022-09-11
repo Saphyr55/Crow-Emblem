@@ -2,9 +2,9 @@ package fr.saphyr.ce.area;
 
 import com.badlogic.gdx.maps.tiled.TiledMapTile;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Array;
 import fr.saphyr.ce.area.ai.AreaGraph;
-import fr.saphyr.ce.core.Logger;
 import fr.saphyr.ce.core.Renderer;
 import fr.saphyr.ce.entities.Entity;
 import fr.saphyr.ce.graphics.Drawable;
@@ -60,7 +60,7 @@ public class MoveArea extends Array<Array<Optional<Area>>> implements Drawable {
             for (int j = 0; j < get(i).size; j++) {
                 Optional<Area> finalOptional = get(i).get(j);
                 finalOptional.ifPresent(area -> {
-                    if(area.getPos().x == x && area.getPos().y ==y){
+                    if(area.getPos().x == x && area.getPos().y == y){
                         optional.set(finalOptional);
                     }
                 });
@@ -69,20 +69,23 @@ public class MoveArea extends Array<Array<Optional<Area>>> implements Drawable {
         return optional.get();
     }
 
+    public Optional<Area> getAreaWithPos(final Vector2 pos) {
+        return getAreaWithPos((int) pos.x, (int) pos.y);
+    }
+
     public Area getAreaWithEntity() {
         return areaWithEntity;
     }
 
     public void updateAreaEntity() {
         forEach(optionals -> optionals.forEach(optional -> optional.ifPresent(area -> {
-            if (area.getPos().equals(new Vector2(entity.getPos().x, entity.getPos().y)))
+            if (area.getPos().equals(entity.getWorldPos().getPos()))
                 areaWithEntity = area;
         })));
     }
 
     public void mask(Consumer<Area> consumer) {
-        forEach(optionals -> optionals.forEach(optional ->
-                optional.ifPresent(consumer)));
+        forEach(optionals -> optionals.forEach(optional -> optional.ifPresent(consumer)));
     }
 
     public void maskTileNotAccessible(Area areaWithEntity) {
@@ -111,7 +114,7 @@ public class MoveArea extends Array<Array<Optional<Area>>> implements Drawable {
     }
 
     public void maskAreaIfNotExplorable(Area area) {
-        final var map = entity.getWorld().getMap();
+        final var map = entity.getWorldPos().getWorld().getMap();
         for(var tileNotExplorable : tilesNotExplorable) {
             if (map.getTileFrom(area.getPos()) != null) {
                 if (tileNotExplorable.getId() == map.getTileFrom(area.getPos()).getId()) {

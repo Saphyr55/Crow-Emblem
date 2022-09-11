@@ -9,6 +9,7 @@ import fr.saphyr.ce.entities.Player;
 import fr.saphyr.ce.area.MoveAreas;
 import fr.saphyr.ce.graphics.Textures;
 import fr.saphyr.ce.worlds.World;
+import fr.saphyr.ce.worlds.WorldPos;
 
 public final class LordPlayer extends Player {
 
@@ -22,8 +23,8 @@ public final class LordPlayer extends Player {
     private TextureRegion currentFrame;
 
 
-    public LordPlayer(World world, Vector2 pos, int[]tileNotExplorable) {
-        super(world, pos, tileNotExplorable);
+    public LordPlayer(WorldPos worldPos, int[]tileNotExplorable) {
+        super(worldPos, tileNotExplorable);
         final float frameDurationMove = 100 / 1000f;
         texture = Textures.get("textures/entities/blade_lord/Blade Lord (F) Brave Lyn Bow {StreetHero}-walk.png");
         frames = splitTexture(1, 15);
@@ -40,7 +41,7 @@ public final class LordPlayer extends Player {
     @Override
     public void render(Renderer renderer) {
         super.render(renderer);
-        renderer.draw(currentFrame, pos.x - 0.15f, pos.y, 1.5f, 1.5f);
+        renderer.draw(currentFrame, worldPos.getPos().x - 0.15f, worldPos.getPos().y, 1.5f, 1.5f);
     }
 
     @Override
