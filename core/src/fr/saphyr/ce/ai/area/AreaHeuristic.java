@@ -1,4 +1,4 @@
-package fr.saphyr.ce.area.ai;
+package fr.saphyr.ce.ai.area;
 
 import com.badlogic.gdx.ai.pfa.Heuristic;
 import fr.saphyr.ce.area.Area;

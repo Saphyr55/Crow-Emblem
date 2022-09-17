@@ -22,9 +22,8 @@ public final class LordPlayer extends Player {
     private final TextureRegion[][] frames;
     private TextureRegion currentFrame;
 
-
-    public LordPlayer(WorldPos worldPos, int[]tileNotExplorable) {
-        super(worldPos, tileNotExplorable);
+    public LordPlayer(WorldPos worldPos, int[]tileNotExplorable, int[][] moveAreaInt) {
+        super(worldPos, tileNotExplorable, moveAreaInt);
         final float frameDurationMove = 100 / 1000f;
         texture = Textures.get("textures/entities/blade_lord/Blade Lord (F) Brave Lyn Bow {StreetHero}-walk.png");
         frames = splitTexture(1, 15);

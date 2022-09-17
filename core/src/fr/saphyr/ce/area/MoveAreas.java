@@ -32,7 +32,7 @@ public final class MoveAreas {
             { 0, 0, 1, 1, 1, 0, 0 },
             { 0, 0, 0, 1, 0, 0, 0 },
     };
-
+    
     public static MoveArea personalize(Supplier<MoveArea> algo) { return algo.get(); }
 
     public static MoveArea parse(int[][] moveAreaInt, Entity entity) {

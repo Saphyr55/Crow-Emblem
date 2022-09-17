@@ -15,11 +15,10 @@ public class Slime extends Enemy {
     private final Animation<TextureRegion> animationIdle;
     private final Animation<TextureRegion> animationDeath;
 
-    public Slime(WorldPos worldPos, int[] idNotExplorable) {
-        super(worldPos, idNotExplorable);
+    public Slime(WorldPos worldPos, int[] idNotExplorable, int[][] moveAreaInt ) {
+        super(worldPos, idNotExplorable, moveAreaInt);
         texture = Textures.get("textures/slime/slime_spritesheet.png");
         TextureRegion[][] slimeFrames = splitTexture(3, 3);
-
         setMoveArea(MoveAreas.DEFAULT_MOVE_ZONE_9);
         animationIdle = new Animation<>(500 / 1000f, slimeFrames[0]);
         animationDeath = new Animation<>(80 / 1000f, slimeFrames[1]);

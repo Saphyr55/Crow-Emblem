@@ -33,9 +33,8 @@ public class Area {
     }
 
     public void setAreaEntityAccessible(final Entity entity) {
-        if (getPos().equals(new Vector3(entity.getWorldPos().getPos().x, entity.getWorldPos().getPos().y, 0))) {
+        if (getPos().equals(entity.getWorldPos().getPos()))
             setAccessible(true);
-        }
     }
 
     public Optional<Area> getAreaOnDirection(Direction direction) {
@@ -52,7 +51,7 @@ public class Area {
     }
 
     private Optional<Area> getAreaFromVector(Vector3 vector) {
-        final AtomicReference<Optional<Area>> optional = new AtomicReference<>(Optional.empty());
+        final var optional = new AtomicReference<Optional<Area>>(Optional.empty());
         for (int i = 0; i < moveArea.size; i++) {
             for (int j = 0; j < moveArea.get(i).size; j++) {
                 moveArea.get(i).get(j).ifPresent(area -> {
@@ -133,6 +132,9 @@ public class Area {
 
     @Override
     public String toString() {
-        return "IsAccessible="+isAccessible+ " IsExplorable="+isExplorable +" Pos="+pos;
+        return "\nIsAccessible="+isAccessible+"\n"+
+                "IsExplorable="+isExplorable +"\n"+
+                "Pos="+pos + "\n"+
+                "RPos="+relativePos+"\n";
     }
 }

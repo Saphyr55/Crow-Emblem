@@ -10,6 +10,7 @@ import fr.saphyr.ce.core.Renderer;
 import fr.saphyr.ce.core.Camera;
 import fr.saphyr.ce.core.Logger;
 import fr.saphyr.ce.entities.Entity;
+import fr.saphyr.ce.entities.players.LordPlayer;
 import fr.saphyr.ce.maps.Map;
 
 public class World implements Disposable, CEObject {
@@ -37,6 +38,7 @@ public class World implements Disposable, CEObject {
     public void update(final float dt) {
         camera.update(dt);
         entities.iterator().forEachRemaining(entity -> entity.update(dt));
+        //Logger.debug(entities.get(0).getMoveArea().getAreaWithPos(getMouseWorldPos().getPos()));
     }
 
     @Override
@@ -48,8 +50,13 @@ public class World implements Disposable, CEObject {
     private void setMousePosition(Renderer renderer) {
         renderer.getMapRenderer().setView(getCamera());
         renderer.getMapRenderer().render();
-        mouseWorldPos.setPos(Gdx.input.getX(), Gdx.input.getY());
+        mouseWorldPos.setPos(new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0));
         camera.unproject(mouseWorldPos.getPos());
+    }
+
+    @Override
+    public void dispose() {
+        map.dispose();
     }
 
     public void addEntities(Entity entity) {
@@ -75,11 +82,6 @@ public class World implements Disposable, CEObject {
 
     public void setMap(Map map) {
         this.map = map;
-    }
-
-    @Override
-    public void dispose() {
-        map.dispose();
     }
 
     public WorldPos getMouseWorldPos() {

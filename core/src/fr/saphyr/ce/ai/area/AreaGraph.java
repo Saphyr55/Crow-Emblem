@@ -1,4 +1,4 @@
-package fr.saphyr.ce.area.ai;
+package fr.saphyr.ce.ai.area;
 
 import com.badlogic.gdx.ai.pfa.Connection;
 import com.badlogic.gdx.ai.pfa.DefaultGraphPath;
@@ -8,7 +8,6 @@ import com.badlogic.gdx.ai.pfa.indexed.IndexedGraph;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ObjectMap;
 import fr.saphyr.ce.area.Area;
-import fr.saphyr.ce.core.Logger;
 
 public class AreaGraph implements IndexedGraph<Area> {
 

@@ -9,8 +9,8 @@ import fr.saphyr.ce.worlds.WorldPos;
 
 public abstract class Enemy extends Entity {
 
-    public Enemy(WorldPos worldPos, int[] tileNotExplorable) {
-        super(worldPos, tileNotExplorable);
+    public Enemy(WorldPos worldPos, int[] tileNotExplorable, int[][] moveAreaInt) {
+        super(worldPos, tileNotExplorable, moveAreaInt);
     }
 
     @Override

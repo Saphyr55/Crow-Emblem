@@ -1,10 +1,10 @@
 package fr.saphyr.ce.area;
 
 import com.badlogic.gdx.maps.tiled.TiledMapTile;
-import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Array;
-import fr.saphyr.ce.area.ai.AreaGraph;
+import fr.saphyr.ce.ai.area.AreaGraph;
+import fr.saphyr.ce.core.Logger;
 import fr.saphyr.ce.core.Renderer;
 import fr.saphyr.ce.entities.Entity;
 import fr.saphyr.ce.graphics.Drawable;
@@ -12,7 +12,6 @@ import fr.saphyr.ce.graphics.Drawable;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
-import java.util.function.Consumer;
 
 public class MoveArea extends Array<Array<Optional<Area>>> implements Drawable {
 
@@ -69,11 +68,11 @@ public class MoveArea extends Array<Array<Optional<Area>>> implements Drawable {
         return optional.get();
     }
 
-    public Optional<Area> getAreaWithPos(final Vector2 pos) {
+    public Optional<Area> getAreaWithPos(final Vector3 pos) {
         return getAreaWithPos((int) pos.x, (int) pos.y);
     }
 
-    public Area getAreaWithEntity() {
+    public Area getAreaWithMainEntity() {
         return areaWithEntity;
     }
 
@@ -84,8 +83,8 @@ public class MoveArea extends Array<Array<Optional<Area>>> implements Drawable {
         })));
     }
 
-    public void mask(Consumer<Area> consumer) {
-        forEach(optionals -> optionals.forEach(optional -> optional.ifPresent(consumer)));
+    public void mask(MoveAreaMask mask) {
+        forEach(optionals -> optionals.forEach(optional -> optional.ifPresent(mask)));
     }
 
     public void maskTileNotAccessible(Area areaWithEntity) {
@@ -104,13 +103,14 @@ public class MoveArea extends Array<Array<Optional<Area>>> implements Drawable {
     public void maskSoloTile(Area area) {
         var areas = area.getAroundArea();
         final var index = new AtomicInteger(0);
+        final var size = new AtomicInteger(0);
         areas.forEach(optional -> optional.ifPresent(areaAround -> {
-            if (!areaAround.isAccessible() && !areaAround.isExplorable())
+            if (!areaAround.isAccessible() && areaAround.isExplorable())
                 index.getAndIncrement();
+            size.getAndIncrement();
         }));
-        if (index.get() == areas.size) {
+        if (index.get() == size.get())
             area.setTexture(null);
-        }
     }
 
     public void maskAreaIfNotExplorable(Area area) {
@@ -149,8 +149,9 @@ public class MoveArea extends Array<Array<Optional<Area>>> implements Drawable {
         // order of mask is important
         updateAreaEntity();
         mask(this::maskAreaIfNotExplorable);
-        maskTileNotAccessible(getAreaWithEntity());
+        maskTileNotAccessible(getAreaWithMainEntity());
         mask(this::maskSoloTile);
         connect();
     }
+
 }

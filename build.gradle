@@ -21,6 +21,7 @@ allprojects {
         box2DLightsVersion = '1.5'
         ashleyVersion = '1.7.4'
         aiVersion = '1.8.2'
+        imguiVersion = '1.86.3'
     }
 
     repositories {
@@ -51,7 +52,15 @@ project(":core") {
     apply plugin: "java-library"
 
     dependencies {
+
+        api "io.github.spair:imgui-java-binding:$imguiVersion"
+        api "io.github.spair:imgui-java-lwjgl3:$imguiVersion"
+        api "io.github.spair:imgui-java-natives-linux:$imguiVersion"
+        api "io.github.spair:imgui-java-natives-macos:$imguiVersion"
+        api "io.github.spair:imgui-java-natives-windows:$imguiVersion"
+
         api "com.badlogicgames.gdx:gdx:$gdxVersion"
+        api "com.badlogicgames.gdx:gdx-backend-lwjgl3:$gdxVersion"
         api "com.badlogicgames.gdx:gdx-bullet:$gdxVersion"
         api "com.badlogicgames.box2dlights:box2dlights:$box2DLightsVersion"
         api "com.badlogicgames.ashley:ashley:$ashleyVersion"
