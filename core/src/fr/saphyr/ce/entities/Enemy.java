@@ -3,14 +3,15 @@ package fr.saphyr.ce.entities;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
+import fr.saphyr.ce.area.MoveAreaAttribute;
 import fr.saphyr.ce.core.Renderer;
 import fr.saphyr.ce.worlds.World;
 import fr.saphyr.ce.worlds.WorldPos;
 
 public abstract class Enemy extends Entity {
 
-    public Enemy(WorldPos worldPos, int[] tileNotExplorable, int[][] moveAreaInt) {
-        super(worldPos, tileNotExplorable, moveAreaInt);
+    public Enemy(WorldPos worldPos, int[] tileNotExplorable, MoveAreaAttribute moveAreaAttribute) {
+        super(worldPos, tileNotExplorable, moveAreaAttribute);
     }
 
     @Override

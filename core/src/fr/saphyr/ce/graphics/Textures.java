@@ -6,8 +6,8 @@ import fr.saphyr.ce.core.Resources;
 
 public final class Textures {
 
-    public static void load(String moduleName) {
-        Resources.load(moduleName, Texture.class);
+    public static void load(String module) {
+        Resources.load(module, Texture.class);
     }
 
     public static Texture getNotLoaded(String name) {

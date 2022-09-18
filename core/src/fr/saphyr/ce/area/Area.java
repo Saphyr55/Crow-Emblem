@@ -24,10 +24,7 @@ public class Area {
     public static final Texture notExplorableAreaTexture = Textures.get("textures/red_move_zone.png");
 
     public Area(Vector3 pos, Vector3 relativePos, MoveArea moveArea) {
-        this.texture = explorableAreaTexture;
-        this.isExplorable = true;
         this.pos = pos;
-        this.isAccessible = false;
         this.moveArea = moveArea;
         this.relativePos = relativePos;
     }

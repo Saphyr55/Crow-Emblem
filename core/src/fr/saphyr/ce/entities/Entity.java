@@ -7,13 +7,10 @@ import com.badlogic.gdx.maps.tiled.TiledMapTile;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Array;
 import fr.saphyr.ce.CEObject;
-import fr.saphyr.ce.area.Area;
-import fr.saphyr.ce.area.TraceArea;
+import fr.saphyr.ce.area.*;
 import fr.saphyr.ce.core.Direction;
 import fr.saphyr.ce.core.Logger;
 import fr.saphyr.ce.core.Renderer;
-import fr.saphyr.ce.area.MoveArea;
-import fr.saphyr.ce.area.MoveAreas;
 import fr.saphyr.ce.worlds.World;
 import fr.saphyr.ce.worlds.WorldPos;
 
@@ -36,16 +33,15 @@ public abstract class Entity implements CEObject, Selectable {
     protected boolean isSelected;
     protected boolean isMoved = false;
     protected Direction direction;
-    private final int[][] moveAreaInt;
+    private MoveAreaAttribute moveAreaAttribute;
     private Area areaClicked;
 
-    public Entity(WorldPos worldPos, int[] tileNotExplorable, int[][] moveAreaInt) {
+    public Entity(WorldPos worldPos, int[] tileNotExplorable, MoveAreaAttribute moveAreaAttribute) {
         this.worldPos = worldPos;
-        this.moveAreaInt = moveAreaInt;
         tilesNotExplorable = new Array<>();
         setTilesNotExplorableById(tileNotExplorable);
         isSelected = false;
-        setMoveArea(moveAreaInt);
+        setMoveArea(moveAreaAttribute);
         traceArea = new TraceArea(moveArea);
     }
 
@@ -126,8 +122,9 @@ public abstract class Entity implements CEObject, Selectable {
         }
     }
 
-    public void setMoveArea(int[][] moveAreaId) {
-        moveArea = MoveAreas.parse(moveAreaId, this);
+    public void setMoveArea(MoveAreaAttribute moveAreaAttribute) {
+        this.moveAreaAttribute = moveAreaAttribute;
+        moveArea = MoveAreas.parse(moveAreaAttribute, this);
     }
 
     protected void translate(float velocityX, float velocityY) {
@@ -201,8 +198,8 @@ public abstract class Entity implements CEObject, Selectable {
         return direction;
     }
 
-    public int[][] getMoveAreaInt() {
-        return moveAreaInt;
+    public MoveAreaAttribute getMoveAreaAttribute() {
+        return moveAreaAttribute;
     }
 
     public Optional<Area> getAreaClicked() {

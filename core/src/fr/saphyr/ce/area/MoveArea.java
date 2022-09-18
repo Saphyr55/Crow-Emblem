@@ -8,10 +8,14 @@ import fr.saphyr.ce.core.Logger;
 import fr.saphyr.ce.core.Renderer;
 import fr.saphyr.ce.entities.Entity;
 import fr.saphyr.ce.graphics.Drawable;
+import fr.saphyr.ce.maps.Map;
 
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.function.Consumer;
+
+import static fr.saphyr.ce.area.Area.notExplorableAreaTexture;
 
 public class MoveArea extends Array<Array<Optional<Area>>> implements Drawable {
 
@@ -44,25 +48,29 @@ public class MoveArea extends Array<Array<Optional<Area>>> implements Drawable {
 
     @Override
     public void draw(Renderer renderer) {
-        iterator().forEachRemaining(optionals -> optionals.iterator().forEachRemaining(
-            optional -> optional.ifPresent(area -> {
-                if (area.getTexture() != null && (area.isAccessible() || !area.isExplorable()))
-                    renderer.draw(area.getTexture(), area.getPos().x, area.getPos().y, 1, 1);
-            })
-        ));
+        forEach(optionals -> optionals.forEach(optional -> optional.ifPresent(area -> {
+            if (area.getTexture() != null && (!area.isExplorable() || area.isAccessible()) )
+                renderer.draw(area.getTexture(), area.getPos().x, area.getPos().y, 1, 1);
+            else if (area.isExplorable()) {
+                area.setTexture(notExplorableAreaTexture);
+                renderer.draw(area.getTexture(), area.getPos().x, area.getPos().y, 1, 1);
+            }
+        })));
     }
 
     public Optional<Area> getAreaWithPos(final int x, final int y) {
         final var optional = new AtomicReference<Optional<Area>>();
         optional.set(Optional.empty());
-        for (int i = 0; i < size; i++) {
-            for (int j = 0; j < get(i).size; j++) {
-                Optional<Area> finalOptional = get(i).get(j);
-                finalOptional.ifPresent(area -> {
-                    if(area.getPos().x == x && area.getPos().y == y){
-                        optional.set(finalOptional);
-                    }
-                });
+        if (isOpen) {
+            for (int i = 0; i < size; i++) {
+                for (int j = 0; j < get(i).size; j++) {
+                    final Optional<Area> finalOptional = get(i).get(j);
+                    finalOptional.ifPresent(area -> {
+                        if(area.getPos().x == x && area.getPos().y == y){
+                            optional.set(finalOptional);
+                        }
+                    });
+                }
             }
         }
         return optional.get();
@@ -83,25 +91,23 @@ public class MoveArea extends Array<Array<Optional<Area>>> implements Drawable {
         })));
     }
 
-    public void mask(MoveAreaMask mask) {
+    public void mask(Consumer<Area> mask) {
         forEach(optionals -> optionals.forEach(optional -> optional.ifPresent(mask)));
     }
 
     public void maskTileNotAccessible(Area areaWithEntity) {
-        final var areas = areaWithEntity.getAroundArea();
+        final Array<Optional<Area>> areas = areaWithEntity.getAroundArea();
         areasMaskNotAccessible.add(areaWithEntity);
-        for (int i = 0; i < areas.size; i++) {
-            areas.get(i).ifPresent(area -> {
-                if (area.isExplorable() && !areasMaskNotAccessible.contains(area, true)) {
-                    area.setAccessible(true);
-                    maskTileNotAccessible(area);
-                }
-            });
-        }
+        areas.forEach(optional -> optional.ifPresent(area -> {
+            if (area.isExplorable() && !areasMaskNotAccessible.contains(area, true)) {
+                area.setAccessible(true);
+                maskTileNotAccessible(area);
+            }
+        }));
     }
 
     public void maskSoloTile(Area area) {
-        var areas = area.getAroundArea();
+        final Array<Optional<Area>> areas = area.getAroundArea();
         final var index = new AtomicInteger(0);
         final var size = new AtomicInteger(0);
         areas.forEach(optional -> optional.ifPresent(areaAround -> {
@@ -114,11 +120,11 @@ public class MoveArea extends Array<Array<Optional<Area>>> implements Drawable {
     }
 
     public void maskAreaIfNotExplorable(Area area) {
-        final var map = entity.getWorldPos().getWorld().getMap();
+        final Map map = entity.getWorldPos().getWorld().getMap();
         for(var tileNotExplorable : tilesNotExplorable) {
             if (map.getTileFrom(area.getPos()) != null) {
                 if (tileNotExplorable.getId() == map.getTileFrom(area.getPos()).getId()) {
-                    area.setTexture(Area.notExplorableAreaTexture);
+                    area.setTexture(notExplorableAreaTexture);
                     area.setExplorable(false);
                 }
             }
@@ -145,13 +151,15 @@ public class MoveArea extends Array<Array<Optional<Area>>> implements Drawable {
         return areaGraph;
     }
 
-    public void personalize() {
+    public MoveArea personalize() {
         // order of mask is important
         updateAreaEntity();
         mask(this::maskAreaIfNotExplorable);
         maskTileNotAccessible(getAreaWithMainEntity());
         mask(this::maskSoloTile);
         connect();
+        return this;
     }
 
 }
+

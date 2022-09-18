@@ -14,12 +14,12 @@ import fr.saphyr.ce.core.Renderer;
 import fr.saphyr.ce.core.Resources;
 import fr.saphyr.ce.graphics.Fonts;
 
-public class LoadingScene extends Scene {
+public final class LoadingScene extends Scene {
 
     private ProgressBar progressBar;
     private float progressLogic;
-    protected Stage stage;
-    protected Table root;
+    private Stage stage;
+    private Table root;
 
     public LoadingScene() {
         stage = new Stage(new ScreenViewport());

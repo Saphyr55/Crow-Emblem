@@ -4,6 +4,8 @@ import com.badlogic.gdx.assets.AssetLoaderParameters;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.utils.Array;
 import fr.saphyr.ce.CEFiles;
+import fr.saphyr.ce.area.MoveAreaAttribute;
+import fr.saphyr.ce.area.MoveAreas;
 import fr.saphyr.ce.graphics.Textures;
 import fr.saphyr.ce.graphics.Fonts;
 import fr.saphyr.ce.maps.Maps;
@@ -16,6 +18,7 @@ public final class Resources {
         Textures.load("textures");
         Fonts.load("fonts");
         Maps.load("maps");
+        MoveAreaAttribute.load("data/areas");
     }
 
     public static <T> T get(String name, Class<T> tClass) {

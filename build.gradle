@@ -22,6 +22,7 @@ allprojects {
         ashleyVersion = '1.7.4'
         aiVersion = '1.8.2'
         imguiVersion = '1.86.3'
+        gsonVersion = '2.9.1';
     }
 
     repositories {
@@ -52,6 +53,7 @@ project(":core") {
     apply plugin: "java-library"
 
     dependencies {
+        api "com.google.code.gson:gson:$gsonVersion"
 
         api "io.github.spair:imgui-java-binding:$imguiVersion"
         api "io.github.spair:imgui-java-lwjgl3:$imguiVersion"

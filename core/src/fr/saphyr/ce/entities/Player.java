@@ -1,6 +1,7 @@
 package fr.saphyr.ce.entities;
 
 import fr.saphyr.ce.area.Area;
+import fr.saphyr.ce.area.MoveAreaAttribute;
 import fr.saphyr.ce.core.Renderer;
 import fr.saphyr.ce.worlds.WorldPos;
 
@@ -11,8 +12,8 @@ public abstract class Player extends Entity {
     protected float velocityMove;
     private float velocityMoveDeltaTime;
 
-    public Player(WorldPos worldPos, int[]tileNotExplorable, int[][] moveAreaInt ) {
-        super(worldPos, tileNotExplorable, moveAreaInt);
+    public Player(WorldPos worldPos, int[]tileNotExplorable, MoveAreaAttribute moveAreaAttribute) {
+        super(worldPos, tileNotExplorable, moveAreaAttribute);
         velocityMove = 4;
     }
 

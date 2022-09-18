@@ -30,10 +30,12 @@ public class TraceArea implements Updatable {
     @Override
     public void update(float dt) {
         if (getMoveArea().isOpen() && !getMoveArea().getEntity().isMoved()) {
-            getMoveArea().getAreaWithPos(getMoveArea().getEntity().getWorld().getMouseWorldPos().getPos()).ifPresent(this::setEndArea);
+            getMoveArea().getAreaWithPos(getMoveArea().getEntity()
+                    .getWorld().getMouseWorldPos().getPos()).ifPresent(this::setEndArea);
             if (endArea != null) {
                 reset();
-                getMoveArea().getAreaGraph().findPath(getMoveArea().getAreaWithMainEntity(), endArea).forEach(this::add);
+                getMoveArea().getAreaGraph().findPath(
+                        getMoveArea().getAreaWithMainEntity(), endArea).forEach(this::add);
             }
         }
     }
@@ -59,7 +61,7 @@ public class TraceArea implements Updatable {
         if (entity.isMoved()) {
             entity.setMoved(false);
             reset();
-            entity.setMoveArea(entity.getMoveAreaInt());
+            entity.setMoveArea(entity.getMoveAreaAttribute());
             setMoveArea(moveArea);
         }
     }
@@ -73,7 +75,7 @@ public class TraceArea implements Updatable {
         nextArea = null;
     }
 
-    public boolean areaClickedAlmostEqualWith(Vector3 pos) {
+    private boolean areaClickedAlmostEqualWith(Vector3 pos) {
         final AtomicBoolean atReturn = new AtomicBoolean(false);
         getMoveArea().getEntity().getAreaClicked().ifPresent(area -> atReturn.set(almostEqualArea(area, pos)));
         return atReturn.get();

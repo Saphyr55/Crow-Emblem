@@ -11,7 +11,7 @@ import fr.saphyr.ce.CEFiles;
 import fr.saphyr.ce.core.Logger;
 import fr.saphyr.ce.core.Resources;
 
-public class Fonts {
+public final class Fonts {
 
     public static void load(String module) {
         FileHandleResolver resolver = new InternalFileHandleResolver();

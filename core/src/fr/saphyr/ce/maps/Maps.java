@@ -8,11 +8,10 @@ import fr.saphyr.ce.core.Logger;
 public final class Maps {
 
     public static final int UNIT_SCALE = 32;
-
     public static final ArrayMap<String, Map> maps = new ArrayMap<>();
 
-    public static void load(String moduleFolder) {
-        CEFiles.foundInternal(moduleFolder).forEach(Maps::loadFile);
+    public static void load(String module) {
+        CEFiles.foundInternal(module).forEach(Maps::loadFile);
     }
 
     public static void loadFile(String filename) {
