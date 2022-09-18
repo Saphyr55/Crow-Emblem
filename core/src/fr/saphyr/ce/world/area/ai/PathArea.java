@@ -1,7 +1,7 @@
-package fr.saphyr.ce.ai.area;
+package fr.saphyr.ce.world.area.ai;
 
 import com.badlogic.gdx.ai.pfa.Connection;
-import fr.saphyr.ce.area.Area;
+import fr.saphyr.ce.world.area.Area;
 
 public class PathArea implements Connection<Area> {
 

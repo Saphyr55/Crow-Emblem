@@ -13,6 +13,7 @@ import fr.saphyr.ce.core.Logger;
 import fr.saphyr.ce.core.Renderer;
 import fr.saphyr.ce.world.World;
 import fr.saphyr.ce.world.WorldPos;
+import fr.saphyr.ce.world.area.*;
 
 import java.util.Arrays;
 import java.util.Optional;

@@ -5,7 +5,7 @@ import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.assets.loaders.resolvers.InternalFileHandleResolver;
 import com.badlogic.gdx.utils.Array;
 import fr.saphyr.ce.CEFiles;
-import fr.saphyr.ce.area.MoveAreaAttribute;
+import fr.saphyr.ce.world.area.MoveAreaAttribute;
 import fr.saphyr.ce.core.Logger;
 import fr.saphyr.ce.core.loader.MoveAreaAttributeLoader;
 import fr.saphyr.ce.graphic.Textures;

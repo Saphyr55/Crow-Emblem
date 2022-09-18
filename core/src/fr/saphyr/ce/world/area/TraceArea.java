@@ -1,4 +1,4 @@
-package fr.saphyr.ce.area;
+package fr.saphyr.ce.world.area;
 
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Array;
@@ -8,8 +8,6 @@ import fr.saphyr.ce.utils.CEMath;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Supplier;
 
-import static fr.saphyr.ce.area.Area.BLUE_AREA_TEXTURE;
-import static fr.saphyr.ce.area.Area.GREEN_AREA_TEXTURE;
 import static fr.saphyr.ce.entities.Entity.EPSILON;
 
 public class TraceArea implements Updatable {
@@ -65,7 +63,7 @@ public class TraceArea implements Updatable {
     }
 
     public void reset() {
-        trace.forEach(area -> area.setTexture(BLUE_AREA_TEXTURE));
+        trace.forEach(area -> area.setTexture(Area.BLUE_AREA_TEXTURE));
         trace.clear();
         final var entity = getMoveArea().getEntity();
         entity.getAreaClicked().ifPresent(area -> entity.getWorldPos().getPos().set(area.getPos()));
@@ -92,7 +90,7 @@ public class TraceArea implements Updatable {
     }
 
     private void add(Area area) {
-        area.setTexture(GREEN_AREA_TEXTURE);
+        area.setTexture(Area.GREEN_AREA_TEXTURE);
         trace.add(area);
     }
 

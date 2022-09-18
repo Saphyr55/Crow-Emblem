@@ -2,7 +2,7 @@ package fr.saphyr.ce.entities.players;
 
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import fr.saphyr.ce.area.MoveAreaAttribute;
+import fr.saphyr.ce.world.area.MoveAreaAttribute;
 import fr.saphyr.ce.core.Direction;
 import fr.saphyr.ce.core.Renderer;
 import fr.saphyr.ce.entities.Player;

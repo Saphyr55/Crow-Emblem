@@ -1,4 +1,4 @@
-package fr.saphyr.ce.area;
+package fr.saphyr.ce.world.area;
 
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Array;

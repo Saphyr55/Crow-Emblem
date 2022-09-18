@@ -1,9 +1,9 @@
-package fr.saphyr.ce.area;
+package fr.saphyr.ce.world.area;
 
 import com.badlogic.gdx.maps.tiled.TiledMapTile;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Array;
-import fr.saphyr.ce.ai.area.AreaGraph;
+import fr.saphyr.ce.world.area.ai.AreaGraph;
 import fr.saphyr.ce.core.Renderer;
 import fr.saphyr.ce.entities.Entity;
 import fr.saphyr.ce.graphic.Drawable;
@@ -13,8 +13,6 @@ import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Consumer;
-
-import static fr.saphyr.ce.area.Area.RED_AREA_TEXTURE;
 
 public class MoveArea extends Array<Array<Optional<Area>>> implements Drawable {
 
@@ -51,7 +49,7 @@ public class MoveArea extends Array<Array<Optional<Area>>> implements Drawable {
             if (area.getTexture() != null && (!area.isExplorable() || area.isAccessible()) )
                 renderer.draw(area.getTexture(), area.getPos().x, area.getPos().y, 1, 1);
             else if (area.isExplorable()) {
-                area.setTexture(RED_AREA_TEXTURE);
+                area.setTexture(Area.RED_AREA_TEXTURE);
                 renderer.draw(area.getTexture(), area.getPos().x, area.getPos().y, 1, 1);
             }
         })));
@@ -123,7 +121,7 @@ public class MoveArea extends Array<Array<Optional<Area>>> implements Drawable {
         for(var tileNotExplorable : tilesNotExplorable) {
             if (map.getTileFrom(area.getPos()) != null) {
                 if (tileNotExplorable.getId() == map.getTileFrom(area.getPos()).getId()) {
-                    area.setTexture(RED_AREA_TEXTURE);
+                    area.setTexture(Area.RED_AREA_TEXTURE);
                     area.setExplorable(false);
                 }
             }

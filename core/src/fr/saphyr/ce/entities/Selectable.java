@@ -2,7 +2,7 @@ package fr.saphyr.ce.entities;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Vector3;
-import fr.saphyr.ce.area.Area;
+import fr.saphyr.ce.world.area.Area;
 import fr.saphyr.ce.world.World;
 import fr.saphyr.ce.world.WorldPos;
 

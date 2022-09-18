@@ -1,8 +1,8 @@
 package fr.saphyr.ce.entities;
 
 import com.badlogic.gdx.Input;
-import fr.saphyr.ce.area.Area;
-import fr.saphyr.ce.area.MoveAreaAttribute;
+import fr.saphyr.ce.world.area.Area;
+import fr.saphyr.ce.world.area.MoveAreaAttribute;
 import fr.saphyr.ce.core.Renderer;
 import fr.saphyr.ce.world.WorldPos;
 

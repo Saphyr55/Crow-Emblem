@@ -1,7 +1,7 @@
 package fr.saphyr.ce.entities;
 
-import fr.saphyr.ce.area.MoveAreaAttribute;
-import fr.saphyr.ce.area.MoveAreaAttributes;
+import fr.saphyr.ce.world.area.MoveAreaAttribute;
+import fr.saphyr.ce.world.area.MoveAreaAttributes;
 import fr.saphyr.ce.entities.enemies.Slime;
 import fr.saphyr.ce.entities.players.BladeLord;
 import fr.saphyr.ce.world.WorldPos;
