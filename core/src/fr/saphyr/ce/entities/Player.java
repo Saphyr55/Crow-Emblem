@@ -1,6 +1,7 @@
 package fr.saphyr.ce.entities;
 
 import com.badlogic.gdx.Input;
+import fr.saphyr.ce.core.Direction;
 import fr.saphyr.ce.world.area.Area;
 import fr.saphyr.ce.world.area.MoveAreaAttribute;
 import fr.saphyr.ce.core.Renderer;
@@ -26,6 +27,17 @@ public abstract class Player extends Entity {
     @Override
     public void update(float dt) {
         super.update(dt);
+        moveArea.getAreaWithPos(getWorld().getMouseWorldPos().getPos()).ifPresent(area -> {
+            if (area.getContentEntity().isEmpty())
+                traceArea.updateEndArea(() -> area);
+        });
+        traceArea.update(dt);
+        setVelocityMoveDeltaTime(dt);
+        updateMove(dt);
+        updatePlayerSelected();
+    }
+
+    private void updatePlayerSelected() {
         if(isClickOnFrame(Input.Buttons.LEFT, worldPos)) {
             if (hasPlayerSelected) {
                 hasPlayerSelected = false;
@@ -38,15 +50,13 @@ public abstract class Player extends Entity {
                 isSelected = true;
             }
         }
-        moveArea.getAreaWithPos(getWorld().getMouseWorldPos().getPos())
-                .ifPresent(area -> traceArea.updateEndArea(() -> area));
-        traceArea.update(dt);
-        setVelocityMoveDeltaTime(dt);
-        updateMove(dt);
     }
 
     private void updateMove(final float dt) {
-        if (getAreaClicked().isEmpty()) getAreaSelect().ifPresent(this::setAreaClicked);
+        if (getAreaClicked().isEmpty()) getAreaSelect().ifPresent(area -> {
+            if (area.getContentEntity().isEmpty())
+                this.setAreaClicked(area);
+        });
         getAreaClicked().ifPresent(this::movePlayer);
     }
 

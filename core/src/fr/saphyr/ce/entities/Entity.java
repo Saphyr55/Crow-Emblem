@@ -7,7 +7,6 @@ import com.badlogic.gdx.maps.tiled.TiledMapTile;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Array;
 import fr.saphyr.ce.CEObject;
-import fr.saphyr.ce.area.*;
 import fr.saphyr.ce.core.Direction;
 import fr.saphyr.ce.core.Logger;
 import fr.saphyr.ce.core.Renderer;

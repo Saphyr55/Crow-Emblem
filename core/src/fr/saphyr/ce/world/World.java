@@ -36,7 +36,7 @@ public class World implements Disposable, CEObject {
     @Override
     public void update(final float dt) {
         camera.update(dt);
-        entities.iterator().forEachRemaining(entity -> entity.update(dt));
+        entities.forEach(entity -> entity.update(dt));
         //entities.get(0).getMoveArea().getAreaWithPos(getMouseWorldPos().getPos()).ifPresent(Logger::debug);
     }
 

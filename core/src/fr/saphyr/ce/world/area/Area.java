@@ -19,7 +19,7 @@ public class Area {
     private Texture texture;
     private boolean isExplorable;
     private boolean isAccessible;
-
+    private Entity contentEntity;
     public static final Texture BLUE_AREA_TEXTURE = Textures.get("textures/areas/blue_area.png");
     public static final Texture RED_AREA_TEXTURE = Textures.get("textures/areas/red_area.png");
     public static final Texture GREEN_AREA_TEXTURE = Textures.get("textures/areas/green_area.png");
@@ -28,6 +28,14 @@ public class Area {
         this.pos = pos;
         this.moveArea = moveArea;
         this.relativePos = relativePos;
+        this.contentEntity = null;
+        for (int i = 0; i < moveArea.getEntity().getWorld().getEntities().size ; i++) {
+            final Entity entity = moveArea.getEntity().getWorld().getEntities().get(i);
+            if (entity.getPos().equals(pos)) {
+                contentEntity = entity;
+                break;
+            }
+        }
     }
 
     public void setAreaEntityAccessible(final Entity entity) {
@@ -133,5 +141,10 @@ public class Area {
                 "IsExplorable="+isExplorable +"\n"+
                 "Pos="+pos + "\n"+
                 "RPos="+relativePos+"\n";
+    }
+
+    public Optional<Entity> getContentEntity() {
+        if (contentEntity != null) return Optional.of(contentEntity);
+        return Optional.empty();
     }
 }
