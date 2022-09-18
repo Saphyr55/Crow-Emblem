@@ -1,26 +1,25 @@
 package fr.saphyr.ce.area;
 
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Array;
-import fr.saphyr.ce.core.Logger;
 import fr.saphyr.ce.core.Updatable;
-import fr.saphyr.ce.graphics.Textures;
 import fr.saphyr.ce.utils.CEMath;
 
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.function.Supplier;
 
+import static fr.saphyr.ce.area.Area.BLUE_AREA_TEXTURE;
+import static fr.saphyr.ce.area.Area.GREEN_AREA_TEXTURE;
 import static fr.saphyr.ce.entities.Entity.EPSILON;
 
 public class TraceArea implements Updatable {
 
-    private static final Texture TEXTURE_GREEN_MOVE_AREA = Textures.get("textures/green_move_zone.png");
-    private static final Texture TEXTURE_BLUE_MOVE_AREA = Textures.get("textures/blue_move_zone.png");
     private final Array<Area> trace;
     private Area endArea;
     private Area nextArea;
     private MoveArea moveArea;
     private int index = 0;
+    private Supplier<Area> areaSupplier;
 
     public TraceArea(MoveArea moveArea) {
         this.trace = new Array<>();
@@ -30,8 +29,7 @@ public class TraceArea implements Updatable {
     @Override
     public void update(float dt) {
         if (getMoveArea().isOpen() && !getMoveArea().getEntity().isMoved()) {
-            getMoveArea().getAreaWithPos(getMoveArea().getEntity()
-                    .getWorld().getMouseWorldPos().getPos()).ifPresent(this::setEndArea);
+            this.endArea = areaSupplier.get();
             if (endArea != null) {
                 reset();
                 getMoveArea().getAreaGraph().findPath(
@@ -67,7 +65,7 @@ public class TraceArea implements Updatable {
     }
 
     public void reset() {
-        trace.forEach(area -> area.setTexture(TEXTURE_BLUE_MOVE_AREA));
+        trace.forEach(area -> area.setTexture(BLUE_AREA_TEXTURE));
         trace.clear();
         final var entity = getMoveArea().getEntity();
         entity.getAreaClicked().ifPresent(area -> entity.getWorldPos().getPos().set(area.getPos()));
@@ -94,7 +92,7 @@ public class TraceArea implements Updatable {
     }
 
     private void add(Area area) {
-        area.setTexture(TEXTURE_GREEN_MOVE_AREA);
+        area.setTexture(GREEN_AREA_TEXTURE);
         trace.add(area);
     }
 
@@ -102,7 +100,7 @@ public class TraceArea implements Updatable {
         return trace;
     }
 
-    private void setEndArea(Area endArea) {
+    public void setEndArea(Area endArea) {
         this.endArea = endArea;
     }
 
@@ -112,6 +110,14 @@ public class TraceArea implements Updatable {
 
     public void setMoveArea(MoveArea moveArea) {
         this.moveArea = moveArea;
+    }
+
+    public Supplier<Area> getAreaSupplier() {
+        return areaSupplier;
+    }
+
+    public void updateEndArea(Supplier<Area> areaSupplier) {
+        this.areaSupplier = areaSupplier;
     }
 }
 

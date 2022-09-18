@@ -3,7 +3,7 @@ package fr.saphyr.ce.area;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Array;
 import fr.saphyr.ce.entities.Entity;
-import fr.saphyr.ce.graphics.Textures;
+import fr.saphyr.ce.graphic.Textures;
 
 import java.util.*;
 import java.util.function.Supplier;

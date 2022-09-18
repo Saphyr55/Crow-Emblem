@@ -1,14 +1,15 @@
 package fr.saphyr.ce.entities;
 
+import com.badlogic.gdx.Input;
 import fr.saphyr.ce.area.Area;
 import fr.saphyr.ce.area.MoveAreaAttribute;
 import fr.saphyr.ce.core.Renderer;
-import fr.saphyr.ce.worlds.WorldPos;
-
-import java.util.Optional;
+import fr.saphyr.ce.world.WorldPos;
 
 public abstract class Player extends Entity {
 
+    public static Player playerSelected = null;
+    public static boolean hasPlayerSelected = false;
     protected float velocityMove;
     private float velocityMoveDeltaTime;
 
@@ -25,6 +26,21 @@ public abstract class Player extends Entity {
     @Override
     public void update(float dt) {
         super.update(dt);
+        if(isClickOnFrame(Input.Buttons.LEFT, worldPos)) {
+            if (hasPlayerSelected) {
+                hasPlayerSelected = false;
+                playerSelected.isSelected = false;
+                playerSelected = null;
+            }
+            else {
+                hasPlayerSelected = true;
+                playerSelected = this;
+                isSelected = true;
+            }
+        }
+        moveArea.getAreaWithPos(getWorld().getMouseWorldPos().getPos())
+                .ifPresent(area -> traceArea.updateEndArea(() -> area));
+        traceArea.update(dt);
         setVelocityMoveDeltaTime(dt);
         updateMove(dt);
     }
@@ -43,7 +59,13 @@ public abstract class Player extends Entity {
         velocityMoveDeltaTime = velocityMove * dt;
     }
 
+    public static Player getPlayerSelected() {
+        return playerSelected;
+    }
 
+    public static boolean hasEntitySelected() {
+        return hasPlayerSelected;
+    }
 }
 
 

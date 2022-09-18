@@ -1,12 +1,11 @@
 package fr.saphyr.ce.area;
 
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Array;
 import fr.saphyr.ce.core.Direction;
 import fr.saphyr.ce.entities.Entity;
-import fr.saphyr.ce.graphics.Textures;
+import fr.saphyr.ce.graphic.Textures;
 
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicReference;
@@ -20,8 +19,10 @@ public class Area {
     private Texture texture;
     private boolean isExplorable;
     private boolean isAccessible;
-    public static final Texture explorableAreaTexture = Textures.get("textures/blue_move_zone.png");
-    public static final Texture notExplorableAreaTexture = Textures.get("textures/red_move_zone.png");
+
+    public static final Texture BLUE_AREA_TEXTURE = Textures.get("textures/areas/blue_area.png");
+    public static final Texture RED_AREA_TEXTURE = Textures.get("textures/areas/red_area.png");
+    public static final Texture GREEN_AREA_TEXTURE = Textures.get("textures/areas/green_area.png");
 
     public Area(Vector3 pos, Vector3 relativePos, MoveArea moveArea) {
         this.pos = pos;
@@ -30,8 +31,7 @@ public class Area {
     }
 
     public void setAreaEntityAccessible(final Entity entity) {
-        if (getPos().equals(entity.getWorldPos().getPos()))
-            setAccessible(true);
+        if (this.pos.equals(entity.getWorldPos().getPos())) setAccessible(true);
     }
 
     public Optional<Area> getAreaOnDirection(Direction direction) {

@@ -5,15 +5,14 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import fr.saphyr.ce.area.MoveAreaAttribute;
 import fr.saphyr.ce.core.Renderer;
 import fr.saphyr.ce.entities.Enemy;
-import fr.saphyr.ce.area.MoveAreas;
-import fr.saphyr.ce.graphics.Textures;
-import fr.saphyr.ce.worlds.WorldPos;
+import fr.saphyr.ce.graphic.Textures;
+import fr.saphyr.ce.world.WorldPos;
 
 public class Slime extends Enemy {
 
     private final Animation<TextureRegion> animationIdle;
     private final Animation<TextureRegion> animationDeath;
-
+    
     public Slime(WorldPos worldPos, int[] idNotExplorable, MoveAreaAttribute moveAreaAttribute ) {
         super(worldPos, idNotExplorable, moveAreaAttribute);
         texture = Textures.get("textures/slime/slime_spritesheet.png");

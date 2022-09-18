@@ -1,4 +1,4 @@
-package fr.saphyr.ce.maps;
+package fr.saphyr.ce.world.map;
 
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.utils.ArrayMap;

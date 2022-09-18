@@ -1,4 +1,4 @@
-package fr.saphyr.ce.scenes;
+package fr.saphyr.ce.scene;
 
 import com.badlogic.gdx.utils.Disposable;
 import fr.saphyr.ce.CEObject;

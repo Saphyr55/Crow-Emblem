@@ -3,7 +3,7 @@ package fr.saphyr.ce.core;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.maps.MapRenderer;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
-import fr.saphyr.ce.worlds.World;
+import fr.saphyr.ce.world.World;
 
 public class Renderer extends SpriteBatch {
 

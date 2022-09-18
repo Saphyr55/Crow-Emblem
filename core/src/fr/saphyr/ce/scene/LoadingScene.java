@@ -1,4 +1,4 @@
-package fr.saphyr.ce.scenes;
+package fr.saphyr.ce.scene;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
@@ -11,8 +11,8 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import fr.saphyr.ce.core.Renderer;
-import fr.saphyr.ce.core.Resources;
-import fr.saphyr.ce.graphics.Fonts;
+import fr.saphyr.ce.core.register.Resources;
+import fr.saphyr.ce.graphic.Fonts;
 
 public final class LoadingScene extends Scene {
 
@@ -47,7 +47,7 @@ public final class LoadingScene extends Scene {
 
     @Override
     public void render(Renderer renderer) {
-        if (!Resources.manager.update()) {
+        if (!Resources.MANAGER.update()) {
             stage.act(Gdx.graphics.getDeltaTime());
             stage.draw();
         }

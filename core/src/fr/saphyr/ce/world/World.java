@@ -1,4 +1,4 @@
-package fr.saphyr.ce.worlds;
+package fr.saphyr.ce.world;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Vector2;
@@ -10,8 +10,7 @@ import fr.saphyr.ce.core.Renderer;
 import fr.saphyr.ce.core.Camera;
 import fr.saphyr.ce.core.Logger;
 import fr.saphyr.ce.entities.Entity;
-import fr.saphyr.ce.entities.players.LordPlayer;
-import fr.saphyr.ce.maps.Map;
+import fr.saphyr.ce.world.map.Map;
 
 public class World implements Disposable, CEObject {
 

@@ -1,8 +1,8 @@
-package fr.saphyr.ce.graphics;
+package fr.saphyr.ce.graphic;
 
 import com.badlogic.gdx.graphics.Texture;
 import fr.saphyr.ce.core.Logger;
-import fr.saphyr.ce.core.Resources;
+import fr.saphyr.ce.core.register.Resources;
 
 public final class Textures {
 
@@ -18,9 +18,9 @@ public final class Textures {
         try {
             return Resources.get(id, Texture.class);
         }catch (Exception e) {
-            Logger.error("Impossible to found the resource " + id);
-            throw new RuntimeException(e);
+            Logger.error("Impossible to found the resource " + id, e);
         }
+        return null;
     }
 
 }

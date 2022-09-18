@@ -11,8 +11,8 @@ import fr.saphyr.ce.area.*;
 import fr.saphyr.ce.core.Direction;
 import fr.saphyr.ce.core.Logger;
 import fr.saphyr.ce.core.Renderer;
-import fr.saphyr.ce.worlds.World;
-import fr.saphyr.ce.worlds.WorldPos;
+import fr.saphyr.ce.world.World;
+import fr.saphyr.ce.world.WorldPos;
 
 import java.util.Arrays;
 import java.util.Optional;
@@ -20,8 +20,6 @@ import java.util.concurrent.atomic.AtomicReference;
 
 public abstract class Entity implements CEObject, Selectable {
 
-    public static Entity entitySelected = null;
-    public static boolean hasEntitySelected = false;
     public static final float EPSILON = 0.09f;
 
     protected Texture texture;
@@ -38,11 +36,11 @@ public abstract class Entity implements CEObject, Selectable {
 
     public Entity(WorldPos worldPos, int[] tileNotExplorable, MoveAreaAttribute moveAreaAttribute) {
         this.worldPos = worldPos;
-        tilesNotExplorable = new Array<>();
+        this.isSelected = false;
+        this.tilesNotExplorable = new Array<>();
         setTilesNotExplorableById(tileNotExplorable);
-        isSelected = false;
         setMoveArea(moveAreaAttribute);
-        traceArea = new TraceArea(moveArea);
+        this.traceArea = new TraceArea(moveArea);
     }
 
     @Override
@@ -67,23 +65,10 @@ public abstract class Entity implements CEObject, Selectable {
 
     @Override
     public void update(float dt) {
-        traceArea.update(dt);
         stateTime += dt;
-        if(isClickOnFrame(Input.Buttons.LEFT, worldPos)) {
-            if (hasEntitySelected) {
-                hasEntitySelected = false;
-                entitySelected.isSelected = false;
-                entitySelected = null;
-            }
-            else {
-                hasEntitySelected = true;
-                entitySelected = this;
-                isSelected = true;
-            }
-        }
     }
 
-    public void move(float velocity) {
+    protected final void move(float velocity) {
         if (!isMoved) traceArea.init();
         if (traceArea.hasNext()) {
             moveUp(velocity);
@@ -212,12 +197,5 @@ public abstract class Entity implements CEObject, Selectable {
         this.areaClicked = areaClicked;
     }
 
-    public static Entity getEntitySelected() {
-        return entitySelected;
-    }
-
-    public static boolean hasEntitySelected() {
-        return hasEntitySelected;
-    }
 
 }

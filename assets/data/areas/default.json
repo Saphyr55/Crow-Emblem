@@ -1,12 +1,11 @@
 {
-  "id" : "default",
   "keys": {
     "1" : {
-      "texture" : "textures/blue_move_zone.png",
+      "texture" : "textures/areas/blue_area.png",
       "explorable" : true
     },
     "2" : {
-      "texture" : "textures/red_move_zone.png",
+      "texture" : "textures/areas/red_area.png",
       "explorable" : false
     }
   },

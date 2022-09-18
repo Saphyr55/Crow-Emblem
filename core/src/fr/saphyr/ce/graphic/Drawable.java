@@ -1,4 +1,4 @@
-package fr.saphyr.ce.graphics;
+package fr.saphyr.ce.graphic;
 
 import fr.saphyr.ce.core.Renderer;
 

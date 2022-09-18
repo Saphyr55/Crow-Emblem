@@ -1,4 +1,4 @@
-package fr.saphyr.ce.graphics;
+package fr.saphyr.ce.graphic;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.loaders.FileHandleResolver;
@@ -9,7 +9,7 @@ import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGeneratorLoader;
 import com.badlogic.gdx.graphics.g2d.freetype.FreetypeFontLoader;
 import fr.saphyr.ce.CEFiles;
 import fr.saphyr.ce.core.Logger;
-import fr.saphyr.ce.core.Resources;
+import fr.saphyr.ce.core.register.Resources;
 
 public final class Fonts {
 
@@ -21,7 +21,7 @@ public final class Fonts {
             FreetypeFontLoader.FreeTypeFontLoaderParameter font = new FreetypeFontLoader.FreeTypeFontLoaderParameter();
             font.fontFileName = s;
             font.fontParameters.size = 50;
-            Resources.getManager().load(s, BitmapFont.class, font);
+            Resources.MANAGER.load(s, BitmapFont.class, font);
             Logger.info("Loader : " + s);
         });
     }

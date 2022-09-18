@@ -1,4 +1,4 @@
-package fr.saphyr.ce.scenes;
+package fr.saphyr.ce.scene;
 
 import com.badlogic.gdx.utils.ArrayMap;
 import fr.saphyr.ce.core.Renderer;
@@ -7,7 +7,7 @@ public final class SceneManager {
 
     private Scene currentScene;
     private Renderer renderer;
-    private ArrayMap<String, Scene> scenes;
+    private final ArrayMap<String, Scene> scenes;
 
     public SceneManager(Renderer renderer) {
         this.renderer = renderer;

@@ -1,12 +1,10 @@
 package fr.saphyr.ce.entities;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import fr.saphyr.ce.area.Area;
-import fr.saphyr.ce.core.Logger;
-import fr.saphyr.ce.worlds.World;
-import fr.saphyr.ce.worlds.WorldPos;
+import fr.saphyr.ce.world.World;
+import fr.saphyr.ce.world.WorldPos;
 
 import java.util.Optional;
 import java.util.function.Consumer;
