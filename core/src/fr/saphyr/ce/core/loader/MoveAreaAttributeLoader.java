@@ -10,7 +10,7 @@ import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.Array;
 import com.google.gson.Gson;
 import fr.saphyr.ce.CEFiles;
-import fr.saphyr.ce.world.area.AreaAttribute;
+import fr.saphyr.ce.world.area.Area;
 import fr.saphyr.ce.world.area.MoveAreaAttribute;
 import fr.saphyr.ce.core.Logger;
 import fr.saphyr.ce.core.register.Resources;
@@ -54,10 +54,10 @@ public class MoveAreaAttributeLoader extends AsynchronousAssetLoader<MoveAreaAtt
             final Map<?, ?> map = gson.fromJson(reader, Map.class);
             reader.close();
             final var keys = (Map<?, ?>) map.get("keys");
-            final var listAreaAttributes = new Array<AreaAttribute>();
+            final var listAreaAttributes = new Array<Area.AreaAttribute>();
             keys.forEach((key, value) -> {
                 final var values = (Map<?, ?>) value;
-                listAreaAttributes.add(new AreaAttribute(
+                listAreaAttributes.add(new Area.AreaAttribute(
                         Integer.parseInt((String) key),
                         (String) values.get("texture"),
                         (boolean) values.get("explorable")));

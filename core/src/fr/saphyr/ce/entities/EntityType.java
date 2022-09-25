@@ -1,20 +1,20 @@
 package fr.saphyr.ce.entities;
 
+import com.badlogic.gdx.math.Vector2;
 import fr.saphyr.ce.world.area.MoveAreaAttribute;
 import fr.saphyr.ce.world.area.MoveAreaAttributes;
 import fr.saphyr.ce.entities.enemies.Slime;
 import fr.saphyr.ce.entities.players.BladeLord;
 import fr.saphyr.ce.world.WorldPos;
 
-public final class EntityType<T extends Entity> {
+public final class EntityType<T extends IEntity> {
 
     public static final EntityType<BladeLord> BLADE_LORD = register("lord", EntityBuilder.of(BladeLord::new).withMoveAreaAttribute(MoveAreaAttributes.LARGE));
     public static final EntityType<Slime> SLIME = register("slime", EntityBuilder.of(Slime::new).withMoveAreaAttribute(MoveAreaAttributes.DEFAULT));
-    public static void registers() {
 
-    }
+    public static void registers() { }
 
-    public static <T extends Entity> EntityType<T> register(String key, EntityBuilder<T> builder) {
+    public static <T extends IEntity> EntityType<T> register(String key, EntityBuilder<T> builder) {
         return new EntityType<>(key, builder);
     }
 
@@ -26,11 +26,8 @@ public final class EntityType<T extends Entity> {
         this.builder = builder;
     }
 
-    public Entity create() {
-        return builder
-                .withMoveAreaAttribute(MoveAreaAttributes.DEFAULT)
-                .withTileNotExplorable(new int[0])
-                .build();
+    public IEntity create() {
+        return builder.build();
     }
 
     public EntityBuilder<T> construct() {
@@ -41,7 +38,7 @@ public final class EntityType<T extends Entity> {
         return key;
     }
 
-    public final static class EntityBuilder<T extends Entity> {
+    public final static class EntityBuilder<T extends IEntity> {
 
         private WorldPos worldPos;
         private int[] tileNotExplorable;
@@ -52,7 +49,7 @@ public final class EntityType<T extends Entity> {
             this.entityFactory = factory;
         }
 
-        public static <T extends Entity> EntityBuilder<T> of(EntityFactory<T> entityFactory) {
+        public static <T extends IEntity> EntityBuilder<T> of(EntityFactory<T> entityFactory) {
             return new EntityBuilder<>(entityFactory);
         }
 
@@ -83,14 +80,14 @@ public final class EntityType<T extends Entity> {
             return this;
         }
 
-        public Entity build() {
+        public IEntity build() {
             return entityFactory.create(this.worldPos, this.tileNotExplorable, this.moveAreaAttribute);
         }
 
     }
 
     @FunctionalInterface
-    public interface EntityFactory<T extends Entity> {
+    public interface EntityFactory<T extends IEntity> {
         T create(WorldPos worldPos, int[] tileNotExplorable, MoveAreaAttribute moveAreaAttribute);
     }
 

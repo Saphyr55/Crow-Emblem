@@ -4,15 +4,15 @@ import com.badlogic.gdx.utils.Array;
 
 public final class MoveAreaAttribute {
 
-    private Array<AreaAttribute> areaAttributes;
+    private Array<Area.AreaAttribute> areaAttributes;
     private final int[][] pattern;
 
-    public MoveAreaAttribute(Array<AreaAttribute> areaAttributes, int[][] pattern) {
+    public MoveAreaAttribute(Array<Area.AreaAttribute> areaAttributes, int[][] pattern) {
         this.areaAttributes = areaAttributes;
         this.pattern = pattern;
     }
 
-    public Array<AreaAttribute> areaAttributes() {
+    public Array<Area.AreaAttribute> areaAttributes() {
         return areaAttributes;
     }
 
@@ -20,7 +20,7 @@ public final class MoveAreaAttribute {
         return pattern;
     }
 
-    public void setAreaAttributes(Array<AreaAttribute> areaAttributes) {
+    public void setAreaAttributes(Array<Area.AreaAttribute> areaAttributes) {
         this.areaAttributes = areaAttributes;
     }
 }

@@ -9,31 +9,34 @@ import fr.saphyr.ce.entities.Entity;
 import fr.saphyr.ce.graphic.Drawable;
 import fr.saphyr.ce.world.map.Map;
 
+import java.util.Calendar;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Consumer;
 
-public class MoveArea extends Array<Array<Optional<Area>>> implements Drawable {
+public class MoveArea implements Drawable {
 
     private final Entity entity;
+    private final Array<Array<Optional<IArea>>> handle;
     private final Array<TiledMapTile> tilesNotExplorable;
     private boolean isOpen;
-    private final Array<Area> areasMaskNotAccessible;
+    private final Array<IArea> areasMaskNotAccessible;
     private final AreaGraph areaGraph;
-    private Area areaWithEntity;
+    private IArea areaWithEntity;
 
     public MoveArea(Entity entity) {
         this.entity = entity;
         this.tilesNotExplorable = entity.getTilesNotExplorable();
+        this.handle = new Array<>();
         this.isOpen = false;
         this.areasMaskNotAccessible = new Array<>();
         this.areaGraph = new AreaGraph();
     }
 
     public void connect() {
-        forEach(optionals -> optionals.forEach(optional -> optional.ifPresent(areaGraph::addArea)));
-        forEach(optionals -> optionals.forEach(optional -> optional.ifPresent(area -> {
+        handle.forEach(optionals -> optionals.forEach(optional -> optional.ifPresent(areaGraph::addArea)));
+        handle.forEach(optionals -> optionals.forEach(optional -> optional.ifPresent(area -> {
             if (area.isAccessible() && area.isExplorable()) {
                 area.getAroundArea().forEach(optional1 -> optional1.ifPresent(area1 -> {
                     if (area1.isAccessible() && area1.isExplorable())
@@ -45,7 +48,7 @@ public class MoveArea extends Array<Array<Optional<Area>>> implements Drawable {
 
     @Override
     public void draw(Renderer renderer) {
-        forEach(optionals -> optionals.forEach(optional -> optional.ifPresent(area -> {
+        handle.forEach(optionals -> optionals.forEach(optional -> optional.ifPresent(area -> {
             if (area.getTexture() != null && (!area.isExplorable() || area.isAccessible()) )
                 renderer.draw(area.getTexture(), area.getPos().x, area.getPos().y, 1, 1);
             else if (area.isExplorable()) {
@@ -55,13 +58,13 @@ public class MoveArea extends Array<Array<Optional<Area>>> implements Drawable {
         })));
     }
 
-    public Optional<Area> getAreaWithPos(final int x, final int y) {
-        final var optional = new AtomicReference<Optional<Area>>();
+    public Optional<IArea> getAreaWithPos(final int x, final int y) {
+        final var optional = new AtomicReference<Optional<IArea>>();
         optional.set(Optional.empty());
         if (isOpen) {
-            for (int i = 0; i < size; i++) {
-                for (int j = 0; j < get(i).size; j++) {
-                    final Optional<Area> finalOptional = get(i).get(j);
+            for (int i = 0; i < handle.size; i++) {
+                for (int j = 0; j < handle.get(i).size; j++) {
+                    final Optional<IArea> finalOptional = handle.get(i).get(j);
                     finalOptional.ifPresent(area -> {
                         if(area.getPos().x == x && area.getPos().y == y){
                             optional.set(finalOptional);
@@ -73,27 +76,27 @@ public class MoveArea extends Array<Array<Optional<Area>>> implements Drawable {
         return optional.get();
     }
 
-    public Optional<Area> getAreaWithPos(final Vector3 pos) {
+    public Optional<IArea> getAreaWithPos(final Vector3 pos) {
         return getAreaWithPos((int) pos.x, (int) pos.y);
     }
 
-    public Area getAreaWithMainEntity() {
+    public IArea getAreaWithMainEntity() {
         return areaWithEntity;
     }
 
     public void updateAreaEntity() {
-        forEach(optionals -> optionals.forEach(optional -> optional.ifPresent(area -> {
+        handle.forEach(optionals -> optionals.forEach(optional -> optional.ifPresent(area -> {
             if (area.getPos().equals(entity.getWorldPos().getPos()))
                 areaWithEntity = area;
         })));
     }
 
-    public void mask(Consumer<Area> mask) {
-        forEach(optionals -> optionals.forEach(optional -> optional.ifPresent(mask)));
+    public void mask(Consumer<IArea> mask) {
+        handle.forEach(optionals -> optionals.forEach(optional -> optional.ifPresent(mask)));
     }
 
-    public void maskTileNotAccessible(Area areaWithEntity) {
-        final Array<Optional<Area>> areas = areaWithEntity.getAroundArea();
+    public void maskTileNotAccessible(IArea areaWithEntity) {
+        final Array<Optional<IArea>> areas = areaWithEntity.getAroundArea();
         areasMaskNotAccessible.add(areaWithEntity);
         areas.forEach(optional -> optional.ifPresent(area -> {
             if (area.isExplorable() && !areasMaskNotAccessible.contains(area, true)) {
@@ -103,8 +106,8 @@ public class MoveArea extends Array<Array<Optional<Area>>> implements Drawable {
         }));
     }
 
-    public void maskSoloTile(Area area) {
-        final Array<Optional<Area>> areas = area.getAroundArea();
+    public void maskSoloTile(IArea area) {
+        final Array<Optional<IArea>> areas = area.getAroundArea();
         final var index = new AtomicInteger(0);
         final var size = new AtomicInteger(0);
         areas.forEach(optional -> optional.ifPresent(areaAround -> {
@@ -116,7 +119,7 @@ public class MoveArea extends Array<Array<Optional<Area>>> implements Drawable {
             area.setTexture(null);
     }
 
-    public void maskAreaIfNotExplorable(Area area) {
+    public void maskAreaIfNotExplorable(IArea area) {
         final Map map = entity.getWorldPos().getWorld().getMap();
         for(var tileNotExplorable : tilesNotExplorable) {
             if (map.getTileFrom(area.getPos()) != null) {
@@ -158,5 +161,8 @@ public class MoveArea extends Array<Array<Optional<Area>>> implements Drawable {
         return this;
     }
 
+    public Array<Array<Optional<IArea>>> getHandle() {
+        return handle;
+    }
 }
 

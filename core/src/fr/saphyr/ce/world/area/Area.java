@@ -2,15 +2,12 @@ package fr.saphyr.ce.world.area;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Vector3;
-import com.badlogic.gdx.utils.Array;
-import fr.saphyr.ce.core.Direction;
-import fr.saphyr.ce.entities.Entity;
+import fr.saphyr.ce.entities.IEntity;
 import fr.saphyr.ce.graphic.Textures;
 
 import java.util.Optional;
-import java.util.concurrent.atomic.AtomicReference;
 
-public class Area {
+public class Area implements IArea {
 
     private int index;
     private final MoveArea moveArea;
@@ -19,7 +16,8 @@ public class Area {
     private Texture texture;
     private boolean isExplorable;
     private boolean isAccessible;
-    private Entity contentEntity;
+    private IEntity contentEntity;
+
     public static final Texture BLUE_AREA_TEXTURE = Textures.get("textures/areas/blue_area.png");
     public static final Texture RED_AREA_TEXTURE = Textures.get("textures/areas/red_area.png");
     public static final Texture GREEN_AREA_TEXTURE = Textures.get("textures/areas/green_area.png");
@@ -30,54 +28,18 @@ public class Area {
         this.moveArea = moveArea;
         this.relativePos = relativePos;
         this.contentEntity = null;
+        setContentEntity();
+    }
+
+    public void setContentEntity() {
         for (int i = 0; i < moveArea.getEntity().getWorld().getEntities().size ; i++) {
-            final Entity entity = moveArea.getEntity().getWorld().getEntities().get(i);
-            if (entity.getPos().equals(pos)) {
-                contentEntity = entity;
-                break;
-            }
+            final IEntity entity = moveArea.getEntity().getWorld().getEntities().get(i);
+            if (entity.getPos().equals(pos)) contentEntity = entity;
         }
     }
 
-    public void setAreaEntityAccessible(final Entity entity) {
+    public void setAreaEntityAccessible(final IEntity entity) {
         if (this.pos.equals(entity.getWorldPos().getPos())) setAccessible(true);
-    }
-
-    public Optional<Area> getAreaOnDirection(Direction direction) {
-        return switch (direction) {
-            case UP -> getAreaFromVector(new Vector3(pos.x, pos.y + 1, 0));
-            case RIGHT -> getAreaFromVector(new Vector3(pos.x + 1, pos.y, 0));
-            case LEFT -> getAreaFromVector(new Vector3(pos.x - 1, pos.y, 0));
-            case BOTTOM -> getAreaFromVector(new Vector3(pos.x, pos.y - 1, 0));
-            case TOP_LEFT -> getAreaFromVector(new Vector3(pos.x - 1, pos.y + 1, 0));
-            case TOP_RIGHT -> getAreaFromVector(new Vector3(pos.x + 1, pos.y + 1, 0));
-            case BOTTOM_LEFT -> getAreaFromVector(new Vector3(pos.x - 1, pos.y - 1, 0));
-            case BOTTOM_RIGHT -> getAreaFromVector(new Vector3(pos.x + 1, pos.y - 1, 0));
-        };
-    }
-
-    private Optional<Area> getAreaFromVector(Vector3 vector) {
-        final var optional = new AtomicReference<Optional<Area>>(Optional.empty());
-        for (int i = 0; i < moveArea.size; i++) {
-            for (int j = 0; j < moveArea.get(i).size; j++) {
-                moveArea.get(i).get(j).ifPresent(area -> {
-                    if (vector.equals(area.pos))
-                        optional.set(Optional.of(area));
-                });
-            }
-        }
-        return optional.get();
-    }
-
-    public Array<Optional<Area>> getAroundArea() {
-        final Array<Optional<Area>> areas = new Array<>();
-        areas.add(
-                getAreaOnDirection(Direction.UP),
-                getAreaOnDirection(Direction.BOTTOM),
-                getAreaOnDirection(Direction.LEFT),
-                getAreaOnDirection(Direction.RIGHT)
-        );
-        return areas;
     }
 
     public Vector3 getPos() {
@@ -144,8 +106,10 @@ public class Area {
                 "RPos="+relativePos+"\n";
     }
 
-    public Optional<Entity> getContentEntity() {
+    public Optional<IEntity> getContentEntity() {
         if (contentEntity != null) return Optional.of(contentEntity);
         return Optional.empty();
     }
+
+    public record AreaAttribute(int key, String textureFilepath, boolean isExplorable) { }
 }

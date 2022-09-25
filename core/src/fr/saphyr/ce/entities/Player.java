@@ -3,6 +3,7 @@ package fr.saphyr.ce.entities;
 import com.badlogic.gdx.Input;
 import fr.saphyr.ce.core.Direction;
 import fr.saphyr.ce.world.area.Area;
+import fr.saphyr.ce.world.area.IArea;
 import fr.saphyr.ce.world.area.MoveAreaAttribute;
 import fr.saphyr.ce.core.Renderer;
 import fr.saphyr.ce.world.WorldPos;
@@ -60,7 +61,7 @@ public abstract class Player extends Entity {
         getAreaClicked().ifPresent(this::movePlayer);
     }
 
-    private void movePlayer(Area area) {
+    private void movePlayer(IArea area) {
         if (area.isAccessible() && area.isExplorable()) move(velocityMoveDeltaTime);
         else setAreaClicked(null);
     }

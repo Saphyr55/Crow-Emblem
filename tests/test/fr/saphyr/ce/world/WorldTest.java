@@ -1,12 +1,16 @@
 package fr.saphyr.ce.world;
 
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import fr.saphyr.ce.CETest;
+import fr.saphyr.ce.core.register.Resources;
 import fr.saphyr.ce.entities.Entity;
 import fr.saphyr.ce.entities.EntityType;
+import fr.saphyr.ce.entities.players.BladeLord;
+import fr.saphyr.ce.graphic.Textures;
 import fr.saphyr.ce.world.area.MoveAreaAttribute;
 import fr.saphyr.ce.world.area.MoveAreaAttributes;
 import fr.saphyr.ce.world.map.Map;
@@ -28,9 +32,9 @@ public class WorldTest extends CETest {
     @BeforeEach
     public void setUp() {
         initPos = new Vector3(0,0,0);
-        map = new Map(new TmxMapLoader().load("../assets/maps/map1.tmx"), 32);
+        map = Maps.get("maps/map1.tmx");
         world = new World(map, initPos);
-        entity = new Entity(new WorldPos(world, new Vector2(0,0)), null, null) { };
+        entity = new Entity() { };
     }
 
     @AfterEach

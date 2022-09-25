@@ -5,9 +5,9 @@ import fr.saphyr.ce.core.Renderer;
 
 public final class SceneManager {
 
-    private Scene currentScene;
+    private IScene currentScene;
     private Renderer renderer;
-    private final ArrayMap<String, Scene> scenes;
+    private final ArrayMap<String, IScene> scenes;
 
     public SceneManager(Renderer renderer) {
         this.renderer = renderer;
@@ -29,23 +29,21 @@ public final class SceneManager {
         renderer.end();
     }
 
-    public final void add(String name, Scene scene) {
+    public void add(String name, IScene scene) {
         scenes.put(name, scene);
     }
 
-    public final Scene get(String name) {
+    public IScene get(String name) {
         return scenes.get(name);
     }
 
     public void switchTo(String name) {
-        if (currentScene != null)
-            currentScene.setActive(false);
-
+        if (currentScene != null) currentScene.setActive(false);
         currentScene = get(name);
         currentScene.setActive(true);
     }
 
-    public Scene getCurrentScene() {
+    public IScene getCurrentScene() {
         return currentScene;
     }
 

@@ -10,10 +10,14 @@ public class Registry {
     public static <T> T register(Supplier<T> supplier) {
         return supplier.get();
     }
+    private static boolean isRegister = false;
 
     public static void registers() {
-        MoveAreaAttributes.registers();
-        EntityType.registers();
+        if (!isRegister) {
+            MoveAreaAttributes.registers();
+            EntityType.registers();
+            isRegister = true;
+        }
     }
     
 }

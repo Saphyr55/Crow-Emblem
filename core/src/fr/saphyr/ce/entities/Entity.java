@@ -10,6 +10,7 @@ import fr.saphyr.ce.CEObject;
 import fr.saphyr.ce.core.Direction;
 import fr.saphyr.ce.core.Logger;
 import fr.saphyr.ce.core.Renderer;
+import fr.saphyr.ce.world.IWorld;
 import fr.saphyr.ce.world.World;
 import fr.saphyr.ce.world.WorldPos;
 import fr.saphyr.ce.world.area.*;
@@ -18,7 +19,7 @@ import java.util.Arrays;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicReference;
 
-public abstract class Entity implements CEObject, Selectable {
+public abstract class Entity implements IEntity {
 
     public static final float EPSILON = 0.09f;
 
@@ -26,30 +27,33 @@ public abstract class Entity implements CEObject, Selectable {
     protected TraceArea traceArea;
     protected MoveArea moveArea;
     protected Array<TiledMapTile> tilesNotExplorable;
-    protected final WorldPos worldPos;
+    protected WorldPos worldPos;
     protected float stateTime = 0.0f;
     protected boolean isSelected;
     protected boolean isMoved = false;
     protected Direction direction;
     private MoveAreaAttribute moveAreaAttribute;
-    private Area areaClicked;
+    private IArea areaClicked;
 
     public Entity(WorldPos worldPos, int[] tileNotExplorable, MoveAreaAttribute moveAreaAttribute) {
         this.worldPos = worldPos;
         this.isSelected = false;
         this.tilesNotExplorable = new Array<>();
-        if (tileNotExplorable != null) setTilesNotExplorableById(tileNotExplorable);
-        if (moveAreaAttribute != null) {
-            setMoveArea(moveAreaAttribute);
-            this.traceArea = new TraceArea(moveArea);
-        }
+        setTilesNotExplorableById(tileNotExplorable);
+        setMoveArea(moveAreaAttribute);
+        this.traceArea = new TraceArea(moveArea);
+    }
+
+    public Entity() {
+        this.isSelected = false;
+        this.tilesNotExplorable = new Array<>();
     }
 
     @Override
-    public Optional<Area> getAreaSelect() {
-        AtomicReference<Optional<Area>> posClicked = new AtomicReference<>(Optional.empty());
+    public Optional<IArea> getAreaSelect() {
+        AtomicReference<Optional<IArea>> posClicked = new AtomicReference<>(Optional.empty());
         if (moveArea.isOpen() && !isMoved) {
-            moveArea.forEach(optionals -> optionals.forEach(optional -> optional.ifPresent(area -> {
+            moveArea.getHandle().forEach(optionals -> optionals.forEach(optional -> optional.ifPresent(area -> {
                 if (isClickOnFrame(Input.Buttons.LEFT, getWorld(), area.getPos().x, area.getPos().y))
                     posClicked.set(Optional.of(area));
             })));
@@ -133,7 +137,7 @@ public abstract class Entity implements CEObject, Selectable {
         else Logger.warning("Unrecognized tile from id="+id+" ");
     }
 
-    public World getWorld() {
+    public IWorld getWorld() {
         return getWorldPos().getWorld();
     }
 
@@ -189,13 +193,13 @@ public abstract class Entity implements CEObject, Selectable {
         return moveAreaAttribute;
     }
 
-    public Optional<Area> getAreaClicked() {
+    public Optional<IArea> getAreaClicked() {
         if (areaClicked != null)
             return Optional.of(areaClicked);
         return Optional.empty();
     }
 
-    public void setAreaClicked(Area areaClicked) {
+    public void setAreaClicked(IArea areaClicked) {
         this.areaClicked = areaClicked;
     }
 

@@ -19,7 +19,7 @@ public class Camera extends OrthographicCamera implements CEObject {
     private final Vector3 border;
     private final Vector3 zeroPosMap;
     private final Vector3 initPos;
-    private final FollowCell followCell;
+    private FollowCell followCell;
     private Vector3 middlePos;
 
     public Camera(float widthBorder, float heightBorder, float viewportWidth, float viewportHeight) {
@@ -29,7 +29,7 @@ public class Camera extends OrthographicCamera implements CEObject {
         this.initPos = new Vector3(position);
         this.update(true);
         this.middlePos = new Vector3( ((int) viewportHeight) - 1, ((int) viewportHeight) - 1, 0);
-        this.followCell = new FollowCell(middlePos);
+        // this.followCell = new FollowCell(middlePos);
     }
 
     public void initPos(Vector3 vector) {

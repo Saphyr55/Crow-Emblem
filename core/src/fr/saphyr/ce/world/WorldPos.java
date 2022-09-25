@@ -6,13 +6,18 @@ import com.badlogic.gdx.math.Vector3;
 public class WorldPos {
 
     private Vector3 pos;
-    private World world;
+    private IWorld world;
 
-    public WorldPos(World world, Vector2 pos) {
+    public WorldPos(IWorld world, Vector2 pos) {
         this.pos = new Vector3(pos, 0);
         this.world = world;
     }
-    
+
+    public WorldPos(IWorld world, Vector3 pos) {
+        this.pos = new Vector3(pos);
+        this.world = world;
+    }
+
     public Vector3 getPos() {
         return pos;
     }
@@ -21,7 +26,7 @@ public class WorldPos {
         this.pos = pos;
     }
 
-    public World getWorld() {
+    public IWorld getWorld() {
         return world;
     }
 

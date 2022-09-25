@@ -1,4 +1,4 @@
-package fr.saphyr.ce.core;
+package fr.saphyr.ce;
 
 import com.badlogic.gdx.graphics.GL20;
 

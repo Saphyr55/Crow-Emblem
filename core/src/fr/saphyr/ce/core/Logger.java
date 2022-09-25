@@ -21,11 +21,7 @@ public final class Logger {
 
     public static void error(Object message, Exception exception) {
         LOGGER.log(RED, message);
-        try {
-            throw exception;
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
+        throw new RuntimeException(exception);
     }
 
     private static Logger create() { return new Logger(); }

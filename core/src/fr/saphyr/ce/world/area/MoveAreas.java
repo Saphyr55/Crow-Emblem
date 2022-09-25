@@ -16,7 +16,7 @@ public final class MoveAreas {
         return personalize(() -> {
             final var moveArea = new MoveArea(entity);
             for (int i = 0; i < moveAreaAttribute.pattern().length; i++) {
-                moveArea.add(new Array<>(moveAreaAttribute.pattern().length));
+                moveArea.getHandle().add(new Array<>(moveAreaAttribute.pattern().length));
                 for (int j = 0; j < moveAreaAttribute.pattern()[i].length; j++) {
                     final var area = new Area(new Vector3(
                             entity.getWorldPos().getPos().x - i + ((int) (moveAreaAttribute.pattern().length / 2f)),
@@ -29,9 +29,9 @@ public final class MoveAreas {
                         if (areaAttribute.key() == moveAreaAttribute.pattern()[finalI][finalJ]) {
                             area.setTexture(Textures.get(areaAttribute.textureFilepath()));
                             area.setExplorable(areaAttribute.isExplorable());
-                            moveArea.get(finalI).add(Optional.of(area));
+                            moveArea.getHandle().get(finalI).add(Optional.of(area));
                         } else {
-                            moveArea.get(finalI).add(Optional.empty());
+                            moveArea.getHandle().get(finalI).add(Optional.empty());
                         }
                     });
                 }

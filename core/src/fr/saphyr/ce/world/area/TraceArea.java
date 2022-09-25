@@ -12,12 +12,12 @@ import static fr.saphyr.ce.entities.Entity.EPSILON;
 
 public class TraceArea implements Updatable {
 
-    private final Array<Area> trace;
-    private Area endArea;
-    private Area nextArea;
+    private final Array<IArea> trace;
+    private IArea endArea;
+    private IArea nextArea;
     private MoveArea moveArea;
     private int index = 0;
-    private Supplier<Area> areaSupplier;
+    private Supplier<IArea> areaSupplier;
 
     public TraceArea(MoveArea moveArea) {
         this.trace = new Array<>();
@@ -77,11 +77,11 @@ public class TraceArea implements Updatable {
         return atReturn.get();
     }
 
-    private boolean almostEqualArea(Area area, Vector3 pos) {
+    private boolean almostEqualArea(IArea area, Vector3 pos) {
         return CEMath.almostEqual(area.getPos().x, pos.x, EPSILON) && CEMath.almostEqual(area.getPos().y, pos.y, EPSILON);
     }
 
-    public Area getNext() {
+    public IArea getNext() {
         return nextArea;
     }
 
@@ -89,16 +89,16 @@ public class TraceArea implements Updatable {
         return nextArea != null;
     }
 
-    private void add(Area area) {
+    private void add(IArea area) {
         area.setTexture(Area.GREEN_AREA_TEXTURE);
         trace.add(area);
     }
 
-    public Array<Area> getTrace() {
+    public Array<IArea> getTrace() {
         return trace;
     }
 
-    public void setEndArea(Area endArea) {
+    public void setEndArea(IArea endArea) {
         this.endArea = endArea;
     }
 
@@ -110,11 +110,11 @@ public class TraceArea implements Updatable {
         this.moveArea = moveArea;
     }
 
-    public Supplier<Area> getAreaSupplier() {
+    public Supplier<IArea> getAreaSupplier() {
         return areaSupplier;
     }
 
-    public void updateEndArea(Supplier<Area> areaSupplier) {
+    public void updateEndArea(Supplier<IArea> areaSupplier) {
         this.areaSupplier = areaSupplier;
     }
 }

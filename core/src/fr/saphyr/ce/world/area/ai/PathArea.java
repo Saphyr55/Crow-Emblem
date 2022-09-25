@@ -2,14 +2,15 @@ package fr.saphyr.ce.world.area.ai;
 
 import com.badlogic.gdx.ai.pfa.Connection;
 import fr.saphyr.ce.world.area.Area;
+import fr.saphyr.ce.world.area.IArea;
 
-public class PathArea implements Connection<Area> {
+public class PathArea implements Connection<IArea> {
 
-    private final Area start;
-    private final Area end;
+    private final IArea start;
+    private final IArea end;
     private final float cost;
 
-    public PathArea(Area start, Area end) {
+    public PathArea(IArea start, IArea end) {
         this.start = start;
         this.end = end;
         this.cost = end.getRelativePos().dst(start.getRelativePos());
@@ -21,12 +22,12 @@ public class PathArea implements Connection<Area> {
     }
 
     @Override
-    public Area getFromNode() {
+    public IArea getFromNode() {
         return start;
     }
 
     @Override
-    public Area getToNode() {
+    public IArea getToNode() {
         return end;
     }
 }

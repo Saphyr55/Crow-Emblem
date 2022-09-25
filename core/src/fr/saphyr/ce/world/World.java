@@ -9,15 +9,16 @@ import fr.saphyr.ce.CEObject;
 import fr.saphyr.ce.core.Renderer;
 import fr.saphyr.ce.core.Logger;
 import fr.saphyr.ce.entities.Entity;
+import fr.saphyr.ce.entities.IEntity;
 import fr.saphyr.ce.world.map.Map;
 
-public class World implements Disposable, CEObject {
+public class World implements IWorld {
 
     private final WorldPos mouseWorldPos;
     private Camera camera;
     private Map map;
     private final Vector3 initPos;
-    private final Array<Entity> entities;
+    private final Array<IEntity> entities;
 
     public World(Map map, Vector3 initPos) {
         this.initPos = initPos;
@@ -30,6 +31,13 @@ public class World implements Disposable, CEObject {
         this.entities = new Array<>();
         this.mouseWorldPos = new WorldPos(this, new Vector2());
         this.camera.position.set(initPos);
+    }
+
+    private void setMousePosition(Renderer renderer) {
+        renderer.getMapRenderer().setView(getCamera());
+        renderer.getMapRenderer().render();
+        mouseWorldPos.setPos(new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0));
+        camera.unproject(mouseWorldPos.getPos());
     }
 
     @Override
@@ -46,52 +54,58 @@ public class World implements Disposable, CEObject {
         entities.iterator().forEachRemaining(entity -> entity.render(renderer));
     }
 
-    private void setMousePosition(Renderer renderer) {
-        renderer.getMapRenderer().setView(getCamera());
-        renderer.getMapRenderer().render();
-        mouseWorldPos.setPos(new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0));
-        camera.unproject(mouseWorldPos.getPos());
-    }
-
     @Override
     public void dispose() {
         map.dispose();
     }
 
-    public void addEntities(Entity entity) {
+    @Override
+    public void addEntities(IEntity entity) {
         entities.add(entity);
     }
 
-    public void removeEntities(Entity entity) {
-        if(!entities.removeValue(entity, false))
-            Logger.error("", new Exception("Impossible to remove a entity"));
+    @Override
+    public void removeEntities(IEntity entity) {
+        entities.removeValue(entity, false);
     }
 
+    @Override
+    public int getCountEntities() {
+        return entities.size;
+    }
+
+    @Override
     public Camera getCamera() {
         return camera;
     }
 
+    @Override
     public void setCamera(Camera camera) {
         this.camera = camera;
     }
 
+    @Override
     public Map getMap() {
         return map;
     }
 
+    @Override
     public void setMap(Map map) {
         this.map = map;
     }
 
+    @Override
     public WorldPos getMouseWorldPos() {
         return mouseWorldPos;
     }
 
-    public final Vector3 getInitPos() {
+    @Override
+    public Vector3 getInitPos() {
         return initPos;
     }
 
-    public final Array<Entity> getEntities() {
+    @Override
+    public Array<IEntity> getEntities() {
         return entities;
     }
 
