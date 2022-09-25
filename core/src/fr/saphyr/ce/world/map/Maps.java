@@ -16,11 +16,14 @@ public final class Maps {
 
     public static void loadFile(String filename) {
         if (!maps.containsKey(filename)) {
-            maps.put(filename, new Map(new TmxMapLoader().load(filename), UNIT_SCALE));
+            maps.put(filename, loadAndGet(filename));
             Logger.info("Loader : " + filename);
         }
     }
 
+    public static Map loadAndGet(String filename) {
+        return new Map(new TmxMapLoader().load(filename), UNIT_SCALE);
+    }
 
     public static Map get(String filename) {
         try {

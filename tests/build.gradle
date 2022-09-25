@@ -1,4 +1,5 @@
-[compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
-sourceSets.test.java.srcDirs = [ "src/" ]
-sourceSets.main.resources.srcDirs = [ "../assets" ]
+sourceCompatibility = 16.0
+sourceSets.main.java.srcDirs = [ "src/" ]
+sourceSets.main.resources.srcDirs = ["../assets"]
+
 eclipse.project.name = appName + "-fr.saphyr.ce"

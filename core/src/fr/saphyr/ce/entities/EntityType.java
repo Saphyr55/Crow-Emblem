@@ -27,7 +27,10 @@ public final class EntityType<T extends Entity> {
     }
 
     public Entity create() {
-        return builder.build();
+        return builder
+                .withMoveAreaAttribute(MoveAreaAttributes.DEFAULT)
+                .withTileNotExplorable(new int[0])
+                .build();
     }
 
     public EntityBuilder<T> construct() {

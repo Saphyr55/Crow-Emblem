@@ -12,6 +12,7 @@ buildscript {
 
 allprojects {
     apply plugin: "eclipse"
+    apply plugin: "idea"
 
     version = '1.0'
     ext {
@@ -77,17 +78,14 @@ project(":tests") {
     apply plugin: "java-library"
 
     dependencies {
-        implementation project(":desktop")
         implementation project(":core")
+
+        api "com.badlogicgames.gdx:gdx-backend-lwjgl3:$gdxVersion"
+        api "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-desktop"
         api "com.badlogicgames.gdx:gdx-backend-headless:$gdxVersion"
-        api "com.badlogicgames.gdx:gdx:$gdxVersion"
-        api "com.badlogicgames.gdx:gdx-bullet:$gdxVersion"
-        api "com.badlogicgames.box2dlights:box2dlights:$box2DLightsVersion"
-        api "com.badlogicgames.ashley:ashley:$ashleyVersion"
-        api "com.badlogicgames.gdx:gdx-freetype:$gdxVersion"
-        api "com.badlogicgames.gdx:gdx-ai:$aiVersion"
-        api "com.badlogicgames.gdx:gdx-box2d:$gdxVersion"
-        implementation 'org.junit.jupiter:junit-jupiter-api:5.8.1'
-        implementation 'org.junit.jupiter:junit-jupiter-engine:5.8.1'
+
+        api "org.mockito:mockito-all:1.10.19"
+        api "org.junit.jupiter:junit-jupiter:5.9.0"
+
     }
 }

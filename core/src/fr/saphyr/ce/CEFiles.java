@@ -1,6 +1,7 @@
 package fr.saphyr.ce;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.files.FileHandle;
 import fr.saphyr.ce.core.Logger;
 
 import java.io.IOException;
@@ -29,5 +30,4 @@ public class CEFiles {
         }
         return result;
     }
-
 }

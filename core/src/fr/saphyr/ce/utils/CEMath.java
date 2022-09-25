@@ -1,6 +1,7 @@
 package fr.saphyr.ce.utils;
 
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.math.Vector3;
 
 public class CEMath {
 
@@ -16,5 +17,7 @@ public class CEMath {
         return almostEqual(a.x, b.x, eps) && almostEqual(a.y, b.y, eps);
     }
 
-
+    public static boolean almostEqual(Vector3 a, Vector3 b, double eps){
+        return almostEqual(a.x, b.x, eps) && almostEqual(a.y, b.y, eps);
+    }
 }

@@ -23,6 +23,7 @@ public class Area {
     public static final Texture BLUE_AREA_TEXTURE = Textures.get("textures/areas/blue_area.png");
     public static final Texture RED_AREA_TEXTURE = Textures.get("textures/areas/red_area.png");
     public static final Texture GREEN_AREA_TEXTURE = Textures.get("textures/areas/green_area.png");
+    public static final Texture YELLOW_AREA_TEXTURE = Textures.get("textures/areas/yellow_area.png");
 
     public Area(Vector3 pos, Vector3 relativePos, MoveArea moveArea) {
         this.pos = pos;

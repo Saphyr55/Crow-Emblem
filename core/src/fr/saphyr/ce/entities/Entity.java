@@ -38,9 +38,11 @@ public abstract class Entity implements CEObject, Selectable {
         this.worldPos = worldPos;
         this.isSelected = false;
         this.tilesNotExplorable = new Array<>();
-        setTilesNotExplorableById(tileNotExplorable);
-        setMoveArea(moveAreaAttribute);
-        this.traceArea = new TraceArea(moveArea);
+        if (tileNotExplorable != null) setTilesNotExplorableById(tileNotExplorable);
+        if (moveAreaAttribute != null) {
+            setMoveArea(moveAreaAttribute);
+            this.traceArea = new TraceArea(moveArea);
+        }
     }
 
     @Override

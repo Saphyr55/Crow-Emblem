@@ -13,7 +13,7 @@ import fr.saphyr.ce.scene.SceneManager;
 
 import java.lang.management.ManagementFactory;
 
-public final class CrowEmblem extends ApplicationAdapter {
+public class CrowEmblem extends ApplicationAdapter {
 
 	public static final boolean IS_DEBUGGING = ManagementFactory.getRuntimeMXBean().getInputArguments().toString().indexOf("-agentlib:jdwp") > 0;
 
