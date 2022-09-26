@@ -10,7 +10,7 @@ import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.Array;
 import com.google.gson.Gson;
 import fr.saphyr.ce.CEFiles;
-import fr.saphyr.ce.world.cell.AbstractCell;
+import fr.saphyr.ce.world.area.cell.AbstractCell;
 import fr.saphyr.ce.world.area.MoveAreaAttribute;
 import fr.saphyr.ce.core.Logger;
 import fr.saphyr.ce.core.register.Resources;

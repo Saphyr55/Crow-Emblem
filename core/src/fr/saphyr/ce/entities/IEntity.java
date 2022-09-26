@@ -6,7 +6,9 @@ import fr.saphyr.ce.CEObject;
 import fr.saphyr.ce.core.Direction;
 import fr.saphyr.ce.world.IWorld;
 import fr.saphyr.ce.world.WorldPos;
-import fr.saphyr.ce.world.cell.*;
+import fr.saphyr.ce.world.area.cell.ICell;
+import fr.saphyr.ce.world.area.cell.MoveCell;
+import fr.saphyr.ce.world.area.cell.TraceCell;
 import fr.saphyr.ce.world.area.MoveArea;
 import fr.saphyr.ce.world.area.MoveAreaAttribute;
 

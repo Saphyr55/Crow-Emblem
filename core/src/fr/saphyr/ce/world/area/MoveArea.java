@@ -2,10 +2,10 @@ package fr.saphyr.ce.world.area;
 
 import com.badlogic.gdx.maps.tiled.TiledMapTile;
 import com.badlogic.gdx.utils.Array;
-import fr.saphyr.ce.world.cell.AbstractCell;
-import fr.saphyr.ce.world.cell.ICell;
-import fr.saphyr.ce.world.cell.MoveCell;
-import fr.saphyr.ce.world.cell.ai.AreaGraph;
+import fr.saphyr.ce.world.area.cell.AbstractCell;
+import fr.saphyr.ce.world.area.cell.ICell;
+import fr.saphyr.ce.world.area.cell.MoveCell;
+import fr.saphyr.ce.world.area.cell.ai.CellGraph;
 import fr.saphyr.ce.core.Renderer;
 import fr.saphyr.ce.entities.Entity;
 import fr.saphyr.ce.graphic.Drawable;
@@ -21,7 +21,7 @@ public class MoveArea extends AbstractArea<MoveCell> implements Drawable {
     private final Array<TiledMapTile> tilesNotExplorable;
     private boolean isOpen;
     private final Array<MoveCell> cellsMaskNotAccessible;
-    private final AreaGraph areaGraph;
+    private final CellGraph<MoveCell> cellGraph;
     private MoveCell cellWithEntity;
 
     public MoveArea(Entity entity) {
@@ -30,18 +30,18 @@ public class MoveArea extends AbstractArea<MoveCell> implements Drawable {
         this.tilesNotExplorable = entity.getTilesNotExplorable();
         this.isOpen = false;
         this.cellsMaskNotAccessible = new Array<>();
-        this.areaGraph = new AreaGraph();
+        this.cellGraph = new CellGraph();
     }
 
     public void connect() {
-        zone.forEach(optionals -> optionals.forEach(optional -> optional.ifPresent(areaGraph::addArea)));
-        zone.forEach(optionals -> optionals.forEach(optional -> optional.ifPresent(area -> {
-            final fr.saphyr.ce.world.cell.MoveCell moveCell1 = (fr.saphyr.ce.world.cell.MoveCell) area;
+        handle.forEach(optionals -> optionals.forEach(optional -> optional.ifPresent(cellGraph::addArea)));
+        handle.forEach(optionals -> optionals.forEach(optional -> optional.ifPresent(area -> {
+            final MoveCell moveCell1 = (MoveCell) area;
             if (moveCell1.isAccessible() && moveCell1.isExplorable()) {
                 area.getAroundCell().forEach(optional1 -> optional1.ifPresent(area1 -> {
-                    final fr.saphyr.ce.world.cell.MoveCell moveCell = (fr.saphyr.ce.world.cell.MoveCell) area1;
+                    final MoveCell moveCell = (MoveCell) area1;
                     if (moveCell.isAccessible() && moveCell.isExplorable())
-                        areaGraph.connectAreas(moveCell1, moveCell);
+                        cellGraph.connectAreas(moveCell1, moveCell);
                 }));
             }
         })));
@@ -49,7 +49,7 @@ public class MoveArea extends AbstractArea<MoveCell> implements Drawable {
 
     @Override
     public void draw(Renderer renderer) {
-        zone.forEach(optionals -> optionals.forEach(optional -> optional.ifPresent(cell -> {
+        handle.forEach(optionals -> optionals.forEach(optional -> optional.ifPresent(cell -> {
             if (cell.getTexture() != null && (!cell.isExplorable() || cell.isAccessible()) )
                 renderer.draw(cell.getTexture(), cell.getPos().x, cell.getPos().y, 1, 1);
             else if (cell.isExplorable()) {
@@ -64,14 +64,14 @@ public class MoveArea extends AbstractArea<MoveCell> implements Drawable {
     }
 
     public void updateCellEntity() {
-        zone.forEach(optionals -> optionals.forEach(optional -> optional.ifPresent(cell -> {
+        handle.forEach(optionals -> optionals.forEach(optional -> optional.ifPresent(cell -> {
             if (cell.getPos().equals(entity.getWorldPos().getPos()))
                 cellWithEntity = cell;
         })));
     }
 
     public void mask(Consumer<MoveCell> mask) {
-        zone.forEach(optionals -> optionals.forEach(optional -> optional.ifPresent(mask)));
+        handle.forEach(optionals -> optionals.forEach(optional -> optional.ifPresent(mask)));
     }
 
     public void maskTileNotAccessible(MoveCell cellWithEntity) {
@@ -128,8 +128,8 @@ public class MoveArea extends AbstractArea<MoveCell> implements Drawable {
         isOpen = open;
     }
 
-    public AreaGraph getAreaGraph() {
-        return areaGraph;
+    public CellGraph<MoveCell> getAreaGraph() {
+        return cellGraph;
     }
 
     public MoveArea personalize() {

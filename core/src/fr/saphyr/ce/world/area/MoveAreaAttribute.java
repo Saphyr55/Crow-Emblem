@@ -1,7 +1,7 @@
 package fr.saphyr.ce.world.area;
 
 import com.badlogic.gdx.utils.Array;
-import fr.saphyr.ce.world.cell.AbstractCell;
+import fr.saphyr.ce.world.area.cell.AbstractCell;
 
 public final class MoveAreaAttribute {
 

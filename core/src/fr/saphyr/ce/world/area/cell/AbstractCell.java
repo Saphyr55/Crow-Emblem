@@ -1,4 +1,4 @@
-package fr.saphyr.ce.world.cell;
+package fr.saphyr.ce.world.area.cell;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Vector3;
@@ -8,35 +8,45 @@ import fr.saphyr.ce.world.area.IArea;
 
 import java.util.Optional;
 
-public abstract class AbstractCell implements ICell {
+public abstract class AbstractCell<T extends ICell> implements ICell {
 
     protected int index;
     protected Vector3 pos;
+    protected Vector3 relativePos;
     protected IEntity contentEntity;
-    protected IArea zone;
+    protected IArea<T> area;
 
     public static final Texture BLUE_AREA_TEXTURE = Textures.get("textures/areas/blue_area.png");
     public static final Texture RED_AREA_TEXTURE = Textures.get("textures/areas/red_area.png");
     public static final Texture GREEN_AREA_TEXTURE = Textures.get("textures/areas/green_area.png");
     public static final Texture YELLOW_AREA_TEXTURE = Textures.get("textures/areas/yellow_area.png");
 
-    protected AbstractCell(Vector3 pos, IArea zone) {
+    protected AbstractCell(Vector3 pos, Vector3 relativePos, IArea<T> area) {
         this.pos = pos;
+        this.relativePos = relativePos;
         this.contentEntity = null;
-        this.zone = zone;
+        this.area = area;
+        setContentEntity();
+    }
+
+    protected AbstractCell(Vector3 pos, IArea<T> area) {
+        this.pos = pos;
+        this.relativePos = pos;
+        this.contentEntity = null;
+        this.area = area;
         setContentEntity();
     }
 
     protected void setContentEntity() {
-        for (int i = 0; i < getZone().getWorld().getEntities().size ; i++) {
-            final IEntity entity = getZone().getWorld().getEntities().get(i);
+        for (int i = 0; i < getArea().getWorld().getEntities().size ; i++) {
+            final IEntity entity = getArea().getWorld().getEntities().get(i);
             if (entity.getPos().equals(pos)) contentEntity = entity;
         }
     }
 
     @Override
-    public IArea getZone() {
-        return zone;
+    public IArea<T> getArea() {
+        return area;
     }
 
     @Override
@@ -62,6 +72,19 @@ public abstract class AbstractCell implements ICell {
     @Override
     public void setIndex(int index) {
         this.index = index;
+    }
+
+    public Vector3 getRelativePos() {
+        return relativePos;
+    }
+
+    public void setRelativePos(Vector3 relativePos) {
+        this.relativePos = new Vector3(relativePos);
+    }
+
+    @Override
+    public void setRelativePos(float x, float y) {
+        this.relativePos = new Vector3(x, y, 0);
     }
 
     public Optional<IEntity> getContentEntity() {

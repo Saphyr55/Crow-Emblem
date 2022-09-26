@@ -1,15 +1,15 @@
-package fr.saphyr.ce.world.cell.ai;
+package fr.saphyr.ce.world.area.cell.ai;
 
 import com.badlogic.gdx.ai.pfa.Connection;
-import fr.saphyr.ce.world.cell.MoveCell;
+import fr.saphyr.ce.world.area.cell.ICell;
 
-public class PathMoveArea implements Connection<MoveCell> {
+public class PathCell<C extends ICell> implements Connection<C> {
 
-    private final MoveCell start;
-    private final MoveCell end;
+    private final C start;
+    private final C end;
     private final float cost;
 
-    public PathMoveArea(MoveCell start, MoveCell end) {
+    public PathCell(C start, C end) {
         this.start = start;
         this.end = end;
         this.cost = end.getRelativePos().dst(start.getRelativePos());
@@ -21,12 +21,12 @@ public class PathMoveArea implements Connection<MoveCell> {
     }
 
     @Override
-    public MoveCell getFromNode() {
+    public C getFromNode() {
         return start;
     }
 
     @Override
-    public MoveCell getToNode() {
+    public C getToNode() {
         return end;
     }
 }

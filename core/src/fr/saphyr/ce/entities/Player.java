@@ -1,8 +1,8 @@
 package fr.saphyr.ce.entities;
 
 import com.badlogic.gdx.Input;
-import fr.saphyr.ce.world.cell.ICell;
-import fr.saphyr.ce.world.cell.MoveCell;
+import fr.saphyr.ce.world.area.cell.ICell;
+import fr.saphyr.ce.world.area.cell.MoveCell;
 import fr.saphyr.ce.world.area.MoveAreaAttribute;
 import fr.saphyr.ce.core.Renderer;
 import fr.saphyr.ce.world.WorldPos;
@@ -27,7 +27,7 @@ public abstract class Player extends Entity {
     @Override
     public void update(float dt) {
         super.update(dt);
-        moveArea.getAreaWithPos(getWorld().getMouseWorldPos().getPos()).ifPresent(area -> {
+        moveArea.getCellAt(getWorld().getMouseWorldPos().getPos()).ifPresent(area -> {
             if (area.getContentEntity().isEmpty())
                 traceCell.updateEndArea(area);
         });

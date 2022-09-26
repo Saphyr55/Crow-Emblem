@@ -1,4 +1,4 @@
-package fr.saphyr.ce.world.cell;
+package fr.saphyr.ce.world.area.cell;
 
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Array;
@@ -18,15 +18,22 @@ public interface ICell {
 
     void setPos(float x, float y);
 
+    Vector3 getRelativePos();
+
+    void setRelativePos(Vector3 pos);
+
+    void setRelativePos(float x, float y);
+
     int getIndex();
 
     void setIndex(int index);
 
-    IArea<? extends ICell> getZone();
+    IArea<? extends ICell> getArea();
 
     Optional<IEntity> getContentEntity();
 
     default Optional<ICell> getCellOnDirection(Direction direction) {
+        if (direction == null) return Optional.empty();
         return switch (direction) {
             case TOP -> getCellFromVector(new Vector3(getPos().x, getPos().y + 1, 0));
             case RIGHT -> getCellFromVector(new Vector3(getPos().x + 1, getPos().y, 0));
@@ -41,9 +48,9 @@ public interface ICell {
 
     private Optional<ICell> getCellFromVector(Vector3 vector) {
         final var optional = new AtomicReference<Optional<ICell>>(Optional.empty());
-        for (int i = 0; i < getZone().getHandle().size; i++) {
-            for (int j = 0; j < getZone().getHandle().get(i).size; j++) {
-                getZone().getHandle().get(i).get(j).ifPresent(area -> {
+        for (int i = 0; i < getArea().getHandle().size; i++) {
+            for (int j = 0; j < getArea().getHandle().get(i).size; j++) {
+                getArea().getHandle().get(i).get(j).ifPresent(area -> {
                     if (vector.equals(area.getPos()))
                         optional.set(Optional.of(area));
                 });

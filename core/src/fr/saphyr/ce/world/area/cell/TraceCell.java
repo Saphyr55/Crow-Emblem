@@ -1,4 +1,4 @@
-package fr.saphyr.ce.world.cell;
+package fr.saphyr.ce.world.area.cell;
 
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Array;
@@ -6,7 +6,6 @@ import fr.saphyr.ce.core.Updatable;
 import fr.saphyr.ce.world.area.MoveArea;
 
 import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.function.Supplier;
 
 import static fr.saphyr.ce.entities.Entity.EPSILON;
 
@@ -85,7 +84,7 @@ public class TraceCell implements Updatable {
         return nextCell != null;
     }
 
-    private void add(MoveCell cell) {
+        private void add(MoveCell cell) {
         cell.setTexture(AbstractCell.GREEN_AREA_TEXTURE);
         trace.add(cell);
     }

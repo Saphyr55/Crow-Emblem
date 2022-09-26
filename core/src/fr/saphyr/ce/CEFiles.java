@@ -17,7 +17,6 @@ public class CEFiles {
     public static List<String> foundInternal(String moduleFolder) {
         return found(Gdx.files.internal(moduleFolder).path());
     }
-
     public static List<String> found(String filename) {
         List<String> result = new ArrayList<>();
         try (Stream<Path> walk = Files.walk(Paths.get(filename))) {

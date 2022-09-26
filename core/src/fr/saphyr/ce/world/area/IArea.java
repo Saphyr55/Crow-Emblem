@@ -3,7 +3,7 @@ package fr.saphyr.ce.world.area;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Array;
 import fr.saphyr.ce.world.IWorld;
-import fr.saphyr.ce.world.cell.ICell;
+import fr.saphyr.ce.world.area.cell.ICell;
 
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicReference;
@@ -14,7 +14,7 @@ public interface IArea<T extends ICell> {
 
     IWorld getWorld();
 
-    default Optional<T> getAreaWithPos(final int x, final int y) {
+    default Optional<T> getCellAt(final int x, final int y) {
         final var optional = new AtomicReference<Optional<T>>();
         optional.set(Optional.empty());
         for (int i = 0; i < getHandle().size; i++) {
@@ -30,7 +30,7 @@ public interface IArea<T extends ICell> {
         return optional.get();
     }
 
-    default Optional<T> getAreaWithPos(final Vector3 pos) {
-        return getAreaWithPos((int) pos.x, (int) pos.y);
+    default Optional<T> getCellAt(final Vector3 pos) {
+        return getCellAt((int) pos.x, (int) pos.y);
     }
 }

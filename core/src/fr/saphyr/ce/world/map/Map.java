@@ -10,22 +10,14 @@ public class Map implements Disposable {
 
     private TiledMap handle;
     private final int unitScale;
+    private final int height;
+    private final int width;
 
     public Map(TiledMap handle, int unitScale) {
         this.handle = handle;
         this.unitScale = unitScale;
-    }
-
-    public int getUnitScale() {
-        return unitScale;
-    }
-
-    public TiledMap getHandle() {
-        return handle;
-    }
-
-    public void setHandle(TiledMap handle) {
-        this.handle = handle;
+        this.width = this.handle.getProperties().get("width", Integer.class);
+        this.height = this.handle.getProperties().get("height", Integer.class);
     }
     
     public TiledMapTile getTileFrom(int x, int y) {
@@ -44,6 +36,27 @@ public class Map implements Disposable {
 
     @Override
     public void dispose() {
-        getHandle().dispose();
+        handle.dispose();
+    }
+
+    public int getUnitScale() {
+        return unitScale;
+    }
+
+    public TiledMap getHandle() {
+        return handle;
+    }
+
+    public void setHandle(TiledMap handle) {
+        this.handle = handle;
+    }
+
+    public int getHeight() {
+        return height;
+    }
+
+    public int getWidth() {
+        return width;
     }
 }
+

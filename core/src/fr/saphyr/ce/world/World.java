@@ -6,32 +6,29 @@ import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Array;
 import fr.saphyr.ce.core.Renderer;
 import fr.saphyr.ce.entities.IEntity;
-import fr.saphyr.ce.world.cell.WorldCell;
+import fr.saphyr.ce.world.area.WorldArea;
 import fr.saphyr.ce.world.map.Map;
 
 public class World implements IWorld {
 
     private final WorldPos mouseWorldPos;
-    private final WorldCell worldCell;
+    private final WorldArea worldArea;
     private Camera camera;
-    private FollowCell followCell;
+    private final FollowCell followCell;
     private Map map;
     private final Vector3 initPos;
     private final Array<IEntity> entities;
 
     public World(Map map, Vector3 initPos) {
         this.initPos = initPos;
-        this.camera = new Camera(
-                map.getHandle().getProperties().get("width", Integer.class),
-                map.getHandle().getProperties().get("height", Integer.class),
-                21, 11);
-        this.camera.initPos(initPos);
         this.map = map;
+        this.camera = new Camera(map.getWidth(), map.getHeight(),21, 11);
+        this.camera.initPos(initPos);
         this.entities = new Array<>();
         this.mouseWorldPos = new WorldPos(this, new Vector2());
         this.camera.position.set(initPos);
+        this.worldArea = new WorldArea(this);
         this.followCell = new FollowCell(this);
-        this.worldCell = new WorldCell(this);
     }
 
     private void setMousePosition(Renderer renderer) {
@@ -85,6 +82,11 @@ public class World implements IWorld {
     @Override
     public void setCamera(Camera camera) {
         this.camera = camera;
+    }
+
+    @Override
+    public WorldArea getWorldArea() {
+        return worldArea;
     }
 
     @Override

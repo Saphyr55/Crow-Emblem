@@ -2,23 +2,23 @@ package fr.saphyr.ce.world.area;
 
 import com.badlogic.gdx.utils.Array;
 import fr.saphyr.ce.world.IWorld;
-import fr.saphyr.ce.world.cell.ICell;
+import fr.saphyr.ce.world.area.cell.ICell;
 
 import java.util.Optional;
 
-public abstract class AbstractArea<T extends ICell> implements IArea<T> {
+public abstract class AbstractArea<C extends ICell> implements IArea<C> {
 
-    protected final Array<Array<Optional<T>>> zone;
+    protected final Array<Array<Optional<C>>> handle;
     protected final IWorld world;
 
     protected AbstractArea(IWorld world) {
         this.world = world;
-        zone = new Array<>();
+        handle = new Array<>();
     }
     
     @Override
-    public Array<Array<Optional<T>>> getHandle() {
-        return zone;
+    public Array<Array<Optional<C>>> getHandle() {
+        return handle;
     }
 
     @Override
@@ -26,5 +26,5 @@ public abstract class AbstractArea<T extends ICell> implements IArea<T> {
         return world;
     }
 
-    
+
 }

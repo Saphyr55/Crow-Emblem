@@ -4,6 +4,7 @@ import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Array;
 import fr.saphyr.ce.entities.Entity;
 import fr.saphyr.ce.graphic.Textures;
+import fr.saphyr.ce.world.area.cell.MoveCell;
 
 import java.util.*;
 import java.util.function.Supplier;
@@ -18,7 +19,7 @@ public final class MoveZoneAreas {
             for (int i = 0; i < moveAreaAttribute.pattern().length; i++) {
                 moveZoneArea.getHandle().add(new Array<>(moveAreaAttribute.pattern().length));
                 for (int j = 0; j < moveAreaAttribute.pattern()[i].length; j++) {
-                    final var area = new fr.saphyr.ce.world.cell.MoveCell(new Vector3(
+                    final var area = new MoveCell(new Vector3(
                             entity.getWorldPos().getPos().x - i + ((int) (moveAreaAttribute.pattern().length / 2f)),
                             entity.getWorldPos().getPos().y - j + ((int) (moveAreaAttribute.pattern()[i].length / 2f)), 0),
                             new Vector3(i, j, 0), moveZoneArea);

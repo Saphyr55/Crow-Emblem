@@ -5,6 +5,8 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
 import fr.saphyr.ce.CEObject;
 import fr.saphyr.ce.entities.IEntity;
+import fr.saphyr.ce.world.area.WorldArea;
+import fr.saphyr.ce.world.area.cell.WorldCell;
 import fr.saphyr.ce.world.map.Map;
 
 public interface IWorld extends Disposable, CEObject {
@@ -28,5 +30,7 @@ public interface IWorld extends Disposable, CEObject {
     int getCountEntities();
 
     void setCamera(Camera camera);
+
+    WorldArea getWorldArea();
 
 }

@@ -2,21 +2,21 @@ package fr.saphyr.ce.world;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
-import com.badlogic.gdx.maps.tiled.TiledMapTile;
 import com.badlogic.gdx.math.Vector3;
 import fr.saphyr.ce.CEObject;
 import fr.saphyr.ce.core.Direction;
 import fr.saphyr.ce.core.Renderer;
+import fr.saphyr.ce.world.area.cell.ICell;
+import fr.saphyr.ce.world.area.cell.WorldCell;
 
-import static fr.saphyr.ce.world.cell.AbstractCell.YELLOW_AREA_TEXTURE;
+import static fr.saphyr.ce.world.area.cell.AbstractCell.YELLOW_AREA_TEXTURE;
 
 public class FollowCell implements CEObject {
 
     private final Camera camera;
     private final IWorld world;
-    private TiledMapTile currentTile;
-    private TiledMapTile futureTile;
-
+    private WorldCell currentWorldCell;
+    private WorldCell futureWorldCell;
     private final Vector3 pos;
     private boolean isMoved;
     private Direction direction;
@@ -26,12 +26,13 @@ public class FollowCell implements CEObject {
         this.camera = world.getCamera();
         this.world = world;
         this.pos = camera.getMiddlePos();
-        this.currentTile = world.getMap().getTileFrom(pos);
+        world.getWorldArea().getCellAt(pos).ifPresent(this::setCurrentWorldCell);
     }
 
     @Override
     public void update(float dt) {
         move(dt);
+        currentWorldCell.getCellOnDirection(direction).ifPresent(this::setFutureWorldCell);
         //pos.set((int)camera.position.x, (int) camera.position.y, 0);
     }
 
@@ -61,6 +62,22 @@ public class FollowCell implements CEObject {
         if (Gdx.input.isKeyPressed(Input.Keys.W)) {
             direction = Direction.TOP;
         }
+    }
+
+    public void setCurrentWorldCell(ICell currentWorldCell) {
+        this.currentWorldCell = (WorldCell) currentWorldCell;
+    }
+
+    public WorldCell getCurrentWorldCell() {
+        return currentWorldCell;
+    }
+
+    public WorldCell getFutureWorldCell() {
+        return futureWorldCell;
+    }
+
+    public void setFutureWorldCell(ICell futureWorldCell) {
+        this.futureWorldCell = (WorldCell) futureWorldCell;
     }
 
     public Camera getCamera() {

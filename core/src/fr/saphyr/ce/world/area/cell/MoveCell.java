@@ -1,20 +1,18 @@
-package fr.saphyr.ce.world.cell;
+package fr.saphyr.ce.world.area.cell;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Vector3;
 import fr.saphyr.ce.entities.IEntity;
 import fr.saphyr.ce.world.area.IArea;
 
-public class MoveCell extends AbstractCell {
+public class MoveCell extends AbstractCell<MoveCell> {
 
-    private Vector3 relativePos;
     private Texture texture;
     private boolean isExplorable;
     private boolean isAccessible;
 
-    public MoveCell(Vector3 pos, Vector3 relativePos, IArea zone) {
-        super(pos, zone);
-        this.relativePos = relativePos;
+    public MoveCell(Vector3 pos, Vector3 relativePos, IArea<MoveCell> zone) {
+        super(pos, relativePos, zone);
     }
 
     public void setAreaEntityAccessible(final IEntity entity) {
@@ -43,14 +41,6 @@ public class MoveCell extends AbstractCell {
 
     public void setAccessible(boolean accessible) {
         isAccessible = accessible;
-    }
-
-    public Vector3 getRelativePos() {
-        return relativePos;
-    }
-
-    public void setRelativePos(Vector3 relativePos) {
-        this.relativePos = relativePos;
     }
 
 }
