@@ -46,7 +46,7 @@ public class BladeLord extends Player {
 
         if (direction == Direction.BOTTOM)
             currentAnimation = animationIdleBottom;
-        if (direction == Direction.UP)
+        if (direction == Direction.TOP)
             currentAnimation = animationIdleUp;
         if (direction == Direction.LEFT)
             currentAnimation = animationIdleLeft;

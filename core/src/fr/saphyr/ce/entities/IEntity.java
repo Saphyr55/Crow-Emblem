@@ -5,9 +5,10 @@ import com.badlogic.gdx.math.Vector3;
 import fr.saphyr.ce.CEObject;
 import fr.saphyr.ce.core.Direction;
 import fr.saphyr.ce.world.IWorld;
-import fr.saphyr.ce.world.World;
 import fr.saphyr.ce.world.WorldPos;
-import fr.saphyr.ce.world.area.*;
+import fr.saphyr.ce.world.cell.*;
+import fr.saphyr.ce.world.area.MoveArea;
+import fr.saphyr.ce.world.area.MoveAreaAttribute;
 
 import java.util.Optional;
 
@@ -21,7 +22,7 @@ public interface IEntity extends CEObject, Selectable {
 
     Direction getDirection();
 
-    TraceArea getTraceArea();
+    TraceCell getTraceArea();
 
     MoveArea getMoveArea();
 
@@ -33,19 +34,19 @@ public interface IEntity extends CEObject, Selectable {
 
     WorldPos getWorldPos();
 
-    Optional<IArea> getAreaClicked();
+    Optional<ICell> getCellClicked();
     
-    Optional<IArea> getAreaSelect();
+    Optional<ICell> getAreaSelect();
 
     void setMoveArea(MoveAreaAttribute moveAreaAttribute);
 
     void setTilesNotExplorableById(int[] tilesSolidId);
 
-    void setMoveArea(MoveArea moveArea);
+    void setMoveArea(MoveArea moveZoneArea);
 
     void setMoved(boolean isMoved);
 
-    void setAreaClicked(IArea areaClicked);
+    void setCellClicked(MoveCell cellClicked);
 
 
 }

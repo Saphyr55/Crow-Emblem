@@ -1,83 +1,36 @@
 package fr.saphyr.ce.world.area;
 
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Array;
-import fr.saphyr.ce.core.Direction;
-import fr.saphyr.ce.entities.IEntity;
-import fr.saphyr.ce.graphic.Textures;
+import fr.saphyr.ce.world.IWorld;
+import fr.saphyr.ce.world.cell.ICell;
 
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicReference;
 
-public interface IArea {
+public interface IArea<T extends ICell> {
 
-    Vector3 getPos();
+    Array<Array<Optional<T>>> getHandle();
 
-    void setPos(Vector3 pos);
+    IWorld getWorld();
 
-    void setPos(float x, float y);
-
-    Texture getTexture();
-
-    void setTexture(Texture texture);
-
-    boolean isExplorable();
-
-    void setExplorable(boolean explorable);
-
-    boolean isAccessible();
-
-    void setAccessible(boolean accessible);
-
-    int getIndex();
-
-    void setIndex(int index);
-
-    MoveArea getMoveArea();
-
-    Vector3 getRelativePos();
-
-    void setRelativePos(Vector3 relativePos);
-
-    Optional<IEntity> getContentEntity();
-
-    default Optional<IArea> getAreaOnDirection(Direction direction) {
-        return switch (direction) {
-            case UP -> getAreaFromVector(new Vector3(getPos().x, getPos().y + 1, 0));
-            case RIGHT -> getAreaFromVector(new Vector3(getPos().x + 1, getPos().y, 0));
-            case LEFT -> getAreaFromVector(new Vector3(getPos().x - 1, getPos().y, 0));
-            case BOTTOM -> getAreaFromVector(new Vector3(getPos().x, getPos().y - 1, 0));
-            case TOP_LEFT -> getAreaFromVector(new Vector3(getPos().x - 1, getPos().y + 1, 0));
-            case TOP_RIGHT -> getAreaFromVector(new Vector3(getPos().x + 1, getPos().y + 1, 0));
-            case BOTTOM_LEFT -> getAreaFromVector(new Vector3(getPos().x - 1, getPos().y - 1, 0));
-            case BOTTOM_RIGHT -> getAreaFromVector(new Vector3(getPos().x + 1, getPos().y - 1, 0));
-        };
-    }
-
-    private Optional<IArea> getAreaFromVector(Vector3 vector) {
-        final var optional = new AtomicReference<Optional<IArea>>(Optional.empty());
-        for (int i = 0; i < getMoveArea().getHandle().size; i++) {
-            for (int j = 0; j < getMoveArea().getHandle().get(i).size; j++) {
-                getMoveArea().getHandle().get(i).get(j).ifPresent(area -> {
-                    if (vector.equals(area.getPos()))
-                        optional.set(Optional.of(area));
+    default Optional<T> getAreaWithPos(final int x, final int y) {
+        final var optional = new AtomicReference<Optional<T>>();
+        optional.set(Optional.empty());
+        for (int i = 0; i < getHandle().size; i++) {
+            for (int j = 0; j < getHandle().get(i).size; j++) {
+                final Optional<T> finalOptional = getHandle().get(i).get(j);
+                finalOptional.ifPresent(area -> {
+                    if(area.getPos().x == x && area.getPos().y == y){
+                        optional.set(finalOptional);
+                    }
                 });
             }
         }
         return optional.get();
     }
-    
-    default Array<Optional<IArea>> getAroundArea() {
-        final Array<Optional<IArea>> areas = new Array<>();
-        areas.add(
-                getAreaOnDirection(Direction.UP),
-                getAreaOnDirection(Direction.BOTTOM),
-                getAreaOnDirection(Direction.LEFT),
-                getAreaOnDirection(Direction.RIGHT)
-        );
-        return areas;
+
+    default Optional<T> getAreaWithPos(final Vector3 pos) {
+        return getAreaWithPos((int) pos.x, (int) pos.y);
     }
-
-
 }

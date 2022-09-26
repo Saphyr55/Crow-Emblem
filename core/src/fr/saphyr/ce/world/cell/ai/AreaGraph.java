@@ -1,4 +1,4 @@
-package fr.saphyr.ce.world.area.ai;
+package fr.saphyr.ce.world.cell.ai;
 
 import com.badlogic.gdx.ai.pfa.Connection;
 import com.badlogic.gdx.ai.pfa.DefaultGraphPath;
@@ -7,15 +7,15 @@ import com.badlogic.gdx.ai.pfa.indexed.IndexedAStarPathFinder;
 import com.badlogic.gdx.ai.pfa.indexed.IndexedGraph;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ObjectMap;
-import fr.saphyr.ce.world.area.Area;
-import fr.saphyr.ce.world.area.IArea;
+import fr.saphyr.ce.world.cell.ICell;
+import fr.saphyr.ce.world.cell.MoveCell;
 
-public class AreaGraph implements IndexedGraph<IArea> {
+public class AreaGraph implements IndexedGraph<MoveCell> {
 
     private final AreaHeuristic areaHeuristic;
-    private final Array<IArea> areas;
-    private final Array<PathArea> pathAreas;
-    private final ObjectMap<IArea, Array<Connection<IArea>>> pathsMap;
+    private final Array<MoveCell> areas;
+    private final Array<PathMoveArea> pathAreas;
+    private final ObjectMap<MoveCell, Array<Connection<MoveCell>>> pathsMap;
     private static int lastNodeIndex = 0;
 
     public AreaGraph() {
@@ -25,31 +25,31 @@ public class AreaGraph implements IndexedGraph<IArea> {
         this.pathsMap = new ObjectMap<>();
     }
 
-    public GraphPath<IArea> findPath(IArea start, IArea end) {
-        GraphPath<IArea> areaPath = new DefaultGraphPath<>();
+    public GraphPath<MoveCell> findPath(MoveCell start, MoveCell end) {
+        GraphPath<MoveCell> areaPath = new DefaultGraphPath<>();
         new IndexedAStarPathFinder<>(this)
                 .searchNodePath(start, end, areaHeuristic, areaPath);
         return areaPath;
     }
 
-    public void connectAreas(IArea start, IArea end){
-        PathArea pathArea = new PathArea(start, end);
+    public void connectAreas(MoveCell start, MoveCell end){
+        PathMoveArea pathMoveArea = new PathMoveArea(start, end);
         if(!pathsMap.containsKey(start)){
             pathsMap.put(start, new Array<>());
         }
-        pathsMap.get(start).add(pathArea);
-        pathAreas.add(pathArea);
+        pathsMap.get(start).add(pathMoveArea);
+        pathAreas.add(pathMoveArea);
     }
 
-    public void addArea(IArea area){
-        area.setIndex(lastNodeIndex);
+    public void addArea(ICell area){
+        final MoveCell moveArea = (MoveCell) area;
+        moveArea.setIndex(lastNodeIndex);
         lastNodeIndex++;
-        areas.add(area);
+        areas.add(moveArea);
     }
-
 
     @Override
-    public int getIndex(IArea node) {
+    public int getIndex(MoveCell node) {
         return node.getIndex();
     }
 
@@ -59,9 +59,10 @@ public class AreaGraph implements IndexedGraph<IArea> {
     }
 
     @Override
-    public Array<Connection<IArea>> getConnections(IArea fromNode) {
+    public Array<Connection<MoveCell>> getConnections(MoveCell fromNode) {
         if(pathsMap.containsKey(fromNode))
             return pathsMap.get(fromNode);
         return new Array<>();
     }
+
 }

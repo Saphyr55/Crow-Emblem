@@ -1,18 +1,8 @@
 package fr.saphyr.ce.world;
 
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.maps.tiled.TiledMap;
-import com.badlogic.gdx.maps.tiled.TmxMapLoader;
-import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import fr.saphyr.ce.CETest;
-import fr.saphyr.ce.core.register.Resources;
 import fr.saphyr.ce.entities.Entity;
-import fr.saphyr.ce.entities.EntityType;
-import fr.saphyr.ce.entities.players.BladeLord;
-import fr.saphyr.ce.graphic.Textures;
-import fr.saphyr.ce.world.area.MoveAreaAttribute;
-import fr.saphyr.ce.world.area.MoveAreaAttributes;
 import fr.saphyr.ce.world.map.Map;
 import fr.saphyr.ce.world.map.Maps;
 import org.junit.jupiter.api.AfterEach;

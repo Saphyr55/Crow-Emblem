@@ -1,9 +1,7 @@
-package fr.saphyr.ce.world.area;
+package fr.saphyr.ce.world.cell;
 
 import fr.saphyr.ce.CETest;
 import org.junit.jupiter.api.Test;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 class AreaTest extends CETest {
 

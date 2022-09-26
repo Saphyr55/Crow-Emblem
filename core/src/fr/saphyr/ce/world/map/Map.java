@@ -27,7 +27,7 @@ public class Map implements Disposable {
     public void setHandle(TiledMap handle) {
         this.handle = handle;
     }
-
+    
     public TiledMapTile getTileFrom(int x, int y) {
         for(int i = 0; i < getHandle().getLayers().size(); i++) {
             int lastId = getHandle().getLayers().size() - i - 1;

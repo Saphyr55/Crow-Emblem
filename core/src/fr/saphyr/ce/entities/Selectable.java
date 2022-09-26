@@ -3,12 +3,8 @@ package fr.saphyr.ce.entities;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Vector3;
 import fr.saphyr.ce.world.IWorld;
-import fr.saphyr.ce.world.area.Area;
-import fr.saphyr.ce.world.World;
 import fr.saphyr.ce.world.WorldPos;
-import fr.saphyr.ce.world.area.IArea;
 
-import java.util.Optional;
 import java.util.function.Consumer;
 
 public interface Selectable {

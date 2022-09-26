@@ -1,6 +1,5 @@
 package fr.saphyr.ce.entities;
 
-import com.badlogic.gdx.math.Vector2;
 import fr.saphyr.ce.world.area.MoveAreaAttribute;
 import fr.saphyr.ce.world.area.MoveAreaAttributes;
 import fr.saphyr.ce.entities.enemies.Slime;

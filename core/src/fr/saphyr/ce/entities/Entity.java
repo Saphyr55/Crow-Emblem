@@ -6,14 +6,16 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.maps.tiled.TiledMapTile;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Array;
-import fr.saphyr.ce.CEObject;
 import fr.saphyr.ce.core.Direction;
 import fr.saphyr.ce.core.Logger;
 import fr.saphyr.ce.core.Renderer;
 import fr.saphyr.ce.world.IWorld;
-import fr.saphyr.ce.world.World;
 import fr.saphyr.ce.world.WorldPos;
-import fr.saphyr.ce.world.area.*;
+import fr.saphyr.ce.world.area.AbstractArea;
+import fr.saphyr.ce.world.cell.*;
+import fr.saphyr.ce.world.area.MoveArea;
+import fr.saphyr.ce.world.area.MoveAreaAttribute;
+import fr.saphyr.ce.world.area.MoveZoneAreas;
 
 import java.util.Arrays;
 import java.util.Optional;
@@ -24,7 +26,7 @@ public abstract class Entity implements IEntity {
     public static final float EPSILON = 0.09f;
 
     protected Texture texture;
-    protected TraceArea traceArea;
+    protected TraceCell traceCell;
     protected MoveArea moveArea;
     protected Array<TiledMapTile> tilesNotExplorable;
     protected WorldPos worldPos;
@@ -33,7 +35,7 @@ public abstract class Entity implements IEntity {
     protected boolean isMoved = false;
     protected Direction direction;
     private MoveAreaAttribute moveAreaAttribute;
-    private IArea areaClicked;
+    private MoveCell cellClicked;
 
     public Entity(WorldPos worldPos, int[] tileNotExplorable, MoveAreaAttribute moveAreaAttribute) {
         this.worldPos = worldPos;
@@ -41,7 +43,7 @@ public abstract class Entity implements IEntity {
         this.tilesNotExplorable = new Array<>();
         setTilesNotExplorableById(tileNotExplorable);
         setMoveArea(moveAreaAttribute);
-        this.traceArea = new TraceArea(moveArea);
+        this.traceCell = new TraceCell(moveArea);
     }
 
     public Entity() {
@@ -50,8 +52,8 @@ public abstract class Entity implements IEntity {
     }
 
     @Override
-    public Optional<IArea> getAreaSelect() {
-        AtomicReference<Optional<IArea>> posClicked = new AtomicReference<>(Optional.empty());
+    public Optional<ICell> getAreaSelect() {
+        AtomicReference<Optional<ICell>> posClicked = new AtomicReference<>(Optional.empty());
         if (moveArea.isOpen() && !isMoved) {
             moveArea.getHandle().forEach(optionals -> optionals.forEach(optional -> optional.ifPresent(area -> {
                 if (isClickOnFrame(Input.Buttons.LEFT, getWorld(), area.getPos().x, area.getPos().y))
@@ -75,39 +77,39 @@ public abstract class Entity implements IEntity {
     }
 
     protected final void move(float velocity) {
-        if (!isMoved) traceArea.init();
-        if (traceArea.hasNext()) {
+        if (!isMoved) traceCell.init();
+        if (traceCell.hasNext()) {
             moveUp(velocity);
             moveBottom(velocity);
             moveLeft(velocity);
             moveRight(velocity);
-            traceArea.next();
-        } else traceArea.stop();
+            traceCell.next();
+        } else traceCell.stop();
     }
 
     private void moveUp(float velocity) {
-        if (traceArea.getNext().getPos().y > worldPos.getPos().y) {
-            direction = Direction.UP;
+        if (traceCell.getNext().getPos().y > worldPos.getPos().y) {
+            direction = Direction.TOP;
             translate(0, velocity);
         }
     }
 
     private void moveLeft(float velocity) {
-        if (traceArea.getNext().getPos().x < worldPos.getPos().x) {
+        if (traceCell.getNext().getPos().x < worldPos.getPos().x) {
             direction = Direction.LEFT;
             translate(-velocity, 0);
         }
     }
 
     private void moveBottom(float velocity) {
-        if (traceArea.getNext().getPos().y < worldPos.getPos().y) {
+        if (traceCell.getNext().getPos().y < worldPos.getPos().y) {
             direction = Direction.BOTTOM;
             translate(0, -velocity);
         }
     }
 
     private void moveRight(float velocity) {
-        if (traceArea.getNext().getPos().x > worldPos.getPos().x) {
+        if (traceCell.getNext().getPos().x > worldPos.getPos().x) {
             direction = Direction.RIGHT;
             translate(velocity, 0);
         }
@@ -115,7 +117,7 @@ public abstract class Entity implements IEntity {
 
     public void setMoveArea(MoveAreaAttribute moveAreaAttribute) {
         this.moveAreaAttribute = moveAreaAttribute;
-        moveArea = MoveAreas.parse(moveAreaAttribute, this);
+        moveArea = MoveZoneAreas.parse(moveAreaAttribute, this);
     }
 
     protected void translate(float velocityX, float velocityY) {
@@ -161,12 +163,12 @@ public abstract class Entity implements IEntity {
         return moveArea;
     }
 
-    public void setMoveArea(MoveArea moveArea) {
-        this.moveArea = moveArea;
+    public void setMoveArea(MoveArea moveZoneArea) {
+        this.moveArea = moveZoneArea;
     }
 
-    public TraceArea getTraceArea() {
-        return traceArea;
+    public TraceCell getTraceArea() {
+        return traceCell;
     }
 
     public float getStateTime() {
@@ -193,14 +195,14 @@ public abstract class Entity implements IEntity {
         return moveAreaAttribute;
     }
 
-    public Optional<IArea> getAreaClicked() {
-        if (areaClicked != null)
-            return Optional.of(areaClicked);
+    public Optional<ICell> getCellClicked() {
+        if (cellClicked != null)
+            return Optional.of(cellClicked);
         return Optional.empty();
     }
 
-    public void setAreaClicked(IArea areaClicked) {
-        this.areaClicked = areaClicked;
+    public void setCellClicked(MoveCell cellClicked) {
+        this.cellClicked = cellClicked;
     }
 
 

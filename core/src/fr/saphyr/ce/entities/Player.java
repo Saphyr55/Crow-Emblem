@@ -1,9 +1,8 @@
 package fr.saphyr.ce.entities;
 
 import com.badlogic.gdx.Input;
-import fr.saphyr.ce.core.Direction;
-import fr.saphyr.ce.world.area.Area;
-import fr.saphyr.ce.world.area.IArea;
+import fr.saphyr.ce.world.cell.ICell;
+import fr.saphyr.ce.world.cell.MoveCell;
 import fr.saphyr.ce.world.area.MoveAreaAttribute;
 import fr.saphyr.ce.core.Renderer;
 import fr.saphyr.ce.world.WorldPos;
@@ -30,9 +29,9 @@ public abstract class Player extends Entity {
         super.update(dt);
         moveArea.getAreaWithPos(getWorld().getMouseWorldPos().getPos()).ifPresent(area -> {
             if (area.getContentEntity().isEmpty())
-                traceArea.updateEndArea(() -> area);
+                traceCell.updateEndArea(area);
         });
-        traceArea.update(dt);
+        traceCell.update(dt);
         setVelocityMoveDeltaTime(dt);
         updateMove(dt);
         updatePlayerSelected();
@@ -54,16 +53,17 @@ public abstract class Player extends Entity {
     }
 
     private void updateMove(final float dt) {
-        if (getAreaClicked().isEmpty()) getAreaSelect().ifPresent(area -> {
+        if (getCellClicked().isEmpty()) getAreaSelect().ifPresent(area -> {
             if (area.getContentEntity().isEmpty())
-                this.setAreaClicked(area);
+                this.setCellClicked((MoveCell) area);
         });
-        getAreaClicked().ifPresent(this::movePlayer);
+        getCellClicked().ifPresent(this::movePlayer);
     }
 
-    private void movePlayer(IArea area) {
-        if (area.isAccessible() && area.isExplorable()) move(velocityMoveDeltaTime);
-        else setAreaClicked(null);
+    private void movePlayer(ICell area) {
+        final MoveCell moveArea = (MoveCell) area;
+        if (moveArea.isAccessible() && moveArea.isExplorable()) move(velocityMoveDeltaTime);
+        else setCellClicked(null);
     }
 
     private void setVelocityMoveDeltaTime(float dt) {

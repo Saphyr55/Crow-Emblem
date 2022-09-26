@@ -4,18 +4,17 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Array;
-import com.badlogic.gdx.utils.Disposable;
-import fr.saphyr.ce.CEObject;
 import fr.saphyr.ce.core.Renderer;
-import fr.saphyr.ce.core.Logger;
-import fr.saphyr.ce.entities.Entity;
 import fr.saphyr.ce.entities.IEntity;
+import fr.saphyr.ce.world.cell.WorldCell;
 import fr.saphyr.ce.world.map.Map;
 
 public class World implements IWorld {
 
     private final WorldPos mouseWorldPos;
+    private final WorldCell worldCell;
     private Camera camera;
+    private FollowCell followCell;
     private Map map;
     private final Vector3 initPos;
     private final Array<IEntity> entities;
@@ -31,6 +30,8 @@ public class World implements IWorld {
         this.entities = new Array<>();
         this.mouseWorldPos = new WorldPos(this, new Vector2());
         this.camera.position.set(initPos);
+        this.followCell = new FollowCell(this);
+        this.worldCell = new WorldCell(this);
     }
 
     private void setMousePosition(Renderer renderer) {
@@ -43,6 +44,7 @@ public class World implements IWorld {
     @Override
     public void update(final float dt) {
         camera.update(dt);
+        followCell.update(dt);
         entities.forEach(entity -> entity.update(dt));
         //entities.get(0).getMoveArea().getAreaWithPos(getMouseWorldPos().getPos()).ifPresent(Logger::debug);
     }
@@ -52,6 +54,7 @@ public class World implements IWorld {
         setMousePosition(renderer);
         camera.render(renderer);
         entities.iterator().forEachRemaining(entity -> entity.render(renderer));
+        followCell.render(renderer);
     }
 
     @Override

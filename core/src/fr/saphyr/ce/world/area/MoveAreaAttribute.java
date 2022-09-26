@@ -1,18 +1,19 @@
 package fr.saphyr.ce.world.area;
 
 import com.badlogic.gdx.utils.Array;
+import fr.saphyr.ce.world.cell.AbstractCell;
 
 public final class MoveAreaAttribute {
 
-    private Array<Area.AreaAttribute> areaAttributes;
+    private Array<AbstractCell.MoveAreaAttribute> areaAttributes;
     private final int[][] pattern;
 
-    public MoveAreaAttribute(Array<Area.AreaAttribute> areaAttributes, int[][] pattern) {
+    public MoveAreaAttribute(Array<AbstractCell.MoveAreaAttribute> areaAttributes, int[][] pattern) {
         this.areaAttributes = areaAttributes;
         this.pattern = pattern;
     }
 
-    public Array<Area.AreaAttribute> areaAttributes() {
+    public Array<AbstractCell.MoveAreaAttribute> areaAttributes() {
         return areaAttributes;
     }
 
@@ -20,7 +21,7 @@ public final class MoveAreaAttribute {
         return pattern;
     }
 
-    public void setAreaAttributes(Array<Area.AreaAttribute> areaAttributes) {
+    public void setAreaAttributes(Array<AbstractCell.MoveAreaAttribute> areaAttributes) {
         this.areaAttributes = areaAttributes;
     }
 }
