@@ -13,7 +13,7 @@ public class CellGraph<C extends ICell> implements IndexedGraph<C> {
 
     private final CellHeuristic<C> cellHeuristic;
     private final Array<C> cells;
-    private final Array<PathCell<C>> pathCells;
+    private final Array<PathCellConnection<C>> pathCells;
     private final ObjectMap<C, Array<Connection<C>>> pathsMap;
     private static int lastNodeIndex = 0;
 
@@ -32,7 +32,7 @@ public class CellGraph<C extends ICell> implements IndexedGraph<C> {
     }
 
     public void connectAreas(C start, C end){
-        PathCell<C> pathCell = new PathCell<>(start, end);
+        PathCellConnection<C> pathCell = new PathCellConnection<>(start, end);
         if(!pathsMap.containsKey(start)){
             pathsMap.put(start, new Array<>());
         }

@@ -13,22 +13,22 @@ public class World implements IWorld {
 
     private final WorldPos mouseWorldPos;
     private final WorldArea worldArea;
-    private Camera camera;
-    private final FollowCell followCell;
-    private Map map;
+    private final Camera camera;
+    private final FollowCamera followCell;
+    private final Map map;
     private final Vector3 initPos;
     private final Array<IEntity> entities;
 
     public World(Map map, Vector3 initPos) {
         this.initPos = initPos;
         this.map = map;
-        this.camera = new Camera(map.getWidth(), map.getHeight(),21, 11);
+        this.camera = new Camera(map.getWidth(), map.getHeight(), 20f, 10f);
         this.camera.initPos(initPos);
         this.entities = new Array<>();
         this.mouseWorldPos = new WorldPos(this, new Vector2());
         this.camera.position.set(initPos);
         this.worldArea = new WorldArea(this);
-        this.followCell = new FollowCell(this);
+        this.followCell = new FollowCamera(this);
     }
 
     private void setMousePosition(Renderer renderer) {
@@ -40,9 +40,9 @@ public class World implements IWorld {
 
     @Override
     public void update(final float dt) {
-        camera.update(dt);
-        followCell.update(dt);
         entities.forEach(entity -> entity.update(dt));
+        followCell.update(dt);
+        camera.update(dt);
         //entities.get(0).getMoveArea().getAreaWithPos(getMouseWorldPos().getPos()).ifPresent(Logger::debug);
     }
 
@@ -52,11 +52,6 @@ public class World implements IWorld {
         camera.render(renderer);
         entities.iterator().forEachRemaining(entity -> entity.render(renderer));
         followCell.render(renderer);
-    }
-
-    @Override
-    public void dispose() {
-        map.dispose();
     }
 
     @Override
@@ -80,11 +75,6 @@ public class World implements IWorld {
     }
 
     @Override
-    public void setCamera(Camera camera) {
-        this.camera = camera;
-    }
-
-    @Override
     public WorldArea getWorldArea() {
         return worldArea;
     }
@@ -92,11 +82,6 @@ public class World implements IWorld {
     @Override
     public Map getMap() {
         return map;
-    }
-
-    @Override
-    public void setMap(Map map) {
-        this.map = map;
     }
 
     @Override

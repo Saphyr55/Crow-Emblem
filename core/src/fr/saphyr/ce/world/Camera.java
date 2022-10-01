@@ -18,11 +18,11 @@ public class Camera extends OrthographicCamera implements CEObject {
 
     public Camera(float widthBorder, float heightBorder, float viewportWidth, float viewportHeight) {
         this.setToOrtho(false, viewportWidth, viewportHeight);
-        this.border = new Vector3(widthBorder, heightBorder, 0);
-        this.zeroPosMap = new Vector3(this.position);
+        this.border = new Vector3(widthBorder, heightBorder, 1);
+        this.zeroPosMap = new Vector3(position);
+        this.middlePos = new Vector3(position);
         this.initPos = new Vector3(position);
-        this.update(true);
-        this.middlePos = new Vector3( ((int) viewportHeight) - 1, ((int) viewportHeight) - 1, 0);
+        update(true);
     }
 
     public void initPos(Vector3 vector) {
@@ -33,7 +33,6 @@ public class Camera extends OrthographicCamera implements CEObject {
 
     @Override
     public void update(final float dt) {
-        //move(dt);
         updateEdge();
         update(true);
     }
@@ -42,21 +41,6 @@ public class Camera extends OrthographicCamera implements CEObject {
     public void render(Renderer renderer) {
     }
 
-    private void move(final float dt) {
-        final float velocity = TRANSLATE_VELOCITY * dt;
-        if (Gdx.input.isKeyPressed(Input.Keys.D)) {
-            translate(velocity, 0, 0);
-        }
-        if (Gdx.input.isKeyPressed(Input.Keys.A)) {
-            translate(-velocity, 0, 0);
-        }
-        if (Gdx.input.isKeyPressed(Input.Keys.S)) {
-            translate(0, -velocity, 0);
-        }
-        if (Gdx.input.isKeyPressed(Input.Keys.W)) {
-            translate(0, velocity, 0);
-        }
-    }
     private void updateEdge() {
         position.y = MathUtils.clamp(position.y, zeroPosMap.y, border.y - zeroPosMap.y);
         position.x = MathUtils.clamp(position.x, zeroPosMap.x, border.x - zeroPosMap.x);

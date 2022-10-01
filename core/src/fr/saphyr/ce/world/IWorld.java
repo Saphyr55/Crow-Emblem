@@ -19,8 +19,6 @@ public interface IWorld extends Disposable, CEObject {
 
     Vector3 getInitPos();
 
-    void setMap(Map map);
-
     Array<IEntity> getEntities();
 
     void addEntities(IEntity entity);
@@ -29,8 +27,11 @@ public interface IWorld extends Disposable, CEObject {
 
     int getCountEntities();
 
-    void setCamera(Camera camera);
-
     WorldArea getWorldArea();
+
+    @Override
+    default void dispose() {
+        getMap().dispose();
+    }
 
 }

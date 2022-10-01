@@ -3,16 +3,20 @@ package fr.saphyr.ce.scene;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.ArrayMap;
+import com.badlogic.gdx.utils.ObjectMap;
 import fr.saphyr.ce.core.Renderer;
 import fr.saphyr.ce.entities.EntityType;
+import fr.saphyr.ce.world.IWorld;
 import fr.saphyr.ce.world.map.Maps;
 import fr.saphyr.ce.world.World;
 import fr.saphyr.ce.world.WorldPos;
 
+import java.util.Map;
+
 public final class GameScene extends Scene {
 
-    private final ArrayMap<String, World> worlds;
-    private World currentWorld;
+    private final ArrayMap<String, IWorld> worlds;
+    private IWorld currentWorld;
     private final Renderer renderer;
 
     public GameScene(Renderer renderer) {
@@ -24,7 +28,7 @@ public final class GameScene extends Scene {
     public void init() {
         super.init();
         int[] tilesNotExplorable = { 2, 3, 8, 10, 11 };
-        World world = new World(Maps.get("maps/map1.tmx"), new Vector3(10, 10, 3));
+        final IWorld world = new World(Maps.get("maps/map1.tmx"), new Vector3(10, 10, 3));
 
         world.addEntities(EntityType.SLIME.construct()
                 .withWorldPos(new WorldPos(world, new Vector2(4, 10)))
@@ -60,7 +64,11 @@ public final class GameScene extends Scene {
 
     @Override
     public void dispose() {
-        worlds.forEach(stringWorldEntry -> stringWorldEntry.value.dispose());
+        worlds.forEach(this::disposeByEntry);
+    }
+
+    private void disposeByEntry(ObjectMap.Entry<String, IWorld> entry) {
+        entry.value.dispose();
     }
 
 }

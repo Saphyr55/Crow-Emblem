@@ -37,7 +37,7 @@ public class BladeLord extends Player {
     @Override
     public void render(Renderer renderer) {
         super.render(renderer);
-        renderer.draw(currentFrame, worldPos.getPos().x - 0.15f, worldPos.getPos().y, 1.5f, 1.5f);
+        renderer.draw(currentFrame, worldPos.getPos().x - 0.25f, worldPos.getPos().y, 1.5f, 1.5f);
     }
 
     @Override
@@ -71,9 +71,6 @@ public class BladeLord extends Player {
             currentFrame.flip(true, false);
         else if (currentAnimation == animationIdleLeft && currentFrame.isFlipX())
             currentFrame.flip(true, false);
-
-
-
     }
 
 }

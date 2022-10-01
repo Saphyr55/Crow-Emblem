@@ -8,20 +8,20 @@ import fr.saphyr.ce.world.area.IArea;
 
 import java.util.Optional;
 
-public abstract class AbstractCell<T extends ICell> implements ICell {
+public abstract class AbstractCell<C extends ICell> implements ICell {
 
     protected int index;
     protected Vector3 pos;
     protected Vector3 relativePos;
     protected IEntity contentEntity;
-    protected IArea<T> area;
+    protected IArea<C> area;
 
     public static final Texture BLUE_AREA_TEXTURE = Textures.get("textures/areas/blue_area.png");
     public static final Texture RED_AREA_TEXTURE = Textures.get("textures/areas/red_area.png");
     public static final Texture GREEN_AREA_TEXTURE = Textures.get("textures/areas/green_area.png");
     public static final Texture YELLOW_AREA_TEXTURE = Textures.get("textures/areas/yellow_area.png");
 
-    protected AbstractCell(Vector3 pos, Vector3 relativePos, IArea<T> area) {
+    protected AbstractCell(Vector3 pos, Vector3 relativePos, IArea<C> area) {
         this.pos = pos;
         this.relativePos = relativePos;
         this.contentEntity = null;
@@ -29,7 +29,7 @@ public abstract class AbstractCell<T extends ICell> implements ICell {
         setContentEntity();
     }
 
-    protected AbstractCell(Vector3 pos, IArea<T> area) {
+    protected AbstractCell(Vector3 pos, IArea<C> area) {
         this.pos = pos;
         this.relativePos = pos;
         this.contentEntity = null;
@@ -45,7 +45,7 @@ public abstract class AbstractCell<T extends ICell> implements ICell {
     }
 
     @Override
-    public IArea<T> getArea() {
+    public IArea<C> getArea() {
         return area;
     }
 
