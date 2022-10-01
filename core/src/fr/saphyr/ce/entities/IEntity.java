@@ -1,7 +1,9 @@
 package fr.saphyr.ce.entities;
 
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.maps.tiled.TiledMapTile;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.utils.Array;
 import fr.saphyr.ce.CEObject;
 import fr.saphyr.ce.core.Direction;
 import fr.saphyr.ce.world.IWorld;
@@ -36,9 +38,9 @@ public interface IEntity extends CEObject, Selectable {
 
     WorldPos getWorldPos();
 
-    Optional<ICell> getCellClicked();
+    Optional<MoveCell> getCellPressed();
     
-    Optional<ICell> getAreaSelect();
+    Optional<MoveCell> getCellWherePressed();
 
     void setMoveArea(MoveAreaAttribute moveAreaAttribute);
 
@@ -48,7 +50,7 @@ public interface IEntity extends CEObject, Selectable {
 
     void setMoved(boolean isMoved);
 
-    void setCellClicked(MoveCell cellClicked);
+    void setCellPressed(MoveCell cellClicked);
 
-
+    Array<TiledMapTile> getTilesNotExplorable();
 }

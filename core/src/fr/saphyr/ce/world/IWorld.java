@@ -34,4 +34,5 @@ public interface IWorld extends Disposable, CEObject {
         getMap().dispose();
     }
 
+    FollowCamera getFollowCamera();
 }

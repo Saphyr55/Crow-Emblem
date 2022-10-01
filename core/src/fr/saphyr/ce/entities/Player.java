@@ -7,16 +7,17 @@ import fr.saphyr.ce.world.area.MoveAreaAttribute;
 import fr.saphyr.ce.core.Renderer;
 import fr.saphyr.ce.world.WorldPos;
 
+import java.util.Optional;
+
 public abstract class Player extends Entity {
 
-    public static Player playerSelected = null;
+    private static Player playerSelected = null;
     public static boolean hasPlayerSelected = false;
-    protected float velocityMove;
+    protected float velocityMove = 4;
     private float velocityMoveDeltaTime;
 
     public Player(WorldPos worldPos, int[]tileNotExplorable, MoveAreaAttribute moveAreaAttribute) {
         super(worldPos, tileNotExplorable, moveAreaAttribute);
-        velocityMove = 4;
     }
 
     @Override
@@ -27,18 +28,22 @@ public abstract class Player extends Entity {
     @Override
     public void update(float dt) {
         super.update(dt);
-        moveArea.getCellAt(getWorld().getMouseWorldPos().getPos()).ifPresent(area -> {
-            if (area.getContentEntity().isEmpty())
-                traceCell.updateEndArea(area);
-        });
-        traceCell.update(dt);
+        updateTraceCell(dt);
         setVelocityMoveDeltaTime(dt);
-        updateMove(dt);
+        updateMove();
         updatePlayerSelected();
     }
 
+    private void updateTraceCell(float dt) {
+        moveArea.getCellAt(getWorld().getFollowCamera().getPos()).ifPresent(cell -> {
+            if (cell.getContentEntity().isEmpty())
+                traceCell.updateEndArea(cell);
+        });
+        traceCell.update(dt);
+    }
+
     private void updatePlayerSelected() {
-        if(isClickOnFrame(Input.Buttons.LEFT, worldPos)) {
+        if(isPressedOnFrame(Input.Keys.ENTER, worldPos)) {
             if (hasPlayerSelected) {
                 hasPlayerSelected = false;
                 playerSelected.isSelected = false;
@@ -52,18 +57,17 @@ public abstract class Player extends Entity {
         }
     }
 
-    private void updateMove(final float dt) {
-        if (getCellClicked().isEmpty()) getAreaSelect().ifPresent(area -> {
-            if (area.getContentEntity().isEmpty())
-                this.setCellClicked((MoveCell) area);
+    private void updateMove() {
+        if (getCellPressed().isEmpty()) getCellWherePressed().ifPresent(cell -> {
+            if (cell.getContentEntity().isEmpty()) cellPressed = cell;
         });
-        getCellClicked().ifPresent(this::movePlayer);
+        getCellPressed().ifPresent(this::movePlayer);
     }
 
-    private void movePlayer(ICell area) {
-        final MoveCell moveArea = (MoveCell) area;
-        if (moveArea.isAccessible() && moveArea.isExplorable()) move(velocityMoveDeltaTime);
-        else setCellClicked(null);
+    private void movePlayer(MoveCell cell) {
+        if (cell.isAccessible() && cell.isExplorable()) move(velocityMoveDeltaTime);
+        else
+            cellPressed = null;
     }
 
     private void setVelocityMoveDeltaTime(float dt) {

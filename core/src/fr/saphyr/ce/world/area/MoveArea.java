@@ -2,6 +2,7 @@ package fr.saphyr.ce.world.area;
 
 import com.badlogic.gdx.maps.tiled.TiledMapTile;
 import com.badlogic.gdx.utils.Array;
+import fr.saphyr.ce.entities.IEntity;
 import fr.saphyr.ce.world.area.cell.AbstractCell;
 import fr.saphyr.ce.world.area.cell.ICell;
 import fr.saphyr.ce.world.area.cell.MoveCell;
@@ -17,20 +18,20 @@ import java.util.function.Consumer;
 
 public class MoveArea extends AbstractArea<MoveCell> implements Drawable {
 
-    private final Entity entity;
+    private final IEntity entity;
     private final Array<TiledMapTile> tilesNotExplorable;
     private boolean isOpen;
     private final Array<MoveCell> cellsMaskNotAccessible;
     private final CellGraph<MoveCell> cellGraph;
     private MoveCell cellWithEntity;
 
-    public MoveArea(Entity entity) {
+    public MoveArea(IEntity entity) {
         super(entity.getWorld());
         this.entity = entity;
         this.tilesNotExplorable = entity.getTilesNotExplorable();
         this.isOpen = false;
         this.cellsMaskNotAccessible = new Array<>();
-        this.cellGraph = new CellGraph();
+        this.cellGraph = new CellGraph<>();
     }
 
     public void connect() {
@@ -112,7 +113,7 @@ public class MoveArea extends AbstractArea<MoveCell> implements Drawable {
         }
     }
 
-    public Entity getEntity() {
+    public IEntity getEntity() {
         return entity;
     }
 

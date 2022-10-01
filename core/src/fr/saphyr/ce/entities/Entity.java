@@ -35,10 +35,10 @@ public abstract class Entity implements IEntity {
     protected boolean isSelected;
     protected boolean isMoved = false;
     protected Direction direction;
-    private MoveAreaAttribute moveAreaAttribute;
-    private MoveCell cellClicked;
+    protected MoveAreaAttribute moveAreaAttribute;
+    protected MoveCell cellPressed;
 
-    public Entity(WorldPos worldPos, int[] tileNotExplorable, MoveAreaAttribute moveAreaAttribute) {
+    protected Entity(WorldPos worldPos, int[] tileNotExplorable, MoveAreaAttribute moveAreaAttribute) {
         this.worldPos = worldPos;
         this.isSelected = false;
         this.tilesNotExplorable = new Array<>();
@@ -52,16 +52,15 @@ public abstract class Entity implements IEntity {
         this.tilesNotExplorable = new Array<>();
     }
 
-    @Override
-    public Optional<ICell> getAreaSelect() {
-        AtomicReference<Optional<ICell>> posClicked = new AtomicReference<>(Optional.empty());
+    public Optional<MoveCell> getCellWherePressed() {
+        final AtomicReference<Optional<MoveCell>> posPressed = new AtomicReference<>(Optional.empty());
         if (moveArea.isOpen() && !isMoved) {
             moveArea.getHandle().forEach(optionals -> optionals.forEach(optional -> optional.ifPresent(area -> {
-                if (isClickOnFrame(Input.Buttons.LEFT, getWorld(), area.getPos().x, area.getPos().y))
-                    posClicked.set(Optional.of(area));
+                if (isPressedOnFrame(Input.Keys.ENTER, getWorld(), area.getPos().x, area.getPos().y))
+                    posPressed.set(Optional.of(area));
             })));
         }
-        return posClicked.get();
+        return posPressed.get();
     }
 
     @Override
@@ -196,14 +195,13 @@ public abstract class Entity implements IEntity {
         return moveAreaAttribute;
     }
 
-    public Optional<ICell> getCellClicked() {
-        if (cellClicked != null)
-            return Optional.of(cellClicked);
+    public Optional<MoveCell> getCellPressed() {
+        if (cellPressed != null) return Optional.of(cellPressed);
         return Optional.empty();
     }
 
-    public void setCellClicked(MoveCell cellClicked) {
-        this.cellClicked = cellClicked;
+    public void setCellPressed(MoveCell cellClicked) {
+        this.cellPressed = cellClicked;
     }
 
 

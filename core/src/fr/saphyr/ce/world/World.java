@@ -14,7 +14,7 @@ public class World implements IWorld {
     private final WorldPos mouseWorldPos;
     private final WorldArea worldArea;
     private final Camera camera;
-    private final FollowCamera followCell;
+    private final FollowCamera followCamera;
     private final Map map;
     private final Vector3 initPos;
     private final Array<IEntity> entities;
@@ -28,7 +28,7 @@ public class World implements IWorld {
         this.mouseWorldPos = new WorldPos(this, new Vector2());
         this.camera.position.set(initPos);
         this.worldArea = new WorldArea(this);
-        this.followCell = new FollowCamera(this);
+        this.followCamera = new FollowCamera(this);
     }
 
     private void setMousePosition(Renderer renderer) {
@@ -41,7 +41,7 @@ public class World implements IWorld {
     @Override
     public void update(final float dt) {
         entities.forEach(entity -> entity.update(dt));
-        followCell.update(dt);
+        followCamera.update(dt);
         camera.update(dt);
         //entities.get(0).getMoveArea().getAreaWithPos(getMouseWorldPos().getPos()).ifPresent(Logger::debug);
     }
@@ -51,7 +51,7 @@ public class World implements IWorld {
         setMousePosition(renderer);
         camera.render(renderer);
         entities.iterator().forEachRemaining(entity -> entity.render(renderer));
-        followCell.render(renderer);
+        followCamera.render(renderer);
     }
 
     @Override
@@ -99,4 +99,8 @@ public class World implements IWorld {
         return entities;
     }
 
+    @Override
+    public FollowCamera getFollowCamera() {
+        return followCamera;
+    }
 }

@@ -1,5 +1,6 @@
 package fr.saphyr.ce.scene;
 
+import com.badlogic.gdx.Game;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.ArrayMap;
@@ -18,10 +19,12 @@ public final class GameScene extends Scene {
     private final ArrayMap<String, IWorld> worlds;
     private IWorld currentWorld;
     private final Renderer renderer;
+    private static GameScene currentGameScene;
 
     public GameScene(Renderer renderer) {
         worlds = new ArrayMap<>();
         this.renderer = renderer;
+        currentGameScene = this;
     }
 
     @Override
@@ -69,6 +72,14 @@ public final class GameScene extends Scene {
 
     private void disposeByEntry(ObjectMap.Entry<String, IWorld> entry) {
         entry.value.dispose();
+    }
+
+    public IWorld getCurrentWorld() {
+        return currentWorld;
+    }
+
+    public static GameScene getCurrentGameScene() {
+        return currentGameScene;
     }
 
 }

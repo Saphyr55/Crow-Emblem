@@ -65,14 +65,14 @@ public class TraceCell implements Updatable {
         trace.forEach(area -> area.setTexture(AbstractCell.BLUE_AREA_TEXTURE));
         trace.clear();
         final var entity = getMoveArea().getEntity();
-        entity.getCellClicked().ifPresent(area -> entity.getWorldPos().getPos().set(area.getPos()));
-        entity.setCellClicked(null);
+        entity.getCellPressed().ifPresent(area -> entity.getWorldPos().getPos().set(area.getPos()));
+        entity.setCellPressed(null);
         nextCell = null;
     }
 
     private boolean areaClickedAlmostEqualWith(Vector3 pos) {
         final AtomicBoolean atReturn = new AtomicBoolean(false);
-        getMoveArea().getEntity().getCellClicked().ifPresent(area -> atReturn.set(area.almostEqualArea(pos, EPSILON)));
+        getMoveArea().getEntity().getCellPressed().ifPresent(area -> atReturn.set(area.almostEqualArea(pos, EPSILON)));
         return atReturn.get();
     }
 

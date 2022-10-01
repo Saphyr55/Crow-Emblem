@@ -15,8 +15,7 @@ public final class SceneManager {
     }
 
     public void init() {
-        if (!currentScene.isInit())
-            currentScene.init();
+        if (!currentScene.isInit()) currentScene.init();
     }
 
     public void update(float dt) {
