@@ -66,7 +66,7 @@ public final class EntityType<T extends IEntity> {
         }
 
         public EntityBuilder<T> withTileNotExplorable(int[] tileNotExplorable) {
-            this.tileNotExplorable = tileNotExplorable;
+            this.tileNotExplorable = tileNotExplorable.clone();
             return this;
         }
 

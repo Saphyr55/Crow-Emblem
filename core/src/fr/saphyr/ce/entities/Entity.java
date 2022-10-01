@@ -17,6 +17,7 @@ import fr.saphyr.ce.world.area.cell.TraceCell;
 import fr.saphyr.ce.world.area.MoveArea;
 import fr.saphyr.ce.world.area.MoveAreaAttribute;
 import fr.saphyr.ce.world.area.MoveZoneAreas;
+import fr.saphyr.ce.world.area.cell.WorldCell;
 
 import java.util.Arrays;
 import java.util.Optional;
@@ -31,6 +32,7 @@ public abstract class Entity implements IEntity {
     protected MoveArea moveArea;
     protected Array<TiledMapTile> tilesNotExplorable;
     protected WorldPos worldPos;
+    protected WorldCell worldCell;
     protected float stateTime = 0.0f;
     protected boolean isSelected;
     protected boolean isMoved = false;
@@ -74,10 +76,11 @@ public abstract class Entity implements IEntity {
     @Override
     public void update(float dt) {
         stateTime += dt;
+        traceCell.update(dt);
     }
 
     protected final void move(float velocity) {
-        if (!isMoved) traceCell.init();
+        traceCell.init();
         if (traceCell.hasNext()) {
             moveUp(velocity);
             moveBottom(velocity);
@@ -117,7 +120,7 @@ public abstract class Entity implements IEntity {
 
     public void setMoveArea(MoveAreaAttribute moveAreaAttribute) {
         this.moveAreaAttribute = moveAreaAttribute;
-        moveArea = MoveZoneAreas.parse(moveAreaAttribute, this);
+        moveArea = MoveZoneAreas.parse(this.moveAreaAttribute, this);
     }
 
     protected void translate(float velocityX, float velocityY) {
@@ -134,9 +137,12 @@ public abstract class Entity implements IEntity {
 
     private void addTileById(int id) {
         final TiledMapTile tile = getWorld().getMap().getHandle().getTileSets().getTile(id);
-        if (tile != null && !tilesNotExplorable.contains(tile, false)) tilesNotExplorable.add(tile);
-        else if (tilesNotExplorable.contains(tile, false)) Logger.warning("Tile id="+id+" is already masked");
-        else Logger.warning("Unrecognized tile from id="+id+" ");
+        if (tile != null && !tilesNotExplorable.contains(tile, false))
+            tilesNotExplorable.add(tile);
+        else if (tilesNotExplorable.contains(tile, false))
+            Logger.warning("Tile id="+id+" is already masked");
+        else
+            Logger.warning("Unrecognized tile from id="+id+" ");
     }
 
     public IWorld getWorld() {

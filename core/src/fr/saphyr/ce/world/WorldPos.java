@@ -18,6 +18,18 @@ public class WorldPos {
         this.world = world;
     }
 
+    public static WorldPos of(IWorld world, Vector3 pos) {
+        return new WorldPos(world, pos);
+    }
+
+    public static WorldPos of(IWorld world, Vector2 pos) {
+        return new WorldPos(world, pos);
+    }
+
+    public static WorldPos of(WorldPos worldPos) {
+        return new WorldPos(worldPos.world, worldPos.getPos());
+    }
+
     public Vector3 getPos() {
         return pos;
     }

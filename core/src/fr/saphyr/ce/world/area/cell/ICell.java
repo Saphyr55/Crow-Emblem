@@ -73,5 +73,5 @@ public interface ICell {
     default boolean almostEqualArea(Vector3 pos, float epsilon) {
         return CEMath.almostEqual(getPos().x, pos.x, epsilon) && CEMath.almostEqual(getPos().y, pos.y, epsilon);
     }
-
+    
 }

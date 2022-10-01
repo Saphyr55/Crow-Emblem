@@ -36,10 +36,10 @@ public class MoveArea extends AbstractArea<MoveCell> implements Drawable {
 
     public void connect() {
         handle.forEach(optionals -> optionals.forEach(optional -> optional.ifPresent(cellGraph::addArea)));
-        handle.forEach(optionals -> optionals.forEach(optional -> optional.ifPresent(area -> {
-            final MoveCell moveCell1 = (MoveCell) area;
+        handle.forEach(optionals -> optionals.forEach(optional -> optional.ifPresent(cell -> {
+            final MoveCell moveCell1 = cell;
             if (moveCell1.isAccessible() && moveCell1.isExplorable()) {
-                area.getAroundCell().forEach(optional1 -> optional1.ifPresent(area1 -> {
+                cell.getAroundCell().forEach(optional1 -> optional1.ifPresent(area1 -> {
                     final MoveCell moveCell = (MoveCell) area1;
                     if (moveCell.isAccessible() && moveCell.isExplorable())
                         cellGraph.connectAreas(moveCell1, moveCell);

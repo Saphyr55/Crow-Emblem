@@ -3,6 +3,7 @@ package fr.saphyr.ce.world.area.cell;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Array;
 import fr.saphyr.ce.core.Updatable;
+import fr.saphyr.ce.entities.IEntity;
 import fr.saphyr.ce.world.area.MoveArea;
 
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -15,36 +16,44 @@ public class TraceCell implements Updatable {
     private MoveCell endCell;
     private MoveCell nextCell;
     private MoveArea moveArea;
+    private IEntity entity;
     private int index = 0;
     private MoveCell cellUpdate;
+    private boolean isFinish = false;
 
     public TraceCell(MoveArea moveArea) {
         this.trace = new Array<>();
         this.moveArea = moveArea;
+        this.entity = moveArea.getEntity();
     }
 
     @Override
     public void update(float dt) {
-        if (getMoveArea().isOpen() && !getMoveArea().getEntity().isMoved()) {
+        if (moveArea.isOpen() && !entity.isMoved()) {
             this.endCell = getCellUpdate();
             if (endCell != null) {
                 reset();
-                getMoveArea().getAreaGraph().findPath(
-                        getMoveArea().getCellWithMainEntity(), endCell).forEach(this::add);
+                moveArea.getAreaGraph().findPath(
+                        moveArea.getCellWithMainEntity(), endCell).forEach(this::add);
             }
         }
     }
 
     public void init() {
-        index = 0;
-        getMoveArea().getEntity().setMoved(true);
-        if (trace.size > 1) nextCell = trace.get(++index);
+        if (!entity.isMoved()) {
+            isFinish = true;
+            index = 0;
+            entity.setMoved(true);
+            if (trace.size > 1) nextCell = trace.get(++index);
+        }
     }
 
     public void next() {
-        if (areaClickedAlmostEqualWith(getMoveArea().getEntity().getWorldPos().getPos())) stop();
-        else if (nextCell.almostEqualArea(getMoveArea().getEntity().getWorldPos().getPos(), EPSILON)) {
-            getMoveArea().getEntity().getWorldPos().getPos().set(nextCell.getPos());
+        final Vector3 pos = entity.getWorldPos().getPos();
+        if (!hasNext()) isFinish = true;
+        if (areaClickedAlmostEqualWith(pos)) stop();
+        else if (nextCell.almostEqualArea(pos, EPSILON)) {
+            pos.set(nextCell.getPos());
             ++index;
             if (index < trace.size)
                 nextCell = trace.get(index);
@@ -52,19 +61,17 @@ public class TraceCell implements Updatable {
     }
 
     public void stop() {
-        final var entity = getMoveArea().getEntity();
         if (entity.isMoved()) {
             entity.setMoved(false);
             reset();
-            entity.setMoveArea(entity.getMoveAreaAttribute());
-            setMoveArea(moveArea);
         }
+        entity.setMoveArea(entity.getMoveAreaAttribute());
+        moveArea = entity.getMoveArea();
     }
 
     public void reset() {
         trace.forEach(area -> area.setTexture(AbstractCell.BLUE_AREA_TEXTURE));
         trace.clear();
-        final var entity = getMoveArea().getEntity();
         entity.getCellPressed().ifPresent(area -> entity.getWorldPos().getPos().set(area.getPos()));
         entity.setCellPressed(null);
         nextCell = null;
@@ -72,7 +79,7 @@ public class TraceCell implements Updatable {
 
     private boolean areaClickedAlmostEqualWith(Vector3 pos) {
         final AtomicBoolean atReturn = new AtomicBoolean(false);
-        getMoveArea().getEntity().getCellPressed().ifPresent(area -> atReturn.set(area.almostEqualArea(pos, EPSILON)));
+        entity.getCellPressed().ifPresent(area -> atReturn.set(area.almostEqualArea(pos, EPSILON)));
         return atReturn.get();
     }
 
@@ -84,7 +91,7 @@ public class TraceCell implements Updatable {
         return nextCell != null;
     }
 
-        private void add(MoveCell cell) {
+    private void add(MoveCell cell) {
         cell.setTexture(AbstractCell.GREEN_AREA_TEXTURE);
         trace.add(cell);
     }
@@ -98,7 +105,7 @@ public class TraceCell implements Updatable {
     }
 
     public MoveArea getMoveArea() {
-        return moveArea.getEntity().getMoveArea();
+        return moveArea;
     }
 
     public void setMoveArea(MoveArea moveZoneArea) {
@@ -109,8 +116,12 @@ public class TraceCell implements Updatable {
         return cellUpdate;
     }
 
-    public void updateEndArea(MoveCell cell) {
+    public void updateEndCell(MoveCell cell) {
         this.cellUpdate = cell;
+    }
+
+    public boolean isFinish() {
+        return isFinish;
     }
 }
 

@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Array;
+import fr.saphyr.ce.core.Logger;
 import fr.saphyr.ce.core.Renderer;
 import fr.saphyr.ce.entities.IEntity;
 import fr.saphyr.ce.world.area.WorldArea;
@@ -31,6 +32,18 @@ public class World implements IWorld {
         this.followCamera = new FollowCamera(this);
     }
 
+    public static IWorld of(Map map, Vector3 initPos) {
+        return new World(map, initPos);
+    }
+
+    public static IWorld of(Map map) {
+        return new World(map, new Vector3());
+    }
+
+    public static IWorld of(IWorld world) {
+        return new World(world.getMap(), world.getInitPos());
+    }
+
     private void setMousePosition(Renderer renderer) {
         renderer.getMapRenderer().setView(getCamera());
         renderer.getMapRenderer().render();
@@ -43,7 +56,8 @@ public class World implements IWorld {
         entities.forEach(entity -> entity.update(dt));
         followCamera.update(dt);
         camera.update(dt);
-        //entities.get(0).getMoveArea().getAreaWithPos(getMouseWorldPos().getPos()).ifPresent(Logger::debug);
+        worldArea.update(dt);
+        // worldArea.getCellAt(followCamera.getPos()).ifPresent(Logger::debug);
     }
 
     @Override

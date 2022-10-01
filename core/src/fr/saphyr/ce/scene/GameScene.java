@@ -31,24 +31,28 @@ public final class GameScene extends Scene {
     public void init() {
         super.init();
         int[] tilesNotExplorable = { 2, 3, 8, 10, 11 };
-        final IWorld world = new World(Maps.get("maps/map1.tmx"), new Vector3(10, 10, 3));
+        final IWorld world = World.of(Maps.get("maps/map1.tmx"), new Vector3(10, 10, 0));
+
+        world.addEntities(EntityType.BLADE_LORD.construct()
+                .withWorldPos(WorldPos.of(world, new Vector2(3, 5)))
+                .withTileNotExplorable(tilesNotExplorable)
+                .build());
+
+        world.addEntities(EntityType.BLADE_LORD.construct()
+                .withWorldPos(WorldPos.of(world, new Vector2(4, 5)))
+                .withTileNotExplorable(tilesNotExplorable)
+                .build());
 
         world.addEntities(EntityType.SLIME.construct()
-                .withWorldPos(new WorldPos(world, new Vector2(4, 10)))
+                .withWorldPos(WorldPos.of(world, new Vector2(4, 10)))
                 .withTileNotExplorable(tilesNotExplorable)
-                .build());
+                .build()
+        );
 
-        world.addEntities(EntityType.BLADE_LORD.construct()
-                .withWorldPos(new WorldPos(world, new Vector2(3, 5)))
-                .withTileNotExplorable(tilesNotExplorable)
-                .build());
 
-        world.addEntities(EntityType.BLADE_LORD.construct()
-                .withWorldPos(new WorldPos(world, new Vector2(4, 5)))
-                .withTileNotExplorable(tilesNotExplorable)
-                .build());
 
         worlds.put("world1", world);
+
 
         currentWorld = worlds.get("world1");
 
