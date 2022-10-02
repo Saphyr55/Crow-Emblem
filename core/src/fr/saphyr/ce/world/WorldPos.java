@@ -50,4 +50,12 @@ public class WorldPos {
         setPos(new Vector3(x, y, 0));
     }
 
+    public float getPosX() {
+        return getPos().x;
+    }
+
+    public float getPosY() {
+        return getPos().y;
+    }
+
 }

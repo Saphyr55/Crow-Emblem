@@ -57,14 +57,13 @@ public class World implements IWorld {
         followCamera.update(dt);
         camera.update(dt);
         worldArea.update(dt);
-        // worldArea.getCellAt(followCamera.getPos()).ifPresent(Logger::debug);
     }
 
     @Override
     public void render(Renderer renderer) {
         setMousePosition(renderer);
         camera.render(renderer);
-        entities.iterator().forEachRemaining(entity -> entity.render(renderer));
+        entities.forEach(entity -> entity.render(renderer));
         followCamera.render(renderer);
     }
 

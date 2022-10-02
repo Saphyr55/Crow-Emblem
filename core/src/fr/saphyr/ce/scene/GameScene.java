@@ -50,9 +50,7 @@ public final class GameScene extends Scene {
         );
 
 
-
         worlds.put("world1", world);
-
 
         currentWorld = worlds.get("world1");
 

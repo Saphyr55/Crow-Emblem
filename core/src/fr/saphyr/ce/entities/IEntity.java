@@ -8,25 +8,26 @@ import fr.saphyr.ce.CEObject;
 import fr.saphyr.ce.core.Direction;
 import fr.saphyr.ce.world.IWorld;
 import fr.saphyr.ce.world.WorldPos;
-import fr.saphyr.ce.world.area.cell.ICell;
 import fr.saphyr.ce.world.area.cell.MoveCell;
 import fr.saphyr.ce.world.area.cell.TraceCell;
 import fr.saphyr.ce.world.area.MoveArea;
 import fr.saphyr.ce.world.area.MoveAreaAttribute;
+import fr.saphyr.ce.world.area.cell.WorldCell;
 
 import java.util.Optional;
 
 public interface IEntity extends CEObject, Selectable {
 
-    boolean isMoved();
-
-    boolean isSelected();
 
     MoveAreaAttribute getMoveAreaAttribute();
 
+    void setState(EntityState state);
+
+    EntityState getState();
+
     Direction getDirection();
 
-    TraceCell getTraceArea();
+    TraceCell getTraceCell();
 
     MoveArea getMoveArea();
 
@@ -38,9 +39,13 @@ public interface IEntity extends CEObject, Selectable {
 
     WorldPos getWorldPos();
 
-    Optional<MoveCell> getCellPressed();
+    Array<TiledMapTile> getTilesNotExplorable();
+
+    WorldCell getWorldCell();
+
+    Optional<MoveCell> getMoveCellPressed();
     
-    Optional<MoveCell> getCellWherePressed();
+    Optional<WorldCell> getCellWhenPressedBy(int key);
 
     void setMoveArea(MoveAreaAttribute moveAreaAttribute);
 
@@ -48,9 +53,9 @@ public interface IEntity extends CEObject, Selectable {
 
     void setMoveArea(MoveArea moveZoneArea);
 
-    void setMoved(boolean isMoved);
+    void setMoveCellPressed(MoveCell cellClicked);
 
-    void setCellPressed(MoveCell cellClicked);
+    boolean isSelected();
 
-    Array<TiledMapTile> getTilesNotExplorable();
+    void setSelected(boolean selected);
 }

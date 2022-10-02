@@ -4,7 +4,7 @@ import fr.saphyr.ce.world.area.MoveAreaAttribute;
 import fr.saphyr.ce.core.Renderer;
 import fr.saphyr.ce.world.WorldPos;
 
-public abstract class Enemy extends Entity {
+public abstract class Enemy extends Character {
 
     public Enemy(WorldPos worldPos, int[] tileNotExplorable, MoveAreaAttribute moveAreaAttribute) {
         super(worldPos, tileNotExplorable, moveAreaAttribute);

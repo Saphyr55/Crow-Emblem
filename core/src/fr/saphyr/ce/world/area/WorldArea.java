@@ -27,8 +27,7 @@ public class WorldArea extends AbstractArea<WorldCell> implements Updatable {
     }
 
     public void update(float dt) {
-        handle.forEach(optionals -> optionals.forEach(optional ->
-                optional.ifPresent(worldCell ->  worldCell.update(dt))));
+        setupHandleFromWorld();
     }
 
 }

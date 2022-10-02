@@ -1,13 +1,12 @@
 package fr.saphyr.ce.entities;
 
 import com.badlogic.gdx.Input;
-import fr.saphyr.ce.core.Logger;
 import fr.saphyr.ce.world.area.cell.MoveCell;
 import fr.saphyr.ce.world.area.MoveAreaAttribute;
 import fr.saphyr.ce.core.Renderer;
 import fr.saphyr.ce.world.WorldPos;
 
-public abstract class Player extends Entity {
+public abstract class Player extends Character {
 
     private static Player playerSelected = null;
     public static boolean hasPlayerSelected = false;
@@ -29,6 +28,7 @@ public abstract class Player extends Entity {
         setVelocityMoveDeltaTime(dt);
         updateTraceCell();
         updateMove();
+        movePlayer();
         updatePlayerSelected();
     }
 
@@ -41,7 +41,7 @@ public abstract class Player extends Entity {
     }
 
     private void updatePlayerSelected() {
-        if(isPressedOnFrame(Input.Keys.ENTER, worldPos)) {
+        if((state == EntityState.WAIT || state == EntityState.FINISH) && isPressedOnFrame(Input.Keys.ENTER, worldPos)) {
             if (hasPlayerSelected) {
                 hasPlayerSelected = false;
                 playerSelected.isSelected = false;
@@ -56,22 +56,21 @@ public abstract class Player extends Entity {
     }
 
     private void updateMove() {
-
-        if (!isMoved && getCellPressed().isEmpty()) getCellWherePressed().ifPresent(cell -> {
-            if (cell.getContentEntity().isEmpty()) {
-                cellPressed = cell;
+        if (state == EntityState.WAIT && getMoveCellPressed().isEmpty())
+            getCellWhenPressedBy(Input.Keys.ENTER).ifPresent(worldCell -> {
+            if (worldCell.getContentEntity().isEmpty()) {
+                moveArea.getCellAt(worldCell.getPos()).ifPresent(worldCell1 -> moveCellPressed = worldCell1);
             }
         });
-        getCellPressed().ifPresent(this::movePlayer);
     }
 
-    private void movePlayer(MoveCell cell) {
-        if (cell.isAccessible() && cell.isExplorable()) {
-            move(velocityMoveDeltaTime);
-        }
-        else {
-            cellPressed = null;
-        }
+    private void movePlayer() {
+        getMoveCellPressed().ifPresent(cell -> {
+            if (cell.isAccessible() && cell.isExplorable())
+                move(velocityMoveDeltaTime);
+            else
+                moveCellPressed = null;
+        });
     }
 
     private void setVelocityMoveDeltaTime(float dt) {

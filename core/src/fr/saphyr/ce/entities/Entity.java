@@ -1,6 +1,5 @@
 package fr.saphyr.ce.entities;
 
-import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.maps.tiled.TiledMapTile;
@@ -11,7 +10,6 @@ import fr.saphyr.ce.core.Logger;
 import fr.saphyr.ce.core.Renderer;
 import fr.saphyr.ce.world.IWorld;
 import fr.saphyr.ce.world.WorldPos;
-import fr.saphyr.ce.world.area.cell.ICell;
 import fr.saphyr.ce.world.area.cell.MoveCell;
 import fr.saphyr.ce.world.area.cell.TraceCell;
 import fr.saphyr.ce.world.area.MoveArea;
@@ -32,62 +30,65 @@ public abstract class Entity implements IEntity {
     protected MoveArea moveArea;
     protected Array<TiledMapTile> tilesNotExplorable;
     protected WorldPos worldPos;
-    protected WorldCell worldCell;
     protected float stateTime = 0.0f;
-    protected boolean isSelected;
-    protected boolean isMoved = false;
+    protected EntityState state;
     protected Direction direction;
     protected MoveAreaAttribute moveAreaAttribute;
-    protected MoveCell cellPressed;
+    protected MoveCell moveCellPressed;
+    protected WorldCell worldCell;
+    protected boolean isSelected = false;
 
     protected Entity(WorldPos worldPos, int[] tileNotExplorable, MoveAreaAttribute moveAreaAttribute) {
         this.worldPos = worldPos;
-        this.isSelected = false;
+        this.state = EntityState.WAIT;
         this.tilesNotExplorable = new Array<>();
         setTilesNotExplorableById(tileNotExplorable);
         setMoveArea(moveAreaAttribute);
+        updateWorldCell();
         this.traceCell = new TraceCell(moveArea);
     }
 
     public Entity() {
-        this.isSelected = false;
+        this.state = EntityState.WAIT;
         this.tilesNotExplorable = new Array<>();
     }
 
-    public Optional<MoveCell> getCellWherePressed() {
-        final AtomicReference<Optional<MoveCell>> posPressed = new AtomicReference<>(Optional.empty());
-        if (moveArea.isOpen() && !isMoved) {
-            moveArea.getHandle().forEach(optionals -> optionals.forEach(optional -> optional.ifPresent(area -> {
-                if (isPressedOnFrame(Input.Keys.ENTER, getWorld(), area.getPos().x, area.getPos().y))
-                    posPressed.set(Optional.of(area));
+    @Override
+    public Optional<WorldCell> getCellWhenPressedBy(int key) {
+        if (moveArea.isOpen() && state == EntityState.WAIT) {
+            final AtomicReference<Optional<WorldCell>> posPressed = new AtomicReference<>(Optional.empty());
+            worldCell.getArea().getHandle().forEach(optionals -> optionals.forEach(optional -> optional.ifPresent(cell -> {
+                if (isPressedOnFrame(key, getWorld(), cell.getPos().x, cell.getPos().y)) posPressed.set(Optional.of(cell));
             })));
+            return posPressed.get();
         }
-        return posPressed.get();
+        return Optional.empty();
     }
 
     @Override
     public void render(Renderer renderer) {
         moveArea.setOpen(isSelected);
-        if (moveArea.isOpen()) {
-            moveArea.draw(renderer);
-        }
+        if (moveArea.isOpen()) moveArea.draw(renderer);
     }
 
     @Override
     public void update(float dt) {
         stateTime += dt;
         traceCell.update(dt);
+        updateWorldCell();
     }
 
     protected final void move(float velocity) {
-        traceCell.init();
+        if (state == EntityState.WAIT) traceCell.init();
+
         if (traceCell.hasNext()) {
             moveUp(velocity);
             moveBottom(velocity);
             moveLeft(velocity);
             moveRight(velocity);
             traceCell.next();
-        } else traceCell.stop();
+        }
+        else traceCell.stop();
     }
 
     private void moveUp(float velocity) {
@@ -118,6 +119,15 @@ public abstract class Entity implements IEntity {
         }
     }
 
+    private void fixMovedWhenIsFinishToMove() {
+        if (state == EntityState.MOVED &&
+                moveCellPressed.getPos().x - 1 == getWorldCell().getPos().x &&
+                moveCellPressed.getPos().y == getWorldCell().getPos().y) {
+            state = EntityState.WAIT;
+        }
+    }
+
+    @Override
     public void setMoveArea(MoveAreaAttribute moveAreaAttribute) {
         this.moveAreaAttribute = moveAreaAttribute;
         moveArea = MoveZoneAreas.parse(this.moveAreaAttribute, this);
@@ -131,6 +141,7 @@ public abstract class Entity implements IEntity {
         return TextureRegion.split(texture, texture.getWidth() / col, texture.getHeight() / row);
     }
 
+    @Override
     public void setTilesNotExplorableById(int[] tilesSolidId) {
         Arrays.stream(tilesSolidId).forEach(this::addTileById);
     }
@@ -145,35 +156,43 @@ public abstract class Entity implements IEntity {
             Logger.warning("Unrecognized tile from id="+id+" ");
     }
 
+    @Override
     public IWorld getWorld() {
         return getWorldPos().getWorld();
     }
 
+    @Override
     public Vector3 getPos() {
         return getWorldPos().getPos();
     }
 
+    @Override
     public Texture getTexture() {
         return texture;
     }
 
+    @Override
     public WorldPos getWorldPos() {
         return worldPos;
     }
 
+    @Override
     public Array<TiledMapTile> getTilesNotExplorable() {
         return tilesNotExplorable;
     }
 
+    @Override
     public MoveArea getMoveArea() {
         return moveArea;
     }
 
+    @Override
     public void setMoveArea(MoveArea moveZoneArea) {
         this.moveArea = moveZoneArea;
     }
 
-    public TraceCell getTraceArea() {
+    @Override
+    public TraceCell getTraceCell() {
         return traceCell;
     }
 
@@ -181,34 +200,53 @@ public abstract class Entity implements IEntity {
         return stateTime;
     }
 
-    public boolean isSelected() {
-        return isSelected;
+    @Override
+    public void setState(EntityState state) {
+        this.state = state;
     }
 
-    public boolean isMoved() {
-        return isMoved;
+    @Override
+    public EntityState getState() {
+        return state;
     }
-
-    public void setMoved(boolean isMoved) {
-        this.isMoved = isMoved;
-    }
-
+    @Override
     public Direction getDirection() {
         return direction;
     }
 
+    @Override
     public MoveAreaAttribute getMoveAreaAttribute() {
         return moveAreaAttribute;
     }
 
-    public Optional<MoveCell> getCellPressed() {
-        if (cellPressed != null) return Optional.of(cellPressed);
+    @Override
+    public Optional<MoveCell> getMoveCellPressed() {
+        if (moveCellPressed != null)
+            return Optional.of(moveCellPressed);
         return Optional.empty();
     }
 
-    public void setCellPressed(MoveCell cellClicked) {
-        this.cellPressed = cellClicked;
+    @Override
+    public void setMoveCellPressed(MoveCell moveCellPressed) {
+        this.moveCellPressed = moveCellPressed;
     }
 
+    @Override
+    public WorldCell getWorldCell() {
+        return worldCell;
+    }
 
+    @Override
+    public boolean isSelected() {
+        return isSelected;
+    }
+
+    @Override
+    public void setSelected(boolean selected) {
+        isSelected = selected;
+    }
+
+    private void updateWorldCell() {
+        worldPos.getWorld().getWorldArea().getCellAt(worldPos.getPos()).ifPresent(worldCell -> this.worldCell = worldCell);
+    }
 }

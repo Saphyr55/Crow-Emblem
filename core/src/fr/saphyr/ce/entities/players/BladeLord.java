@@ -2,6 +2,7 @@ package fr.saphyr.ce.entities.players;
 
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import fr.saphyr.ce.entities.EntityState;
 import fr.saphyr.ce.world.area.MoveAreaAttribute;
 import fr.saphyr.ce.core.Direction;
 import fr.saphyr.ce.core.Renderer;
@@ -53,18 +54,18 @@ public class BladeLord extends Player {
         if (direction == Direction.RIGHT)
             currentAnimation = animationIdleRight;
 
-        if (currentAnimation == animationIdleRight && !isMoved)
+        if (currentAnimation == animationIdleRight && state == EntityState.WAIT)
             currentFrame = frames[1][0];
 
-        if (currentAnimation == animationIdleLeft && !isMoved)
+        if (currentAnimation == animationIdleLeft && state == EntityState.WAIT)
             currentFrame = frames[1][0];
 
-        if (isMoved)
+        if (state == EntityState.MOVED)
             currentFrame = currentAnimation.getKeyFrame(stateTime, true);
 
-        if (currentAnimation == animationIdleRight && !isMoved)
+        if (currentAnimation == animationIdleRight && state == EntityState.WAIT)
             currentFrame = frames[1][0];
-        else if (currentAnimation == animationIdleLeft && !isMoved)
+        else if (currentAnimation == animationIdleLeft && state == EntityState.WAIT)
             currentFrame = frames[1][0];
 
         if (currentAnimation == animationIdleRight && !currentFrame.isFlipX())

@@ -29,7 +29,6 @@ public abstract class AbstractCell<C extends ICell> implements ICell {
         this.relativePos = relativePos;
         this.contentEntity = null;
         this.area = area;
-        setContentEntity();
     }
 
     protected AbstractCell(Vector3 pos, IArea<C> area) {
@@ -37,7 +36,6 @@ public abstract class AbstractCell<C extends ICell> implements ICell {
         this.relativePos = pos;
         this.contentEntity = null;
         this.area = area;
-        setContentEntity();
     }
 
     protected void setContentEntity() {
