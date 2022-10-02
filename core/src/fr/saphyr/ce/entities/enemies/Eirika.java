@@ -1,22 +1,22 @@
-package fr.saphyr.ce.entities.players;
+package fr.saphyr.ce.entities.enemies;
 
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import fr.saphyr.ce.core.Direction;
 import fr.saphyr.ce.core.Pos;
+import fr.saphyr.ce.core.Renderer;
+import fr.saphyr.ce.entities.Enemy;
 import fr.saphyr.ce.entities.EntityState;
 import fr.saphyr.ce.entities.characters.AnimationMoveCharacter;
-import fr.saphyr.ce.world.area.MoveAreaAttribute;
-import fr.saphyr.ce.core.Direction;
-import fr.saphyr.ce.core.Renderer;
-import fr.saphyr.ce.entities.Player;
 import fr.saphyr.ce.graphic.Textures;
 import fr.saphyr.ce.world.WorldPos;
+import fr.saphyr.ce.world.area.MoveAreaAttribute;
 
-public class BladeLord extends Player {
+public final class Eirika extends Enemy {
 
-    public BladeLord(WorldPos worldPos, int[] tileNotExplorable, MoveAreaAttribute moveAreaAttribute) {
+    public Eirika(WorldPos worldPos, int[] tileNotExplorable, MoveAreaAttribute moveAreaAttribute) {
         super(worldPos, tileNotExplorable, moveAreaAttribute);
-        texture = Textures.get("textures/entities/blade_lord/Blade Lord (F) Brave Lyn Bow {StreetHero}-walk.png");
+        texture = Textures.get("textures/entities/eirika_sword/Great Lord (F) Eirika Sword {IS}-walk.png");
         animationMove = AnimationMoveCharacter.Builder.of(this, 1, 15, 100 / 1000f)
                 .withAnimationIdleUp(Pos.of(8, 0), Pos.of(9, 0), Pos.of(10, 0), Pos.of(11, 0))
                 .withAnimationIdleBottom(Pos.of(4, 0), Pos.of(5, 0), Pos.of(6, 0), Pos.of(7, 0))
@@ -25,6 +25,16 @@ public class BladeLord extends Player {
                 .build();
         animationMove.setCurrentAnimation(animationMove.getAnimationIdleBottom());
         animationMove.setCurrentFrame(Pos.of(1, 0));
+    }
+
+    @Override
+    public void render(Renderer renderer) {
+        super.render(renderer);
+    }
+
+    @Override
+    public void update(float dt) {
+        super.update(dt);
     }
 
 }

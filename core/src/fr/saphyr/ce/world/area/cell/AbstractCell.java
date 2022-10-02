@@ -1,10 +1,7 @@
 package fr.saphyr.ce.world.area.cell;
 
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
-import fr.saphyr.ce.core.Logger;
-import fr.saphyr.ce.core.Updatable;
 import fr.saphyr.ce.entities.IEntity;
 import fr.saphyr.ce.graphic.Textures;
 import fr.saphyr.ce.world.area.IArea;

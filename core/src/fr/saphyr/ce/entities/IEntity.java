@@ -30,9 +30,7 @@ public interface IEntity extends CEObject, Selectable {
     TraceCell getTraceCell();
 
     MoveArea getMoveArea();
-
-    Texture getTexture();
-
+    
     Vector3 getPos();
 
     IWorld getWorld();
@@ -58,4 +56,6 @@ public interface IEntity extends CEObject, Selectable {
     boolean isSelected();
 
     void setSelected(boolean selected);
+
+    float getStateTime();
 }

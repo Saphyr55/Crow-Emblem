@@ -6,7 +6,7 @@ import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import fr.saphyr.ce.world.IWorld;
 import fr.saphyr.ce.world.World;
 
-public class Renderer extends SpriteBatch {
+public final class Renderer extends SpriteBatch {
 
     private MapRenderer mapRenderer;
 

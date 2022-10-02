@@ -1,7 +1,7 @@
 package fr.saphyr.ce.entities;
 
 import com.badlogic.gdx.Input;
-import fr.saphyr.ce.world.area.cell.MoveCell;
+import fr.saphyr.ce.entities.characters.Character;
 import fr.saphyr.ce.world.area.MoveAreaAttribute;
 import fr.saphyr.ce.core.Renderer;
 import fr.saphyr.ce.world.WorldPos;
@@ -33,11 +33,13 @@ public abstract class Player extends Character {
     }
 
     private void updateTraceCell() {
-        moveArea.getCellAt(getWorld().getFollowCamera().getPos()).ifPresent(cell ->
-            getWorld().getWorldArea().getCellAt(cell.getPos()).ifPresent(worldCell -> {
-                if (worldCell.getContentEntity().isEmpty()) traceCell.updateEndCell(cell);
-            }
-        ));
+        if (moveArea.isOpen()) {
+            moveArea.getCellAt(getWorld().getFollowCamera().getPos()).ifPresent(cell ->
+                    getWorld().getWorldArea().getCellAt(cell.getPos()).ifPresent(worldCell -> {
+                                if (worldCell.getContentEntity().isEmpty()) traceCell.updateEndCell(cell);
+                    })
+            );
+        }
     }
 
     private void updatePlayerSelected() {

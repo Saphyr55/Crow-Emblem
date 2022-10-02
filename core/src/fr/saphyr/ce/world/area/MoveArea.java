@@ -8,7 +8,6 @@ import fr.saphyr.ce.world.area.cell.ICell;
 import fr.saphyr.ce.world.area.cell.MoveCell;
 import fr.saphyr.ce.world.area.cell.ai.CellGraph;
 import fr.saphyr.ce.core.Renderer;
-import fr.saphyr.ce.entities.Entity;
 import fr.saphyr.ce.graphic.Drawable;
 import fr.saphyr.ce.world.map.Map;
 

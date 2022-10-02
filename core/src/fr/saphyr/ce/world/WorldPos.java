@@ -26,6 +26,10 @@ public class WorldPos {
         return new WorldPos(world, pos);
     }
 
+    public static WorldPos of(IWorld world, float x, float y) {
+        return new WorldPos(world, new Vector2(x, y));
+    }
+
     public static WorldPos of(WorldPos worldPos) {
         return new WorldPos(worldPos.world, worldPos.getPos());
     }

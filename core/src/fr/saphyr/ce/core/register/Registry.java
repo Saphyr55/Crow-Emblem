@@ -5,7 +5,7 @@ import fr.saphyr.ce.entities.EntityType;
 
 import java.util.function.Supplier;
 
-public class Registry {
+public final class Registry {
 
     public static <T> T register(Supplier<T> supplier) {
         return supplier.get();

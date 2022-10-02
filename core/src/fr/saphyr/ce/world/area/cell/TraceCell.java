@@ -2,6 +2,7 @@ package fr.saphyr.ce.world.area.cell;
 
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Array;
+import fr.saphyr.ce.core.Logger;
 import fr.saphyr.ce.core.Updatable;
 import fr.saphyr.ce.entities.EntityState;
 import fr.saphyr.ce.entities.IEntity;
@@ -30,7 +31,7 @@ public class TraceCell implements Updatable {
 
     @Override
     public void update(float dt) {
-        if (moveArea.isOpen() && entity.getState() == EntityState.WAIT) {
+        if (entity.getState() == EntityState.WAIT) {
             this.endCell = getCellUpdate();
             if (endCell != null) {
                 reset();
@@ -62,8 +63,8 @@ public class TraceCell implements Updatable {
 
     public void stop() {
         reset();
-        entity.setState(EntityState.FINISH);
         entity.setMoveArea(entity.getMoveAreaAttribute());
+        entity.setState(EntityState.WAIT); // finish normally the turn
         moveArea = entity.getMoveArea();
     }
 

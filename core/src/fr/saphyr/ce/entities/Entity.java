@@ -25,7 +25,6 @@ public abstract class Entity implements IEntity {
 
     public static final float EPSILON = 0.09f;
 
-    protected Texture texture;
     protected TraceCell traceCell;
     protected MoveArea moveArea;
     protected Array<TiledMapTile> tilesNotExplorable;
@@ -88,7 +87,9 @@ public abstract class Entity implements IEntity {
             moveRight(velocity);
             traceCell.next();
         }
-        else traceCell.stop();
+        else {
+            traceCell.stop();
+        }
     }
 
     private void moveUp(float velocity) {
@@ -137,10 +138,6 @@ public abstract class Entity implements IEntity {
         getPos().add(velocityX, velocityY, 0);
     }
 
-    protected TextureRegion[][] splitTexture(int col, int row) {
-        return TextureRegion.split(texture, texture.getWidth() / col, texture.getHeight() / row);
-    }
-
     @Override
     public void setTilesNotExplorableById(int[] tilesSolidId) {
         Arrays.stream(tilesSolidId).forEach(this::addTileById);
@@ -164,11 +161,6 @@ public abstract class Entity implements IEntity {
     @Override
     public Vector3 getPos() {
         return getWorldPos().getPos();
-    }
-
-    @Override
-    public Texture getTexture() {
-        return texture;
     }
 
     @Override

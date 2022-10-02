@@ -22,7 +22,7 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Map;
 
-public class MoveAreaAttributeLoader extends AsynchronousAssetLoader<MoveAreaAttribute, AssetLoaderParameters<MoveAreaAttribute>> {
+public final class MoveAreaAttributeLoader extends AsynchronousAssetLoader<MoveAreaAttribute, AssetLoaderParameters<MoveAreaAttribute>> {
 
     private MoveAreaAttribute moveAreaAttribute;
 

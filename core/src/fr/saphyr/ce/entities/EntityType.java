@@ -1,15 +1,15 @@
 package fr.saphyr.ce.entities;
 
+import fr.saphyr.ce.entities.enemies.Eirika;
 import fr.saphyr.ce.world.area.MoveAreaAttribute;
 import fr.saphyr.ce.world.area.MoveAreaAttributes;
-import fr.saphyr.ce.entities.enemies.Slime;
 import fr.saphyr.ce.entities.players.BladeLord;
 import fr.saphyr.ce.world.WorldPos;
 
 public final class EntityType<T extends IEntity> {
-
+    
     public static final EntityType<BladeLord> BLADE_LORD = register("lord", EntityBuilder.of(BladeLord::new).withMoveAreaAttribute(MoveAreaAttributes.LARGE));
-    public static final EntityType<Slime> SLIME = register("slime", EntityBuilder.of(Slime::new).withMoveAreaAttribute(MoveAreaAttributes.DEFAULT));
+    public static final EntityType<Eirika> EIRIKA = register("eirika", EntityBuilder.of(Eirika::new).withMoveAreaAttribute(MoveAreaAttributes.LARGE));
 
     public static void registers() { }
 

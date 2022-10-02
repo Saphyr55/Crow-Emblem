@@ -4,7 +4,6 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Array;
-import fr.saphyr.ce.core.Logger;
 import fr.saphyr.ce.core.Renderer;
 import fr.saphyr.ce.entities.IEntity;
 import fr.saphyr.ce.world.area.WorldArea;
@@ -34,6 +33,9 @@ public class World implements IWorld {
 
     public static IWorld of(Map map, Vector3 initPos) {
         return new World(map, initPos);
+    }
+    public static IWorld of(Map map, float x, float y) {
+        return of(map, new Vector3(x, y, 0));
     }
 
     public static IWorld of(Map map) {
