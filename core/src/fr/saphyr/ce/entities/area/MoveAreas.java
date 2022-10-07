@@ -1,15 +1,15 @@
-package fr.saphyr.ce.world.area;
+package fr.saphyr.ce.entities.area;
 
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Array;
 import fr.saphyr.ce.entities.Entity;
+import fr.saphyr.ce.entities.area.cell.MoveCell;
 import fr.saphyr.ce.graphic.Textures;
-import fr.saphyr.ce.world.area.cell.MoveCell;
 
 import java.util.*;
 import java.util.function.Supplier;
 
-public final class MoveZoneAreas {
+public final class MoveAreas {
 
     public static MoveArea personalize(Supplier<MoveArea> algo) { return algo.get(); }
 
@@ -20,8 +20,8 @@ public final class MoveZoneAreas {
                 moveZoneArea.getHandle().add(new Array<>(moveAreaAttribute.pattern().length));
                 for (int j = 0; j < moveAreaAttribute.pattern()[i].length; j++) {
                     final var area = new MoveCell(new Vector3(
-                            entity.getWorldPos().getPos().x - i + ((int) (moveAreaAttribute.pattern().length / 2f)),
-                            entity.getWorldPos().getPos().y - j + ((int) (moveAreaAttribute.pattern()[i].length / 2f)), 0),
+                            entity.getPos().x - i + ((int) (moveAreaAttribute.pattern().length / 2f)),
+                            entity.getPos().y - j + ((int) (moveAreaAttribute.pattern()[i].length / 2f)), 0),
                             new Vector3(i, j, 0), moveZoneArea);
                     final int finalI = i;
                     final int finalJ = j;

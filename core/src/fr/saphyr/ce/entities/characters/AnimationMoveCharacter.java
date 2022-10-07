@@ -50,24 +50,25 @@ public class AnimationMoveCharacter implements CEObject {
         if (character.getDirection() == Direction.RIGHT)
             currentAnimation = animationIdleRight;
 
-        if (currentAnimation == animationIdleRight && character.getState() == EntityState.WAIT)
+        if (currentAnimation == animationIdleRight && character.getState() == EntityState.FINISH)
             currentFrame = frames[1][0];
 
-        if (currentAnimation == animationIdleLeft && character.getState() == EntityState.WAIT)
+        if (currentAnimation == animationIdleLeft && character.getState() == EntityState.FINISH)
             currentFrame = frames[1][0];
 
         if (character.getState() == EntityState.MOVED)
             currentFrame = currentAnimation.getKeyFrame(character.getStateTime(), true);
 
-        if (currentAnimation == animationIdleRight && character.getState() == EntityState.WAIT)
+        if (currentAnimation == animationIdleRight && character.getState() == EntityState.FINISH)
             currentFrame = frames[1][0];
-        else if (currentAnimation == animationIdleLeft && character.getState() == EntityState.WAIT)
+        else if (currentAnimation == animationIdleLeft && character.getState() == EntityState.FINISH)
             currentFrame = frames[1][0];
 
         if (currentAnimation == animationIdleRight && !currentFrame.isFlipX())
             currentFrame.flip(true, false);
         else if (currentAnimation == animationIdleLeft && currentFrame.isFlipX())
             currentFrame.flip(true, false);
+
     }
 
     @Override

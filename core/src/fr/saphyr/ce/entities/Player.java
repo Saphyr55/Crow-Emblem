@@ -1,14 +1,17 @@
 package fr.saphyr.ce.entities;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import fr.saphyr.ce.core.Logger;
 import fr.saphyr.ce.entities.characters.Character;
-import fr.saphyr.ce.world.area.MoveAreaAttribute;
+import fr.saphyr.ce.entities.area.MoveAreaAttribute;
 import fr.saphyr.ce.core.Renderer;
 import fr.saphyr.ce.world.WorldPos;
+import fr.saphyr.ce.world.area.cell.WorldCell;
 
 public abstract class Player extends Character {
 
-    private static Player playerSelected = null;
+    public static Player playerSelected = null;
     public static boolean hasPlayerSelected = false;
     protected final float velocityMove = 4;
     private float velocityMoveDeltaTime;
@@ -20,26 +23,42 @@ public abstract class Player extends Character {
     @Override
     public void render(Renderer renderer) {
         super.render(renderer);
+        if (state == EntityState.PREPARED) {
+            if (attackArea.haveMinimumOne()) {
+                attackArea.render(renderer);
+            }
+        }
     }
 
     @Override
     public void update(float dt) {
         super.update(dt);
         setVelocityMoveDeltaTime(dt);
-        updateTraceCell();
+        if (moveArea.isOpen()) updateTraceCell();
         updateMove();
         movePlayer();
         updatePlayerSelected();
+
+        if (state == EntityState.PREPARED) {
+            if (Gdx.input.isKeyJustPressed(Input.Keys.BACKSPACE)) {
+                worldPos = snapshotWorldPos.peek();
+                worldCell = new WorldCell(getPos(), getWorld().getWorldArea());
+                getWorld().getFollowCamera().getPos().set(getPos());
+                getWorld().getFollowCamera().getCurrentWorldCell().getPos().set(getPos());
+                traceCell.stop();
+                state = EntityState.WAIT;
+            }
+        }
+
     }
 
     private void updateTraceCell() {
-        if (moveArea.isOpen()) {
-            moveArea.getCellAt(getWorld().getFollowCamera().getPos()).ifPresent(cell ->
-                    getWorld().getWorldArea().getCellAt(cell.getPos()).ifPresent(worldCell -> {
-                                if (worldCell.getContentEntity().isEmpty()) traceCell.updateEndCell(cell);
-                    })
-            );
-        }
+        moveArea.getCellAt(getWorld().getFollowCamera().getPos())
+                .ifPresent(cell -> getWorld().getWorldArea().getCellAt(cell.getPos())
+                .ifPresent(worldCell -> {
+                    if (worldCell.getContentEntity().isEmpty() || this == worldCell.getContentEntity().get())
+                        traceCell.updateEndCell(cell);
+                }));
     }
 
     private void updatePlayerSelected() {
@@ -59,11 +78,20 @@ public abstract class Player extends Character {
 
     private void updateMove() {
         if (state == EntityState.WAIT && getMoveCellPressed().isEmpty())
-            getCellWhenPressedBy(Input.Keys.ENTER).ifPresent(worldCell -> {
-            if (worldCell.getContentEntity().isEmpty()) {
-                moveArea.getCellAt(worldCell.getPos()).ifPresent(worldCell1 -> moveCellPressed = worldCell1);
-            }
-        });
+            getWorldCellWhenPressedBy(Input.Keys.ENTER).ifPresent(worldCell -> {
+                if (worldCell.getContentEntity().isEmpty()) {
+                    moveArea.getCellAt(worldCell.getPos()).ifPresent(worldCell1 -> moveCellPressed = worldCell1);
+                }
+                /*
+                else {
+                    final Character character = (Character) worldCell.getContentEntity().get();
+                    if (character instanceof Enemy) {
+                        this.launchCombatWith(character);
+                        moveCellPressed = traceCell.getEndCell();
+                    }
+                 }
+                 */
+            });
     }
 
     private void movePlayer() {

@@ -8,14 +8,13 @@ import java.util.Optional;
 
 public abstract class AbstractArea<C extends ICell> implements IArea<C> {
 
-    protected final Array<Array<Optional<C>>> handle;
-    protected final IWorld world;
+    protected final Array<Array<Optional<C>>> handle = new Array<>();
+    protected IWorld world;
 
     protected AbstractArea(IWorld world) {
         this.world = world;
-        handle = new Array<>();
     }
-    
+
     @Override
     public Array<Array<Optional<C>>> getHandle() {
         return handle;

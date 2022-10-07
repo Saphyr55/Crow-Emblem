@@ -1,6 +1,6 @@
 package fr.saphyr.ce.core.register;
 
-import fr.saphyr.ce.world.area.MoveAreaAttributes;
+import fr.saphyr.ce.entities.area.MoveAreaAttributes;
 import fr.saphyr.ce.entities.EntityType;
 
 import java.util.function.Supplier;

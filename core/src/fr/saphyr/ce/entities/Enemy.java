@@ -1,7 +1,7 @@
 package fr.saphyr.ce.entities;
 
 import fr.saphyr.ce.entities.characters.Character;
-import fr.saphyr.ce.world.area.MoveAreaAttribute;
+import fr.saphyr.ce.entities.area.MoveAreaAttribute;
 import fr.saphyr.ce.core.Renderer;
 import fr.saphyr.ce.world.WorldPos;
 

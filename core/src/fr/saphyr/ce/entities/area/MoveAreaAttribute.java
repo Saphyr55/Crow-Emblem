@@ -1,4 +1,4 @@
-package fr.saphyr.ce.world.area;
+package fr.saphyr.ce.entities.area;
 
 import com.badlogic.gdx.utils.Array;
 import fr.saphyr.ce.world.area.cell.AbstractCell;

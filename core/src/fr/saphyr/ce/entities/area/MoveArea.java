@@ -1,11 +1,12 @@
-package fr.saphyr.ce.world.area;
+package fr.saphyr.ce.entities.area;
 
 import com.badlogic.gdx.maps.tiled.TiledMapTile;
 import com.badlogic.gdx.utils.Array;
 import fr.saphyr.ce.entities.IEntity;
+import fr.saphyr.ce.entities.area.cell.MoveCell;
+import fr.saphyr.ce.world.area.AbstractArea;
 import fr.saphyr.ce.world.area.cell.AbstractCell;
 import fr.saphyr.ce.world.area.cell.ICell;
-import fr.saphyr.ce.world.area.cell.MoveCell;
 import fr.saphyr.ce.world.area.cell.ai.CellGraph;
 import fr.saphyr.ce.core.Renderer;
 import fr.saphyr.ce.graphic.Drawable;
@@ -48,12 +49,12 @@ public class MoveArea extends AbstractArea<MoveCell> implements Drawable {
     }
 
     @Override
-    public void draw(Renderer renderer) {
+    public void render(Renderer renderer) {
         handle.forEach(optionals -> optionals.forEach(optional -> optional.ifPresent(cell -> {
             if (cell.getTexture() != null && (!cell.isExplorable() || cell.isAccessible()) )
                 renderer.draw(cell.getTexture(), cell.getPos().x, cell.getPos().y, 1, 1);
             else if (cell.isExplorable()) {
-                cell.setTexture(AbstractCell.RED_AREA_TEXTURE);
+                cell.setTexture(AbstractCell.RED_CELL_TEXTURE);
                 renderer.draw(cell.getTexture(), cell.getPos().x, cell.getPos().y, 1, 1);
             }
         })));
@@ -105,7 +106,7 @@ public class MoveArea extends AbstractArea<MoveCell> implements Drawable {
         for(var tileNotExplorable : tilesNotExplorable) {
             if (map.getTileFrom(moveCell.getPos()) != null) {
                 if (tileNotExplorable.getId() == map.getTileFrom(moveCell.getPos()).getId()) {
-                    moveCell.setTexture(AbstractCell.RED_AREA_TEXTURE);
+                    moveCell.setTexture(AbstractCell.RED_CELL_TEXTURE);
                     moveCell.setExplorable(false);
                 }
             }

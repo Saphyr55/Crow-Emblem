@@ -1,12 +1,12 @@
-package fr.saphyr.ce.world.area.cell;
+package fr.saphyr.ce.entities.area;
 
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Array;
-import fr.saphyr.ce.core.Logger;
 import fr.saphyr.ce.core.Updatable;
 import fr.saphyr.ce.entities.EntityState;
 import fr.saphyr.ce.entities.IEntity;
-import fr.saphyr.ce.world.area.MoveArea;
+import fr.saphyr.ce.entities.area.cell.MoveCell;
+import fr.saphyr.ce.world.area.cell.AbstractCell;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -35,8 +35,9 @@ public class TraceCell implements Updatable {
             this.endCell = getCellUpdate();
             if (endCell != null) {
                 reset();
-                moveArea.getAreaGraph().findPath(
-                        moveArea.getCellWithMainEntity(), endCell).forEach(this::add);
+                moveArea.getAreaGraph()
+                        .findPath(moveArea.getCellWithMainEntity(), endCell)
+                        .forEach(this::add);
             }
         }
     }
@@ -52,8 +53,7 @@ public class TraceCell implements Updatable {
 
     public void next() {
         final Vector3 pos = entity.getWorldPos().getPos();
-        if (areaClickedAlmostEqualWith(pos)) stop();
-        else if (nextCell.almostEqualArea(pos, EPSILON)) {
+        if (nextCell.almostEqualArea(pos, EPSILON)) {
             pos.set(nextCell.getPos());
             ++index;
             if (index < trace.size) nextCell = trace.get(index);
@@ -63,23 +63,18 @@ public class TraceCell implements Updatable {
 
     public void stop() {
         reset();
+        entity.setAttackArea(AttackAreas.getDefault(entity));
+        entity.getAttackArea().setEntities();
         entity.setMoveArea(entity.getMoveAreaAttribute());
-        entity.setState(EntityState.WAIT); // finish normally the turn
         moveArea = entity.getMoveArea();
     }
 
     private void reset() {
-        trace.forEach(area -> area.setTexture(AbstractCell.BLUE_AREA_TEXTURE));
+        trace.forEach(area -> area.setTexture(AbstractCell.BLUE_CELL_TEXTURE));
         trace.clear();
         nextCell = null;
         entity.getMoveCellPressed().ifPresent(area -> entity.getWorldPos().getPos().set(area.getPos()));
         entity.setMoveCellPressed(null);
-    }
-
-    private boolean areaClickedAlmostEqualWith(Vector3 pos) {
-        final AtomicBoolean atReturn = new AtomicBoolean(false);
-        entity.getMoveCellPressed().ifPresent(area -> atReturn.set(area.almostEqualArea(pos, EPSILON)));
-        return atReturn.get();
     }
 
     public MoveCell getNext() {
@@ -91,7 +86,7 @@ public class TraceCell implements Updatable {
     }
 
     private void add(MoveCell cell) {
-        cell.setTexture(AbstractCell.GREEN_AREA_TEXTURE);
+        cell.setTexture(AbstractCell.GREEN_CELL_TEXTURE);
         trace.add(cell);
     }
 

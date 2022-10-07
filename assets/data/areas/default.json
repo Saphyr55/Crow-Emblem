@@ -1,11 +1,11 @@
 {
   "keys": {
     "1" : {
-      "texture" : "textures/areas/blue_area.png",
+      "texture" : "textures/areas/blue_cell.png",
       "explorable" : true
     },
     "2" : {
-      "texture" : "textures/areas/red_area.png",
+      "texture" : "textures/areas/red_cell.png",
       "explorable" : false
     }
   },

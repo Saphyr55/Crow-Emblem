@@ -28,7 +28,8 @@ public final class GameScene extends Scene {
         int[] tilesNotExplorable = { 2, 3, 8, 10, 11 };
         final IWorld world = World.of(Maps.get("maps/map1.tmx"), 10, 10);
 
-        world.addEntities(EntityType.BLADE_LORD.construct()
+        world.addEntities(
+                EntityType.BLADE_LORD.construct()
                 .withWorldPos(WorldPos.of(world, 3, 5))
                 .withTileNotExplorable(tilesNotExplorable)
                 .build());

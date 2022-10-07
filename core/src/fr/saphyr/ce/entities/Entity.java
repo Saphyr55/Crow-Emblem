@@ -1,20 +1,15 @@
 package fr.saphyr.ce.entities;
 
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.maps.tiled.TiledMapTile;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Array;
 import fr.saphyr.ce.core.Direction;
 import fr.saphyr.ce.core.Logger;
 import fr.saphyr.ce.core.Renderer;
+import fr.saphyr.ce.entities.area.*;
 import fr.saphyr.ce.world.IWorld;
 import fr.saphyr.ce.world.WorldPos;
-import fr.saphyr.ce.world.area.cell.MoveCell;
-import fr.saphyr.ce.world.area.cell.TraceCell;
-import fr.saphyr.ce.world.area.MoveArea;
-import fr.saphyr.ce.world.area.MoveAreaAttribute;
-import fr.saphyr.ce.world.area.MoveZoneAreas;
+import fr.saphyr.ce.entities.area.cell.MoveCell;
 import fr.saphyr.ce.world.area.cell.WorldCell;
 
 import java.util.Arrays;
@@ -24,11 +19,12 @@ import java.util.concurrent.atomic.AtomicReference;
 public abstract class Entity implements IEntity {
 
     public static final float EPSILON = 0.09f;
-
     protected TraceCell traceCell;
     protected MoveArea moveArea;
+    protected AttackArea attackArea;
     protected Array<TiledMapTile> tilesNotExplorable;
     protected WorldPos worldPos;
+    protected Array<WorldPos> snapshotWorldPos;
     protected float stateTime = 0.0f;
     protected EntityState state;
     protected Direction direction;
@@ -45,6 +41,8 @@ public abstract class Entity implements IEntity {
         setMoveArea(moveAreaAttribute);
         updateWorldCell();
         this.traceCell = new TraceCell(moveArea);
+        this.attackArea = AttackAreas.getDefault(this);
+        this.snapshotWorldPos = new Array<>();
     }
 
     public Entity() {
@@ -53,7 +51,7 @@ public abstract class Entity implements IEntity {
     }
 
     @Override
-    public Optional<WorldCell> getCellWhenPressedBy(int key) {
+    public Optional<WorldCell> getWorldCellWhenPressedBy(int key) {
         if (moveArea.isOpen() && state == EntityState.WAIT) {
             final AtomicReference<Optional<WorldCell>> posPressed = new AtomicReference<>(Optional.empty());
             worldCell.getArea().getHandle().forEach(optionals -> optionals.forEach(optional -> optional.ifPresent(cell -> {
@@ -67,7 +65,7 @@ public abstract class Entity implements IEntity {
     @Override
     public void render(Renderer renderer) {
         moveArea.setOpen(isSelected);
-        if (moveArea.isOpen()) moveArea.draw(renderer);
+        if (moveArea.isOpen()) moveArea.render(renderer);
     }
 
     @Override
@@ -78,7 +76,10 @@ public abstract class Entity implements IEntity {
     }
 
     protected final void move(float velocity) {
-        if (state == EntityState.WAIT) traceCell.init();
+        if (state == EntityState.WAIT) {
+            traceCell.init();
+            snapshotWorldPos.add(WorldPos.of(worldPos));
+        }
 
         if (traceCell.hasNext()) {
             moveUp(velocity);
@@ -89,6 +90,7 @@ public abstract class Entity implements IEntity {
         }
         else {
             traceCell.stop();
+            state = EntityState.PREPARED;
         }
     }
 
@@ -120,18 +122,15 @@ public abstract class Entity implements IEntity {
         }
     }
 
-    private void fixMovedWhenIsFinishToMove() {
-        if (state == EntityState.MOVED &&
-                moveCellPressed.getPos().x - 1 == getWorldCell().getPos().x &&
-                moveCellPressed.getPos().y == getWorldCell().getPos().y) {
-            state = EntityState.WAIT;
-        }
+    private void updateWorldCell() {
+        getWorld().getWorldArea().getCellAt(worldPos.getPos())
+                .ifPresent(this::setWorldCell);
     }
 
     @Override
     public void setMoveArea(MoveAreaAttribute moveAreaAttribute) {
         this.moveAreaAttribute = moveAreaAttribute;
-        moveArea = MoveZoneAreas.parse(this.moveAreaAttribute, this);
+        moveArea = MoveAreas.parse(this.moveAreaAttribute, this);
     }
 
     protected void translate(float velocityX, float velocityY) {
@@ -229,6 +228,11 @@ public abstract class Entity implements IEntity {
     }
 
     @Override
+    public void setWorldCell(WorldCell worldCell) {
+        this.worldCell = worldCell;
+    }
+
+    @Override
     public boolean isSelected() {
         return isSelected;
     }
@@ -238,7 +242,18 @@ public abstract class Entity implements IEntity {
         isSelected = selected;
     }
 
-    private void updateWorldCell() {
-        worldPos.getWorld().getWorldArea().getCellAt(worldPos.getPos()).ifPresent(worldCell -> this.worldCell = worldCell);
+    @Override
+    public AttackArea getAttackArea() {
+        return attackArea;
+    }
+
+    @Override
+    public void setAttackArea(AttackArea attackArea) {
+        this.attackArea = attackArea;
+    }
+
+    @Override
+    public Array<WorldPos> getSnapshotWorldPos() {
+        return snapshotWorldPos;
     }
 }

@@ -10,7 +10,7 @@ import fr.saphyr.ce.core.Renderer;
 import fr.saphyr.ce.world.area.cell.ICell;
 import fr.saphyr.ce.world.area.cell.WorldCell;
 
-import static fr.saphyr.ce.world.area.cell.AbstractCell.YELLOW_AREA_TEXTURE;
+import static fr.saphyr.ce.world.area.cell.AbstractCell.YELLOW_CELL_TEXTURE;
 
 public class FollowCamera implements CEObject {
 
@@ -25,7 +25,7 @@ public class FollowCamera implements CEObject {
 
     public FollowCamera(IWorld world) {
         this.world = world;
-        this.yellowTexture = YELLOW_AREA_TEXTURE;
+        this.yellowTexture = YELLOW_CELL_TEXTURE;
         this.pos = new Vector3(world.getCamera().position);
         this.isMoved = false;
         world.getWorldArea().getCellAt(pos).ifPresent(this::setCurrentWorldCell);

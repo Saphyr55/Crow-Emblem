@@ -1,16 +1,12 @@
 package fr.saphyr.ce.entities.enemies;
 
-import com.badlogic.gdx.graphics.g2d.Animation;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import fr.saphyr.ce.core.Direction;
 import fr.saphyr.ce.core.Pos;
 import fr.saphyr.ce.core.Renderer;
 import fr.saphyr.ce.entities.Enemy;
-import fr.saphyr.ce.entities.EntityState;
 import fr.saphyr.ce.entities.characters.AnimationMoveCharacter;
 import fr.saphyr.ce.graphic.Textures;
 import fr.saphyr.ce.world.WorldPos;
-import fr.saphyr.ce.world.area.MoveAreaAttribute;
+import fr.saphyr.ce.entities.area.MoveAreaAttribute;
 
 public final class Eirika extends Enemy {
 

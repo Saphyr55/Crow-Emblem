@@ -1,12 +1,13 @@
 package fr.saphyr.ce.entities.characters;
 
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import fr.saphyr.ce.core.Renderer;
 import fr.saphyr.ce.entities.Entity;
 import fr.saphyr.ce.entities.ICharacter;
+import fr.saphyr.ce.scene.SceneManager;
+import fr.saphyr.ce.scene.inners.CombatScene;
 import fr.saphyr.ce.world.WorldPos;
-import fr.saphyr.ce.world.area.MoveAreaAttribute;
+import fr.saphyr.ce.entities.area.MoveAreaAttribute;
 
 public abstract class Character extends Entity implements ICharacter {
 
@@ -17,6 +18,10 @@ public abstract class Character extends Entity implements ICharacter {
 
     protected Character(WorldPos worldPos, int[] tileNotExplorable, MoveAreaAttribute moveAreaAttribute) {
         super(worldPos, tileNotExplorable, moveAreaAttribute);
+    }
+
+    public void launchCombatWith(Character character) {
+        new CombatScene(this, character);
     }
 
     @Override
@@ -34,6 +39,11 @@ public abstract class Character extends Entity implements ICharacter {
     public void render(Renderer renderer) {
         super.render(renderer);
         animationMove.render(renderer);
+    }
+
+    @Override
+    public AnimationMoveCharacter getAnimationMoveCharacter() {
+        return animationMove;
     }
 
     @Override

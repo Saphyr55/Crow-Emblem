@@ -1,4 +1,4 @@
-package fr.saphyr.ce.world.area;
+package fr.saphyr.ce.entities.area;
 
 import fr.saphyr.ce.core.register.Resources;
 

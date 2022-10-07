@@ -1,8 +1,9 @@
-package fr.saphyr.ce.scene;
+package fr.saphyr.ce.scene.inners;
 
 import fr.saphyr.ce.core.Logger;
 import fr.saphyr.ce.core.Renderer;
 import fr.saphyr.ce.entities.characters.Character;
+import fr.saphyr.ce.scene.Scene;
 
 public final class CombatScene extends Scene {
 

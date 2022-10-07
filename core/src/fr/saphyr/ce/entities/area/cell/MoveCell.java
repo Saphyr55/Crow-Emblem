@@ -1,9 +1,10 @@
-package fr.saphyr.ce.world.area.cell;
+package fr.saphyr.ce.entities.area.cell;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Vector3;
 import fr.saphyr.ce.entities.IEntity;
 import fr.saphyr.ce.world.area.IArea;
+import fr.saphyr.ce.world.area.cell.AbstractCell;
 
 public class MoveCell extends AbstractCell<MoveCell> {
 

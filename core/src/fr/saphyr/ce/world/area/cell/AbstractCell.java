@@ -16,16 +16,18 @@ public abstract class AbstractCell<C extends ICell> implements ICell {
     protected IEntity contentEntity;
     protected IArea<C> area;
 
-    public static final Texture BLUE_AREA_TEXTURE = Textures.get("textures/areas/blue_area.png");
-    public static final Texture RED_AREA_TEXTURE = Textures.get("textures/areas/red_area.png");
-    public static final Texture GREEN_AREA_TEXTURE = Textures.get("textures/areas/green_area.png");
-    public static final Texture YELLOW_AREA_TEXTURE = Textures.get("textures/areas/yellow_area.png");
+    public static final Texture BLUE_CELL_TEXTURE = Textures.get("textures/areas/blue_cell.png");
+    public static final Texture RED_CELL_TEXTURE = Textures.get("textures/areas/red_cell.png");
+    public static final Texture GREEN_CELL_TEXTURE = Textures.get("textures/areas/green_cell.png");
+    public static final Texture YELLOW_CELL_TEXTURE = Textures.get("textures/areas/yellow_cell.png");
+    public static final Texture ATTACK_CELL_TEXTURE = Textures.get("textures/areas/attack_cell.png");
 
     protected AbstractCell(Vector3 pos, Vector3 relativePos, IArea<C> area) {
         this.pos = pos;
         this.relativePos = relativePos;
         this.contentEntity = null;
         this.area = area;
+        setContentEntity();
     }
 
     protected AbstractCell(Vector3 pos, IArea<C> area) {
@@ -33,6 +35,7 @@ public abstract class AbstractCell<C extends ICell> implements ICell {
         this.relativePos = pos;
         this.contentEntity = null;
         this.area = area;
+        setContentEntity();
     }
 
     protected void setContentEntity() {
